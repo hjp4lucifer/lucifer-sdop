@@ -192,26 +192,29 @@ lcf.sdop.ms = {
 	unitAttribute: ['FIGHT', 'SPECIAL', 'SHOOT'],
 	current: null,
 	max: null,
-	parseMsCard: function(msList){
+	logMsList: function(msList){
 		var logMsg = "";
 		for (var i in msList) {
-			var ms = msList[i].card;
-			var msLog = "<br>" + i + "） " + ms.rarity + "c" + ms.cost + "【" + ms.type.name + "】，level：" + ms.level + "，属性：" + ms.attribute.value + "，attack：" + ms.attack + "，max HP：" + ms.maxHp + "，speed：" + ms.speed;
-			for (var j in ms.characteristicList) {
-				var c = ms.characteristicList[j];
-				msLog += "<br>　　插件" + j + "：" + c.briefDescription;
-			}
-			var pilot = ms.pilot;
-			msLog += "<br>　pilot：" + pilot.rarity + "c" + pilot.cost + "【" + pilot.type.name + "】，level：" + pilot.level;
-			for (var j in pilot.activeSkillList) {
-				msLog += "<br>　　主动技能：" + pilot.activeSkillList[j].description;
-			}
-			for (var j in pilot.passiveSkillList) {
-				msLog += "<br>　　被动技能：" + pilot.passiveSkillList[j].description;
-			}
-			logMsg += msLog;
+			var msCard = msList[i].card;
+			logMsg += lcf.sdop.ms.logMsCard(msCard, i);
 		}
 		return logMsg;
+	},
+	logMsCard: function(msCard, i){
+		var msLog = "<br>" + i + "） " + ms.rarity + "c" + ms.cost + "【" + ms.type.name + "】，level：" + ms.level + "，属性：" + ms.attribute.value + "，attack：" + ms.attack + "，max HP：" + ms.maxHp + "，speed：" + ms.speed;
+		for (var j in ms.characteristicList) {
+			var c = ms.characteristicList[j];
+			msLog += "<br>　　插件" + j + "：" + c.briefDescription;
+		}
+		var pilot = ms.pilot;
+		msLog += "<br>　pilot：" + pilot.rarity + "c" + pilot.cost + "【" + pilot.type.name + "】，level：" + pilot.level;
+		for (var j in pilot.activeSkillList) {
+			msLog += "<br>　　主动技能：" + pilot.activeSkillList[j].description;
+		}
+		for (var j in pilot.passiveSkillList) {
+			msLog += "<br>　　被动技能：" + pilot.passiveSkillList[j].description;
+		}
+		return msLog;
 	}
 };
 
@@ -420,7 +423,7 @@ lcf.sdop.duel = {
 			var logMsg = "挑战【" + data.args.data.enemyData.name + "】" + result + "！对方MS阵容：";
 			
 			var enemyMsList = data.args.data.enemyMsList;
-			logMsg += lcf.sdop.ms.parseMsCard(enemyMsList);
+			logMsg += lcf.sdop.ms.logMsList(enemyMsList);
 			
 			_sdop.log(logMsg);
 		});
@@ -1067,7 +1070,10 @@ lcf.sdop.boss.getBattleData = function(callback){
 
 /**
  * 选好人, 并开始boss战斗
- * @param {Object} callback
+ * @param {int} battleId
+ * @param {int} firstId
+ * @param {int} secondId
+ * @param {function} callback
  */
 lcf.sdop.boss.executeBattleStart = function(battleId, firstId, secondId, callback){
 	var _sdop = lcf.sdop;
@@ -1155,6 +1161,59 @@ lcf.sdop.boss.executeActionCommand = function(battleId, actionTypeValue, targetI
 		if (callback) {
 			setTimeout(callback, 100, data);
 		}
+	});
+};
+
+lcf.sdop.item = [];
+lcf.sdop.item[20006] = {};
+
+/**
+ * 自动超总
+ */
+lcf.sdop.boss.autoSuperRaidBoss = function(){
+	lcf.sdop.boss.getRaidBossOutlineList(function(boss){
+		lcf.sdop.boss.postRaidBossBattleEntry(boss.id, function(){
+			lcf.sdop.boss.getRaidBossBattleData(boss.id, function(battleData){
+				var myUserId = battleData.leaderCardId;
+				var my = battleData.playerMsList[0];
+				var currentSp = my.currentSp;
+				var maxSp = my.maxSp;
+				
+				var battleId = battleData.battleId;
+				var members = battleData.memberCardList;
+				var attackMember = lcf.sdop.boss.getFixAttackMember(members);
+				var helpMember = lcf.sdop.boss.getFixHelpMember(members, attackMember);
+				setTimeout(lcf.sdop.boss.executeBattleStart, 3000, battleId, myUserId, helpMember.id, attackMember.id, function(data){
+					var playerMsList = data.playerMsList;
+					lcf.sdop.log("对Boss选择阵容：" + lcf.sdop.ms.logMsList(playerMsList));
+					for (var i in playerMsList) {
+						var player = playerMsList[i];
+						if (player.card.id == myUserId) {
+							my = player;
+						} else if (player.card.id == attackMember.id) {
+							attackMember = player;
+						} else if (player.card.id == helpMember.id) {
+							helpMember = player;
+						}
+					}
+					//理论上会填充满my、attackMember、helpMember
+					
+					var actionOrder = data.actionOrderList[data.actionOrderList.length - 1];
+					if (0 == actionOrder.ownerId) {
+						lcf.sdop.log("Boss战结束！");
+						return;
+					}
+					var trun = 0;//自己和辅助对攻击机加状态
+					if (my.id == actionOrder.ownerId) {
+//						lcf.sdop.boss
+					}
+				});
+			});
+		}, function(){
+			setTimeout(lcf.sdop.boss.autoSuperRaidBoss, 100);
+		});
+	}, function(){
+		setTimeout(lcf.sdop.boss.autoSuperRaidBoss, 1000);
 	});
 };
 
