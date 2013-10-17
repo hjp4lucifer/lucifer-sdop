@@ -1,0 +1,15 @@
+{
+	"name": "Lucifer for sdop",
+	"version": "0.9.5",
+	"manifest_version": 2,
+	"description": "Lucifer procedure",
+	"content_scripts": [{
+		"matches": ["http://sdop-g.bandainamco-ol.jp/", "http://sdop-g.bandainamco-ol.jp/game/top"],
+		"js": ["jquery.min.js", "lucifer_sdop.js"],
+		"css": ["lucifer_sdop.css"]
+	}],
+	"background": {
+		"scripts": ["background.js"]
+	},
+	"permissions": ["webRequest", "webRequestBlocking", "http://sdop-g.bandainamco-ol.jp/", "http://sdop-g.bandainamco-ol.jp/game/top", "http://sdop-g.bandainamco-ol.jp/GetForProfile/getOwnProfileDetail*"]
+}
