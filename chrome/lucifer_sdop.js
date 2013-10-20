@@ -203,7 +203,16 @@ lcf.sdop.ms = {
 		return logMsg;
 	},
 	logMsCard: function(ms, i){
-		var msLog = "<br>" + i + "） " + ms.rarity + "c" + ms.cost + "【" + ms.type.name + "】，level：" + ms.level + "，属性：" + ms.attribute.value + "，attack：" + ms.attack + "，max HP：" + ms.maxHp + "，speed：" + ms.speed;
+		var msLog = "<br>" + i + "） ";
+		if (ms.userName) {
+			if (ms.lcf_attack > 1) {
+				msLog += "<b class='c_red'>";
+			} else {
+				msLog += "<b>";
+			}
+			msLog += ms.userName + "</b>";
+		}
+		msLog += ms.rarity + "c" + ms.cost + "【" + ms.type.name + "】，level：" + ms.level + "，属性：" + ms.attribute.value + "，attack：" + ms.attack + "，max HP：" + ms.maxHp + "，speed：" + ms.speed;
 		for (var j in ms.characteristicList) {
 			var c = ms.characteristicList[j];
 			msLog += "<br>　　插件" + j + "：" + c.briefDescription;
@@ -593,14 +602,14 @@ lcf.sdop.boss = {
 		for (var i in list) {
 			_currentBoss = list[i];
 			if (target) {
-				if (_currentBoss.isForRecommend) {
-					if (!target.isForRecommend) {//目标是不推荐
-						target = _currentBoss;
-						continue;
-					}
-				} else {//不推荐
-					continue;
-				}
+				//if (_currentBoss.isForRecommend) {
+				//if (!target.isForRecommend) {//目标是不推荐
+				//target = _currentBoss;
+				//continue;
+				//}
+				//} else {//不推荐
+				//continue;
+				//}
 				if (target.level > _currentBoss.level) {//判断等级
 					continue;
 				} else if (target.level < _currentBoss.level) {
@@ -926,7 +935,7 @@ lcf.sdop.pilot.getPassiveSkillUpValue = function(skillId, skillDescription){
 lcf.sdop.boss.checkX6 = function(m){
 	for (var j in m.characteristicList) {
 		if (m.characteristicList[j].id == lcf.sdop.boss.x6) {
-			m.characteristicList[j].lcf_attack = 6;
+			m.lcf_attack = 6;
 			return true;
 		}
 	}
@@ -940,7 +949,7 @@ lcf.sdop.boss.checkX6 = function(m){
 lcf.sdop.boss.checkX3 = function(m){
 	for (var j in m.characteristicList) {
 		if (m.characteristicList[j].id == lcf.sdop.boss.x3) {
-			m.characteristicList[j].lcf_attack = 3;
+			m.lcf_attack = 3;
 			return true;
 		}
 	}
@@ -1427,7 +1436,8 @@ lcf.sdop.boss.AI.getFixAttackPlayerInBattle = function(fieldName){
  */
 lcf.sdop.boss.AI.autoBattle = function(data){
 	var actionOrder = data.actionOrderList[data.actionOrderList.length - 1];
-	if (!actionOrder.ownerId) {//仅针对超总的判断, 或者可根据data.resultDate是否为空来判断
+	if (data.resultData) {//仅针对超总的判断, 或者可根据data.resultDate是否为空来判断
+		console.info(data);
 		lcf.sdop.log("Boss战结束！");
 		return;
 	}
@@ -1443,9 +1453,15 @@ lcf.sdop.boss.AI.autoBattle = function(data){
 		// 获取对应的行动
 		var actionCode = lcf.sdop.boss.AI.getActionCode(player);
 		lcf.sdop.boss.itemTurn = false;
+		var targetPlayer;
 		var targetId, actionId;
 		var skill;
-		var logMsg = "【" + player.card.userName + "】";
+		var logMsg;
+		if (player.lcf_attack > 1) {
+			logMsg = "【<b class='c_red'>" + player.card.userName + "</b>】";
+		} else {
+			logMsg = "【" + player.card.userName + "】";
+		}
 		switch (actionCode) {
 		case 0://普通攻击
 			targetId = 1;
@@ -1455,21 +1471,23 @@ lcf.sdop.boss.AI.autoBattle = function(data){
 			break;
 		case 1://给队友加攻击状态
 			//targetId = lcf.sdop.boss.AI.attackPlayers[lcf.sdop.boss.AI.attackPlayers.length - 1];
-			targetId = lcf.sdop.boss.AI.getFixAttackPlayerInBattle('lcf_attack_buff').id;
+			targetPlayer = lcf.sdop.boss.AI.getFixAttackPlayerInBattle('lcf_attack_buff');
+			targetId = targetPlayer.id;
 			actionId = 21001;
 			skill = lcf.sdop.pilot.activeSkill[actionId];
 			lcf.sdop.currentSp -= skill.cost;
 			lcf.sdop.boss.executeActionCommand(lcf.sdop.boss.battleId, lcf.sdop.boss.actionType[1], targetId, lcf.sdop.boss.ownerId, actionId, lcf.sdop.boss.AI.autoBattle);
-			logMsg += "对队友" + targetId + "使用技能【" + skill.prefix + "】，消耗SP：" + skill.cost + "，剩余SP：" + lcf.sdop.currentSp + "！";
+			logMsg += "对队友【" + targetPlayer.card.userName + "】使用技能【" + skill.prefix + "】，消耗SP：" + skill.cost + "，剩余SP：" + lcf.sdop.currentSp + "！";
 			break;
 		case 2://给队友加速度状态
 			//targetId = lcf.sdop.boss.AI.attackPlayers[lcf.sdop.boss.AI.attackPlayers.length - 1];
-			targetId = lcf.sdop.boss.AI.getFixAttackPlayerInBattle('lcf_speed_buff').id;
+			targetPlayer = lcf.sdop.boss.AI.getFixAttackPlayerInBattle('lcf_attack_buff');
+			targetId = targetPlayer.id;
 			actionId = 21002;
 			skill = lcf.sdop.pilot.activeSkill[actionId];
 			lcf.sdop.currentSp -= skill.cost;
 			lcf.sdop.boss.executeActionCommand(lcf.sdop.boss.battleId, lcf.sdop.boss.actionType[1], targetId, lcf.sdop.boss.ownerId, actionId, lcf.sdop.boss.AI.autoBattle);
-			logMsg += "对队友" + targetId + "使用技能【" + skill.prefix + "】，消耗SP：" + skill.cost + "，剩余SP：" + lcf.sdop.currentSp + "！";
+			logMsg += "对队友【" + targetPlayer.card.userName + "】使用技能【" + skill.prefix + "】，消耗SP：" + skill.cost + "，剩余SP：" + lcf.sdop.currentSp + "！";
 			break;
 		case 3://单体技能攻击
 			targetId = 1;
@@ -1520,9 +1538,9 @@ lcf.sdop.boss.autoSuperRaidBoss = function(){
 					//开始战斗
 					setTimeout(lcf.sdop.boss.executeBattleStart, 3000, lcf.sdop.boss.battleId, attackMember.id, helpMember.id, function(dataArgs){
 						lcf.sdop.boss.playerMsList = dataArgs.playerMsList;
+						lcf.sdop.boss.AI.fixPlayerMsListAI();
 						lcf.sdop.log("对Boss选择阵容：" + lcf.sdop.ms.logMsList(lcf.sdop.boss.playerMsList));
 						
-						lcf.sdop.boss.AI.fixPlayerMsListAI();
 						lcf.sdop.boss.itemList = dataArgs.itemList;
 						
 						setTimeout(lcf.sdop.boss.AI.autoBattle, 100, dataArgs);
