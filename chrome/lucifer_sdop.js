@@ -29,6 +29,8 @@ lcf.sdop = {
 	myUserId: null,
 	bp: 0,
 	ep: 0,
+	maxSp: 0,
+	currentSp: 0,
 	httpUrlPrefix: "http://sdop-g.bandainamco-ol.jp",
 	members: [],
 	greetingUsers: [],
@@ -200,7 +202,7 @@ lcf.sdop.ms = {
 		}
 		return logMsg;
 	},
-	logMsCard: function(msCard, i){
+	logMsCard: function(ms, i){
 		var msLog = "<br>" + i + "） " + ms.rarity + "c" + ms.cost + "【" + ms.type.name + "】，level：" + ms.level + "，属性：" + ms.attribute.value + "，attack：" + ms.attack + "，max HP：" + ms.maxHp + "，speed：" + ms.speed;
 		for (var j in ms.characteristicList) {
 			var c = ms.characteristicList[j];
@@ -220,12 +222,14 @@ lcf.sdop.ms = {
 
 lcf.sdop.auto = {
 	setting: {
-		duel: false
+		duel: false,
+		boss: false
 	},
 	ids: {
 		duelId: null,
 		playGachaId: null,
-		raidBossResultId: null
+		raidBossResultId: null,
+		autoRaidBoss: null
 	}
 };
 
@@ -329,134 +333,132 @@ lcf.sdop.card.autoPlayGachaResult = function(cardTypeIndex, gachaTypeIndex){
 
 
 lcf.sdop.duel = {
-	targetUnitAttribute: 'FIGHT',
-	getEntryData: function(callback){
-		var _sdop = lcf.sdop;
-		var url = _sdop.httpUrlPrefix + "/GetForDuel/getEntryData";
-		$.ajax({
-			url: url,
-			type: "GET",
-			async: true,
-			data: _sdop.createGetParams(),
-			success: function(data){
-				//console.log(data);
-				if (_sdop.checkError(data, "getEntryData")) {
-					_sdop.auto.setting.duel = false;
-					return;
-				}
-				var entryList = data.args.list;
-				if (callback) {
-					setTimeout(callback, 300, entryList);
-				}
-			}
-		});
-	},
-	getHistoryData: function(){
-		var _sdop = lcf.sdop;
-		var url = _sdop.httpUrlPrefix + "/GetForDuel/getHistoryData";
-		var historyList;
-		$.ajax({
-			url: url,
-			type: "GET",
-			async: false,
-			data: _sdop.createGetParams(),
-			success: function(data){
-				//console.log(data);
-				if (_sdop.checkError(data, "getHistoryData")) {
-					return;
-				}
-				historyList = data.args.list;
-			}
-		});
-		return historyList;
-	},
-	getDuelData: function(callback){
-		var _sdop = lcf.sdop;
-		var url = _sdop.httpUrlPrefix + "/GetForDuel/getDuelData";
-		$.ajax({
-			url: url,
-			type: "GET",
-			async: true,
-			data: _sdop.createGetParams(),
-			success: function(data){
-				//console.log(data);
-				if (_sdop.checkError(data, "getDuelData")) {
-					_sdop.auto.setting.duel = false;
-					_sdop.bp = 0;
-					_sdop.ep = 0;
-					return;
-				}
-				var headerDetail = data.args.headerDetail;
-				_sdop.bp = headerDetail.bpDetail.currentValue;
-				_sdop.ep = headerDetail.energyDetail.energy;
-				//_sdop.log("getDuelData请求成功！当前bp:" + _sdop.bp + ", ep: " + _sdop.ep);
-				if (callback) {
-					setTimeout(callback, 100);
-				}
-			},
-			error: function(){
-				_sdop.bp = 0;
-				_sdop.ep = 0;
-			}
-		});
-	},
-	executeDuelBattle: function(targetId){
-		if (!targetId) {
-			console.error("executeDuelBattle targetId is null !");
-			return;
-		}
-		var _sdop = lcf.sdop;
-		var url = _sdop.httpUrlPrefix + "/PostForQuestBattle/executeDuelBattle?ssid=" + _sdop.ssid;
-		var payload = _sdop.createBasePayload("executeDuelBattle", {
-			isEncount: false,
-			id: targetId
-		});
-		
-		_sdop.post(url, payload, function(data){
-			//console.info(data);
-			if (_sdop.checkError(data, "executeDuelBattle")) {
+	targetUnitAttribute: 'FIGHT'
+};
+
+
+lcf.sdop.duel.getEntryData = function(callback){
+	var _sdop = lcf.sdop;
+	var url = _sdop.httpUrlPrefix + "/GetForDuel/getEntryData";
+	$.ajax({
+		url: url,
+		type: "GET",
+		async: true,
+		data: _sdop.createGetParams(),
+		success: function(data){
+			//console.log(data);
+			if (_sdop.checkError(data, "getEntryData")) {
 				_sdop.auto.setting.duel = false;
 				return;
 			}
-			
-			var result = data.args.result.isWin ? "胜利" : "失败";
-			var logMsg = "挑战【" + data.args.data.enemyData.name + "】" + result + "！对方MS阵容：";
-			
-			var enemyMsList = data.args.data.enemyMsList;
-			logMsg += lcf.sdop.ms.logMsList(enemyMsList);
-			
-			_sdop.log(logMsg);
-		});
-	},
-	checkAndExecute: function(){
-		var _sdop = lcf.sdop;
-		var _duel = _sdop.duel;
-		_duel.getDuelData(_duel.checkAndExecute2);
-	},
-	checkAndExecute2: function(){
-		var _sdop = lcf.sdop;
-		var _duel = _sdop.duel;
-		if (_sdop.bp < 5) {
-			_sdop.log("当前bp为" + _sdop.bp + "，少于5, 等待下次检查！");
-			return;
-		}
-		_duel.getEntryData(_duel.checkAndExecute3);
-	},
-	checkAndExecute3: function(entryList){
-		var _sdop = lcf.sdop;
-		var _duel = _sdop.duel;
-		var targetId;
-		for (var i in entryList) {
-			var entry = entryList[i];
-			if (entry.unitAttribute.value == _duel.targetUnitAttribute) {
-				targetId = entry.playerId;
-				_sdop.log("准备对【" + entry.playerName + "】发起挑战，对方属性是【" + _duel.targetUnitAttribute + "】" + entry.unitName + "！");
-				break;
+			var entryList = data.args.list;
+			if (callback) {
+				setTimeout(callback, 300, entryList);
 			}
 		}
-		entryList = null;
-		_duel.executeDuelBattle(targetId);
+	});
+};
+
+lcf.sdop.duel.getHistoryData = function(){
+	var _sdop = lcf.sdop;
+	var url = _sdop.httpUrlPrefix + "/GetForDuel/getHistoryData";
+	var historyList;
+	$.ajax({
+		url: url,
+		type: "GET",
+		async: false,
+		data: _sdop.createGetParams(),
+		success: function(data){
+			//console.log(data);
+			if (_sdop.checkError(data, "getHistoryData")) {
+				return;
+			}
+			historyList = data.args.list;
+		}
+	});
+	return historyList;
+};
+
+lcf.sdop.duel.getDuelData = function(callback){
+	var _sdop = lcf.sdop;
+	var url = _sdop.httpUrlPrefix + "/GetForDuel/getDuelData";
+	$.ajax({
+		url: url,
+		type: "GET",
+		async: true,
+		data: _sdop.createGetParams(),
+		success: function(data){
+			//console.log(data);
+			if (_sdop.checkError(data, "getDuelData")) {
+				_sdop.auto.setting.duel = false;
+				_sdop.bp = 0;
+				_sdop.ep = 0;
+				return;
+			}
+			var headerDetail = data.args.headerDetail;
+			_sdop.bp = headerDetail.bpDetail.currentValue;
+			_sdop.ep = headerDetail.energyDetail.energy;
+			//_sdop.log("getDuelData请求成功！当前bp:" + _sdop.bp + ", ep: " + _sdop.ep);
+			if (callback) {
+				setTimeout(callback, 100);
+			}
+		},
+		error: function(){
+			_sdop.bp = 0;
+			_sdop.ep = 0;
+		}
+	});
+};
+
+lcf.sdop.duel.executeDuelBattle = function(targetId){
+	if (!targetId) {
+		console.error("executeDuelBattle targetId is null !");
+		return;
 	}
+	var _sdop = lcf.sdop;
+	var url = _sdop.httpUrlPrefix + "/PostForQuestBattle/executeDuelBattle?ssid=" + _sdop.ssid;
+	var payload = _sdop.createBasePayload("executeDuelBattle", {
+		isEncount: false,
+		id: targetId
+	});
+	
+	_sdop.post(url, payload, function(data){
+		//console.info(data);
+		if (_sdop.checkError(data, "executeDuelBattle")) {
+			_sdop.auto.setting.duel = false;
+			return;
+		}
+		
+		var result = data.args.result.isWin ? "胜利" : "失败";
+		var logMsg = "挑战【" + data.args.data.enemyData.name + "】" + result + "！对方MS阵容：";
+		
+		var enemyMsList = data.args.data.enemyMsList;
+		logMsg += lcf.sdop.ms.logMsList(enemyMsList);
+		
+		_sdop.log(logMsg);
+	});
+};
+
+lcf.sdop.duel.checkAndExecute = function(){
+	lcf.sdop.duel.getDuelData(function(){
+		if (lcf.sdop.bp < 5) {
+			lcf.sdop.log("当前bp为" + lcf.sdop.bp + "，少于5, 等待下次检查！");
+			return;
+		}
+		lcf.sdop.duel.getEntryData(function(entryList){
+			var targetId;
+			for (var i in entryList) {
+				var entry = entryList[i];
+				if (entry.unitAttribute.value == lcf.sdop.duel.targetUnitAttribute) {
+					targetId = entry.playerId;
+					lcf.sdop.log("准备对【" + entry.playerName + "】发起挑战，对方属性是【" + lcf.sdop.duel.targetUnitAttribute + "】" + entry.unitName + "！");
+					break;
+				}
+			}
+			entryList = null;
+			lcf.sdop.duel.executeDuelBattle(targetId);
+		});
+	});
 };
 
 lcf.sdop.autoDuel = function(){
@@ -474,7 +476,7 @@ lcf.sdop.autoDuel = function(){
 
 lcf.sdop.startAutoDuel = function(unitAttributeIndex){
 	var _sdop = lcf.sdop;
-	_sdop.auto.setting.duel = true;
+	lcf.sdop.auto.setting.duel = true;
 	_sdop.autoDuel();
 	if (unitAttributeIndex != null) {
 		var unitAttribute = _sdop.ms.unitAttribute[unitAttributeIndex];
@@ -568,7 +570,7 @@ lcf.sdop.boss = {
 		search: "",
 		maxLevel: 0,
 		minLevel: 0,
-		length: 10,
+		length: 30,
 		key: {
 			value: "ALL"
 		},
@@ -587,20 +589,46 @@ lcf.sdop.boss = {
 	x3: 250033,
 	x6: 250034,
 	getTopLevel: function(list){
-		var target;
+		var target, _currentBoss;
 		for (var i in list) {
+			_currentBoss = list[i];
 			if (target) {
-				if (target.level < list[i].level) {//判断等级
-					target = list[i];
-				} else if (target.currentHp < list[i].currentHp) {//判断剩余血量
-					target = list[i];
+				if (_currentBoss.isForRecommend) {
+					if (!target.isForRecommend) {//目标是不推荐
+						target = _currentBoss;
+						continue;
+					}
+				} else {//不推荐
+					continue;
+				}
+				if (target.level > _currentBoss.level) {//判断等级
+					continue;
+				} else if (target.level < _currentBoss.level) {
+					target = _currentBoss;
+					continue;
+				}
+				if (target.currentHp < _currentBoss.currentHp) {//判断剩余血量
+					target = _currentBoss;
 				}
 			} else {
-				target = list[i];
+				target = _currentBoss;
 			}
 		}
 		return target;
-	}
+	},
+	battleId: 0,
+	playerMsList: [],
+	getPlayerByOwnerId: function(ownerId){
+		for (var k in lcf.sdop.boss.playerMsList) {
+			if (ownerId == lcf.sdop.boss.playerMsList[k].id) {
+				return lcf.sdop.boss.playerMsList[k];
+			}
+		}
+		return null;
+	},
+	itemList: [],
+	ownerId: null,
+	itemTurn: false
 };
 
 /**
@@ -659,7 +687,7 @@ lcf.sdop.boss.getRaidBossOutlineList4Finish = function(callback){
 			return;
 		}
 		var finish = data.args.listNum.finish;
-		_sdop.log("总力战剩余" + finish + "结果待处理！");
+		_sdop.log("总力战剩余<b class='c_red'>" + finish + "</b>个结果待处理！");
 		if (callback) {
 			setTimeout(callback, 100, data.args.list);
 		}
@@ -716,7 +744,12 @@ lcf.sdop.boss.raidBossGacha = function(raidBossId, callback){
 		}
 		var restGacha = data.args.restGacha;
 		var card = data.args.result;
-		var logMsg = "获得：" + card.rarity + "c" + card.cost + "【" + card.name + "】，";
+		var logMsg = "获得：";
+		if (card.rarity > 2) {
+			logMsg += "<b class='c_red'>" + card.rarity + "c" + card.cost + "</b>【" + card.name + "】，";
+		} else {
+			logMsg += card.rarity + "c" + card.cost + "【" + card.name + "】，";
+		}
 		lcf.sdop.ms.current++;
 		logMsg += lcf.sdop.ms.current + "/" + lcf.sdop.ms.max + "，";
 		if (lcf.sdop.ms.current >= lcf.sdop.ms.max) {
@@ -821,7 +854,7 @@ lcf.sdop.boss.getRaidBossOutlineList = function(callback, noListCallback){
 		}
 		
 		var target = lcf.sdop.boss.getTopLevel(list);
-		_sdop.log(lcf.sdop.boss.currentKind + "目标boss等级：" + target.level + "，残余血量：" + target.currentHp);
+		_sdop.log(lcf.sdop.boss.currentKind + "目标boss等级：<b class='c_red'>" + target.level + "</b>，残余血量：" + target.currentHp + "，【" + target.comment + "】");
 		if (callback) {
 			setTimeout(callback, 100, target);
 		}
@@ -886,18 +919,28 @@ lcf.sdop.pilot.getPassiveSkillUpValue = function(skillId, skillDescription){
 	return parseInt(skillDescription.replace(lcf.sdop.pilot.passiveSkill[skillId].prefix, ''));
 };
 
+/**
+ * 检查是否x6机体
+ * @param {Object} m members中的member, playerList中的player.card
+ */
 lcf.sdop.boss.checkX6 = function(m){
 	for (var j in m.characteristicList) {
-		if (j.id == lcf.sdop.boss.x6) {
+		if (m.characteristicList[j].id == lcf.sdop.boss.x6) {
+			m.characteristicList[j].lcf_attack = 6;
 			return true;
 		}
 	}
 	return false;
 };
 
+/**
+ * 检查是否x3机体
+ * @param {Object} m members中的member, playerList中的player.card
+ */
 lcf.sdop.boss.checkX3 = function(m){
 	for (var j in m.characteristicList) {
-		if (j.id == lcf.sdop.boss.x3) {
+		if (m.characteristicList[j].id == lcf.sdop.boss.x3) {
+			m.characteristicList[j].lcf_attack = 3;
 			return true;
 		}
 	}
@@ -929,7 +972,11 @@ lcf.sdop.boss.getFixAttackMember = function(members){
 		}
 		if (attackMember.lcf_attack > m.lcf_attack) {//倍数级别高
 			continue;
+		} else if (attackMember.lcf_attack < m.lcf_attack) {
+			attackMember = m;
+			continue;
 		}
+		//倍数级别一样
 		if (attackMember.attack > m.attack) {//攻击高
 			continue;
 		}
@@ -953,11 +1000,16 @@ lcf.sdop.boss.getTrueSpeed = function(m){
 	return speed;
 };
 
+/**
+ * 必须在调用完lcf.sdop.boss.getFixAttackMember后才能调用
+ * @param {Array} members
+ * @param {Object} attackMember
+ */
 lcf.sdop.boss.getFixHelpMember = function(members, attackMember){
 	if (attackMember == null) {
 		return null;
 	}
-	attackMember.lcf_speed = lcf.sdop.boos.getTrueSpeed(attackMember);
+	attackMember.lcf_speed = lcf.sdop.boss.getTrueSpeed(attackMember);
 	var helpMember;
 	var skill;
 	for (var i in members) {
@@ -965,7 +1017,7 @@ lcf.sdop.boss.getFixHelpMember = function(members, attackMember){
 		if (m.id == lcf.sdop.myUserId) {//不能是自己
 			continue;
 		}
-		if (m.id == attackMember.id) {//不能是倍机
+		if (m.id == attackMember.id || m.lcf_attack > 1) {//不能是倍机
 			continue;
 		}
 		if (m.coolTime != 0) {//没有冷却
@@ -985,7 +1037,7 @@ lcf.sdop.boss.getFixHelpMember = function(members, attackMember){
 			}
 			
 		}
-		m.lcf_speed = lcf.sdop.boos.getTrueSpeed(m);
+		m.lcf_speed = lcf.sdop.boss.getTrueSpeed(m);
 		
 		if (helpMember == null) {//默认没有选择时
 			helpMember = m;
@@ -1120,7 +1172,7 @@ lcf.sdop.boss.executeBattleStart = function(battleId, firstId, secondId, callbac
 		}
 		_sdop.log("boss战开始！");
 		if (callback) {
-			setTimeout(callback, 100, data);
+			setTimeout(callback, 100, data.args);
 		}
 	});
 };
@@ -1159,55 +1211,324 @@ lcf.sdop.boss.executeActionCommand = function(battleId, actionTypeValue, targetI
 		}
 		//_sdop.log("boss战开始！");
 		if (callback) {
-			setTimeout(callback, 100, data);
+			setTimeout(callback, 100, data.args);
 		}
 	});
 };
-
 lcf.sdop.item = [];
-lcf.sdop.item[20006] = {};
+lcf.sdop.item[20006] = {
+	id: 20006,
+	name: "SP回復ドリンク30"
+};
+lcf.sdop.item[20013] = {
+	id: 20013,
+	name: "SP回復ドリンク60"
+};
+
+/**
+ * 检查当前sp, 根据条件执行
+ * @param {function} callback
+ */
+lcf.sdop.boss.checkSp = function(callback){
+	lcf.sdop.log("开始校验SP！当前SP：" + lcf.sdop.currentSp + "，最大SP：" + lcf.sdop.maxSp + "，上一个动作是否使用物品：" + lcf.sdop.boss.itemTurn);
+	if (lcf.sdop.maxSp - lcf.sdop.currentSp <= 30 || lcf.sdop.boss.itemTurn) {
+		setTimeout(callback, 100);
+		return;
+	}
+	var _item;
+	var _itemId = 20006;
+	var itemList = lcf.sdop.boss.itemList;
+	if (lcf.sdop.maxSp - lcf.sdop.currentSp > 30) {
+		for (var j in itemList) {
+			_item = itemList[j];
+			if (_item.id == _itemId) {
+				if (_item.num > 0) {
+					_item.num--;
+					lcf.sdop.currentSp += 30;
+					lcf.sdop.boss.itemTurn = true;
+					lcf.sdop.log("使用【" + _item.name + "】，当前SP：" + lcf.sdop.currentSp);
+					setTimeout(lcf.sdop.boss.executeActionCommand, 100, lcf.sdop.boss.battleId, lcf.sdop.boss.actionType[0], lcf.sdop.boss.ownerId, lcf.sdop.boss.ownerId, _itemId, callback);
+					return;
+				}
+			}
+		}
+	}
+	
+	_itemId = 20013;
+	if (lcf.sdop.currentSp < 30) {
+		for (var j in itemList) {
+			_item = itemList[j];
+			if (_item.id == _itemId) {
+				if (_item.num > 0) {
+					_item.num--;
+					lcf.sdop.currentSp += 60;
+					lcf.sdop.boss.itemTurn = true;
+					lcf.sdop.log("使用【" + _item.name + "】，当前SP：" + lcf.sdop.currentSp);
+					setTimeout(lcf.sdop.boss.executeActionCommand, 100, lcf.sdop.boss.battleId, lcf.sdop.boss.actionType[0], lcf.sdop.boss.ownerId, lcf.sdop.boss.ownerId, _itemId, callback);
+					return;
+				}
+			}
+		}
+	}
+	
+	setTimeout(callback, 100);
+	return;
+};
+
+lcf.sdop.boss.AI = {
+	actionCode: [{
+		code: 0,
+		name: "普通攻击"
+	}, {
+		code: 1,
+		name: "给队友加攻击状态"
+	}, {
+		code: 2,
+		name: "给队友加速度状态"
+	}, {
+		code: 3,
+		name: "单体技能攻击",
+		prefix: "敵単体に"
+	}],
+	simple: [0, 0, 0, 0, 0, 0],
+	me: [1, 2, 2, 0, 0, 0],
+	help: [1, 0, 0, 0, 0, 0],
+	attack: [3, 3, 3, 3, 3, 3],
+	attackPlayers: []
+};
+
+lcf.sdop.boss.AI.checkMySkill = function(player){
+	var activeSkillList = player.card.pilot.activeSkillList;
+	for (var k in activeSkillList) {
+		if (activeSkillList[k].id == 21001) {
+			continue;
+		}
+		if (activeSkillList[k].id == 21002) {
+			continue;
+		}
+		return false;
+	}
+	return true;
+};
+
+/**
+ * 返回true表示有攻击性技能
+ * @param {Object} player
+ */
+lcf.sdop.boss.AI.checkAttackSkill = function(player){
+	var activeSkillList = player.card.pilot.activeSkillList;
+	for (var k in activeSkillList) {
+		if (activeSkillList[k].description.indexOf(lcf.sdop.boss.AI.actionCode[3].prefix) === 0) {
+			return true;
+		}
+	}
+	return false;
+};
+
+/**
+ * 获得攻击技能对象, 有属性skill.id和skill.cost
+ * 若返回null, 则没有对应的攻击技能
+ * @param {Object} player
+ */
+lcf.sdop.boss.AI.getAttackSkill = function(player){
+	var activeSkillList = player.card.pilot.activeSkillList;
+	for (var k in activeSkillList) {
+		if (activeSkillList[k].description.indexOf(lcf.sdop.boss.AI.actionCode[3].prefix) === 0) {
+			return activeSkillList[k];
+		}
+	}
+	return null;
+};
+
+lcf.sdop.boss.AI.checkHelpSkill = function(player){
+	var activeSkillList = player.card.pilot.activeSkillList;
+	for (var k in activeSkillList) {
+		if (activeSkillList[k].id == 21001) {
+			return true;
+		}
+	}
+	return false;
+};
+
+/**
+ * 设置适应的行动AI
+ */
+lcf.sdop.boss.AI.fixPlayerMsListAI = function(){
+	var playerMsList = lcf.sdop.boss.playerMsList;
+	var hasAttack = false;
+	for (var j in playerMsList) {
+		var player = playerMsList[j];
+		player.AIType = lcf.sdop.boss.AI.simple;
+		player.AITurn = 0;
+		if (player.card.id == lcf.sdop.myUserId) {
+			if (lcf.sdop.boss.AI.checkMySkill(player)) {
+				player.AIType = lcf.sdop.boss.AI.me;
+			}
+			continue;
+		}
+		if (lcf.sdop.boss.checkX6(player.card) || lcf.sdop.boss.checkX3(player.card)) {
+			if (lcf.sdop.boss.AI.checkAttackSkill(player)) {
+				player.AIType = lcf.sdop.boss.AI.attack;
+				player.lcf_attack = player.card.lcf_attack;//设置倍数信息
+				lcf.sdop.boss.AI.attackPlayers[player.id] = player;
+				hasAttack = true;
+			}
+			continue;
+		}
+		if (lcf.sdop.boss.AI.checkHelpSkill(player)) {
+			player.AIType = lcf.sdop.boss.AI.help;
+		}
+	}
+	if (!hasAttack) {
+		for (var j in playerMsList) {
+			var player = playerMsList[j];
+			player.AIType = lcf.sdop.boss.AI.simple;
+		}
+	}
+};
+
+/**
+ * 获取对应的行动代号
+ * @param {Object} player
+ */
+lcf.sdop.boss.AI.getActionCode = function(player){
+	return player.AIType[player.AITurn];
+};
+
+/**
+ * 获取合适的倍机
+ * @param {String} fieldName
+ */
+lcf.sdop.boss.AI.getFixAttackPlayerInBattle = function(fieldName){
+	var _fixPlayer, _player;
+	for (var k in lcf.sdop.boss.AI.attackPlayers) {
+		_player = lcf.sdop.boss.AI.attackPlayers[k];
+		if (_player[fieldName]) {
+			_player[fieldName] = 0;
+		}
+		if (_fixPlayer == null) {
+			_fixPlayer = _player;
+			continue;
+		}
+		if (_fixPlayer[fieldName] > _player[fieldName]) {//状态的次数多
+			_fixPlayer = _player;
+			continue;
+		}
+		if (_fixPlayer.lcf_attack < _player.lcf_attack) {//相同时比较倍数
+			_fixPlayer = _player;
+			continue;
+		}
+	}
+	return _fixPlayer;
+};
+
+/**
+ * 自动战斗, 用于循环执行
+ */
+lcf.sdop.boss.AI.autoBattle = function(data){
+	var actionOrder = data.actionOrderList[data.actionOrderList.length - 1];
+	if (!actionOrder.ownerId) {//仅针对超总的判断, 或者可根据data.resultDate是否为空来判断
+		lcf.sdop.log("Boss战结束！");
+		return;
+	}
+	//获取对应的player
+	var player = lcf.sdop.boss.getPlayerByOwnerId(actionOrder.ownerId);
+	if (player == null) {
+		lcf.sdop.log("没有对应的ownerId：" + actionOrder.ownerId);
+		return;
+	}
+	lcf.sdop.boss.ownerId = actionOrder.ownerId;
+	
+	lcf.sdop.boss.checkSp(function(){
+		// 获取对应的行动
+		var actionCode = lcf.sdop.boss.AI.getActionCode(player);
+		lcf.sdop.boss.itemTurn = false;
+		var targetId, actionId;
+		var skill;
+		var logMsg = "【" + player.card.userName + "】";
+		switch (actionCode) {
+		case 0://普通攻击
+			targetId = 1;
+			actionId = player.card.weaponList[0].id;
+			lcf.sdop.boss.executeActionCommand(lcf.sdop.boss.battleId, lcf.sdop.boss.actionType[2], targetId, lcf.sdop.boss.ownerId, actionId, lcf.sdop.boss.AI.autoBattle);
+			logMsg += "对Boss使用武器" + player.card.weaponList[0].name + "进行攻击！";
+			break;
+		case 1://给队友加攻击状态
+			//targetId = lcf.sdop.boss.AI.attackPlayers[lcf.sdop.boss.AI.attackPlayers.length - 1];
+			targetId = lcf.sdop.boss.AI.getFixAttackPlayerInBattle('lcf_attack_buff').id;
+			actionId = 21001;
+			skill = lcf.sdop.pilot.activeSkill[actionId];
+			lcf.sdop.currentSp -= skill.cost;
+			lcf.sdop.boss.executeActionCommand(lcf.sdop.boss.battleId, lcf.sdop.boss.actionType[1], targetId, lcf.sdop.boss.ownerId, actionId, lcf.sdop.boss.AI.autoBattle);
+			logMsg += "对队友" + targetId + "使用技能【" + skill.prefix + "】，消耗SP：" + skill.cost + "，剩余SP：" + lcf.sdop.currentSp + "！";
+			break;
+		case 2://给队友加速度状态
+			//targetId = lcf.sdop.boss.AI.attackPlayers[lcf.sdop.boss.AI.attackPlayers.length - 1];
+			targetId = lcf.sdop.boss.AI.getFixAttackPlayerInBattle('lcf_speed_buff').id;
+			actionId = 21002;
+			skill = lcf.sdop.pilot.activeSkill[actionId];
+			lcf.sdop.currentSp -= skill.cost;
+			lcf.sdop.boss.executeActionCommand(lcf.sdop.boss.battleId, lcf.sdop.boss.actionType[1], targetId, lcf.sdop.boss.ownerId, actionId, lcf.sdop.boss.AI.autoBattle);
+			logMsg += "对队友" + targetId + "使用技能【" + skill.prefix + "】，消耗SP：" + skill.cost + "，剩余SP：" + lcf.sdop.currentSp + "！";
+			break;
+		case 3://单体技能攻击
+			targetId = 1;
+			actionId = player.card.weaponList[0].id;
+			actionTypeIndex = 2;
+			var skill = lcf.sdop.boss.AI.getAttackSkill(player);
+			if (skill) {
+				actionId = skill.id;
+				actionTypeIndex = 1;
+				lcf.sdop.currentSp -= skill.cost;
+				logMsg += "对Boss使用技能【" + skill.description + "】，消耗SP：" + skill.cost + "，剩余SP：" + lcf.sdop.currentSp + "！";
+			} else {
+				logMsg += "对Boss使用武器" + player.card.weaponList[0].name + "进行攻击！";
+			}
+			lcf.sdop.boss.executeActionCommand(lcf.sdop.boss.battleId, lcf.sdop.boss.actionType[actionTypeIndex], targetId, lcf.sdop.boss.ownerId, actionId, lcf.sdop.boss.AI.autoBattle);
+			break;
+		}
+		player.AITurn++;
+		lcf.sdop.log(logMsg);
+	});
+	
+};
 
 /**
  * 自动超总
  */
 lcf.sdop.boss.autoSuperRaidBoss = function(){
+	if (!lcf.sdop.auto.setting.boss) {
+		return;
+	}
 	lcf.sdop.boss.getRaidBossOutlineList(function(boss){
 		lcf.sdop.boss.postRaidBossBattleEntry(boss.id, function(){
 			lcf.sdop.boss.getRaidBossBattleData(boss.id, function(battleData){
-				var myUserId = battleData.leaderCardId;
-				var my = battleData.playerMsList[0];
-				var currentSp = my.currentSp;
-				var maxSp = my.maxSp;
+				lcf.sdop.myUserId = battleData.leaderCardId;
+				lcf.sdop.boss.AI.attackPlayers = [];
 				
-				var battleId = battleData.battleId;
+				var my = battleData.playerMsList[0];
+				lcf.sdop.currentSp = my.card.currentSp;
+				lcf.sdop.maxSp = my.card.maxSp;
+				
+				lcf.sdop.boss.battleId = battleData.battleId;
 				var members = battleData.memberCardList;
 				var attackMember = lcf.sdop.boss.getFixAttackMember(members);
 				var helpMember = lcf.sdop.boss.getFixHelpMember(members, attackMember);
-				setTimeout(lcf.sdop.boss.executeBattleStart, 3000, battleId, myUserId, helpMember.id, attackMember.id, function(data){
-					var playerMsList = data.playerMsList;
-					lcf.sdop.log("对Boss选择阵容：" + lcf.sdop.ms.logMsList(playerMsList));
-					for (var i in playerMsList) {
-						var player = playerMsList[i];
-						if (player.card.id == myUserId) {
-							my = player;
-						} else if (player.card.id == attackMember.id) {
-							attackMember = player;
-						} else if (player.card.id == helpMember.id) {
-							helpMember = player;
-						}
-					}
-					//理论上会填充满my、attackMember、helpMember
-					
-					var actionOrder = data.actionOrderList[data.actionOrderList.length - 1];
-					if (0 == actionOrder.ownerId) {
-						lcf.sdop.log("Boss战结束！");
-						return;
-					}
-					var trun = 0;//自己和辅助对攻击机加状态
-					if (my.id == actionOrder.ownerId) {
-//						lcf.sdop.boss
-					}
+				
+				//带药
+				setTimeout(lcf.sdop.equipItem4Sp, 100, function(){
+					//开始战斗
+					setTimeout(lcf.sdop.boss.executeBattleStart, 3000, lcf.sdop.boss.battleId, attackMember.id, helpMember.id, function(dataArgs){
+						lcf.sdop.boss.playerMsList = dataArgs.playerMsList;
+						lcf.sdop.log("对Boss选择阵容：" + lcf.sdop.ms.logMsList(lcf.sdop.boss.playerMsList));
+						
+						lcf.sdop.boss.AI.fixPlayerMsListAI();
+						lcf.sdop.boss.itemList = dataArgs.itemList;
+						
+						setTimeout(lcf.sdop.boss.AI.autoBattle, 100, dataArgs);
+					});
 				});
+				
 			});
 		}, function(){
 			setTimeout(lcf.sdop.boss.autoSuperRaidBoss, 100);
@@ -1215,6 +1536,45 @@ lcf.sdop.boss.autoSuperRaidBoss = function(){
 	}, function(){
 		setTimeout(lcf.sdop.boss.autoSuperRaidBoss, 1000);
 	});
+};
+
+/**
+ * 开始自动超总, UI调用
+ */
+lcf.sdop.boss.AI.startAutoSuperRaidBoss = function(){
+	lcf.sdop.auto.setting.boss = true;
+	//立刻检查BP
+	lcf.sdop.boss.initRaidBossOutlineList(function(data){
+		var bpDetail = data.args.headerDetail.bpDetail;
+		lcf.sdop.bp = bpDetail.currentValue;
+		var logMsg = "当前BP：" + lcf.sdop.bp;
+		
+		var delayTime;
+		if (lcf.sdop.bp >= 10) {
+			setTimeout(lcf.sdop.boss.autoSuperRaidBoss, 100);
+			logMsg += "，满足超总要求！";
+			delayTime = 1200;
+		} else {
+			//delayTime = 60000 + Math.round(Math.random() * 2000)
+			var recoveryTime = (bpDetail.maxValue - bpDetail.currentValue - 1) * bpDetail.recoveryInterval + bpDetail.recoveryTime;
+			delayTime = (recoveryTime - 60);
+			if (delayTime < 0) {
+				delayTime = recoveryTime / 2;
+			}
+			logMsg += "，不满足超总要求！" + delayTime + "秒后再尝试！";
+		}
+		lcf.sdop.log(logMsg);
+		lcf.sdop.auto.ids.autoRaidBoss = setTimeout(lcf.sdop.boss.AI.startAutoSuperRaidBoss, delayTime * 1000);
+	});
+};
+
+/**
+ * 取消自动超总, UI调用
+ */
+lcf.sdop.boss.AI.cancelAutoSuperRaidBoss = function(){
+	lcf.sdop.auto.setting.boss = false;
+	clearTimeout(lcf.sdop.auto.ids.autoRaidBoss);
+	lcf.sdop.log("自动超总停止成功！");
 };
 
 lcf.sdop.ui = {
@@ -1284,6 +1644,7 @@ lcf.sdop.ui = {
 				//pPanel.show();
 				//logPanel.show();
 				//btnClearLog.show();
+				$("#headerlogo").hide();
 			});
 		});
 		
@@ -1322,6 +1683,28 @@ lcf.sdop.ui = {
 		});
 		
 		pPanel.append(pAutoDuel);
+		
+		///////////////////////////////////////////////////////////
+		
+		
+		var btnStartSuperRaidBoss = $('<input type="button">').val("开始自动超总");
+		var btnCancelSuperRaidBoss = $('<input type="button">').val("停止自动超总");
+		btnCancelSuperRaidBoss.hide();
+		
+		btnStartSuperRaidBoss.click(function(){
+			lcf.sdop.boss.AI.startAutoSuperRaidBoss();
+			btnStartSuperRaidBoss.toggle();
+			btnCancelSuperRaidBoss.toggle();
+		});
+		
+		btnCancelSuperRaidBoss.click(function(){
+			lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
+			btnStartSuperRaidBoss.toggle();
+			btnCancelSuperRaidBoss.toggle();
+		});
+		
+		pAutoDuel.append(btnStartSuperRaidBoss);
+		pAutoDuel.append(btnCancelSuperRaidBoss);
 		
 		///////////////////////////////////////////////////////////
 		
