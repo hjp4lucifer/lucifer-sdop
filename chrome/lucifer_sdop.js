@@ -1554,7 +1554,7 @@ lcf.sdop.boss.AI.startAutoSuperRaidBoss = function(){
 		if (lcf.sdop.bp >= 10) {
 			setTimeout(lcf.sdop.boss.autoSuperRaidBoss, 100);
 			logMsg += "，满足超总要求！";
-			delayTime = 1200;
+			delayTime = 180;
 		} else {
 			//delayTime = 60000 + Math.round(Math.random() * 2000)
 			var recoveryTime = (bpDetail.maxValue - bpDetail.currentValue - 1) * bpDetail.recoveryInterval + bpDetail.recoveryTime;
