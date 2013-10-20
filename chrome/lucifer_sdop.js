@@ -1543,6 +1543,7 @@ lcf.sdop.boss.autoSuperRaidBoss = function(){
  */
 lcf.sdop.boss.AI.startAutoSuperRaidBoss = function(){
 	lcf.sdop.auto.setting.boss = true;
+	clearTimeout(lcf.sdop.auto.ids.autoRaidBoss);
 	//立刻检查BP
 	lcf.sdop.boss.initRaidBossOutlineList(function(data){
 		var bpDetail = data.args.headerDetail.bpDetail;
