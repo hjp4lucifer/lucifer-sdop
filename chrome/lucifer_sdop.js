@@ -595,8 +595,8 @@ lcf.sdop.boss = {
 	kind: ["NORMAL", "SUPER"],
 	currentMode: 'RAID_BOSS',
 	currentKind: 'SUPER',
-	x3: 250033,
-	x6: 250034,
+	x3: 250035,
+	x6: 250036,
 	getTopLevel: function(list){
 		var target, _currentBoss;
 		for (var i in list) {
@@ -1722,8 +1722,8 @@ lcf.sdop.ui = {
 			btnCancelSuperRaidBoss.toggle();
 		});
 		
-		pAutoDuel.append(btnStartSuperRaidBoss);
-		pAutoDuel.append(btnCancelSuperRaidBoss);
+		//pAutoDuel.append(btnStartSuperRaidBoss);
+		//pAutoDuel.append(btnCancelSuperRaidBoss);
 		
 		///////////////////////////////////////////////////////////
 		
