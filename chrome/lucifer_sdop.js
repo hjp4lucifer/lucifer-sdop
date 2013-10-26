@@ -342,7 +342,11 @@ lcf.sdop.card.autoPlayGachaResult = function(cardTypeIndex, gachaTypeIndex){
 
 
 lcf.sdop.duel = {
-	targetUnitAttribute: 'FIGHT'
+	targetUnitAttribute: 'FIGHT',
+	_z: {
+		"isEncount": true,
+		"id": 9005
+	}
 };
 
 
