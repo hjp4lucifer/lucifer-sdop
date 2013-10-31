@@ -80,7 +80,11 @@ lcf.sdop = {
 			data: JSON.stringify(payload),
 			async: true,
 			processData: false,
-			success: callback
+			success: callback,
+			error: function(){
+				lcf.sdop.log("<b class='c_red'>请求失败！</b>2秒后再次尝试！");
+				setTimeout(lcf.sdop.post, 2000, url, payload, callback);
+			}
 		})
 	},
 	checkError: function(data, msg){
