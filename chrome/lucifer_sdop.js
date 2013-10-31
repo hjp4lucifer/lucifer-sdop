@@ -1726,8 +1726,8 @@ lcf.sdop.ui = {
 			btnCancelSuperRaidBoss.toggle();
 		});
 		
-		//pAutoDuel.append(btnStartSuperRaidBoss);
-		//pAutoDuel.append(btnCancelSuperRaidBoss);
+		pAutoDuel.append(btnStartSuperRaidBoss);
+		pAutoDuel.append(btnCancelSuperRaidBoss);
 		
 		///////////////////////////////////////////////////////////
 		
