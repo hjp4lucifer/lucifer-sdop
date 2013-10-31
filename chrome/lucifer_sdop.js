@@ -75,7 +75,6 @@ lcf.sdop = {
 		$.ajax({
 			url: url,
 			type: "GET",
-			contentType: 'application/json; charset=UTF-8',
 			data: data,
 			success: callback,
 			error: function(){
