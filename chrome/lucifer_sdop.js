@@ -71,6 +71,19 @@ lcf.sdop = {
 	logCallback: function(data){
 		console.info(data);
 	},
+	get: function(url, data, callback){
+		$.ajax({
+			url: url,
+			type: "GET",
+			contentType: 'application/json; charset=UTF-8',
+			data: data,
+			success: callback,
+			error: function(){
+				lcf.sdop.log("<b class='c_red'>请求失败！</b>2秒后再次尝试！");
+				setTimeout(lcf.sdop.get, 2000, url, data, callback);
+			}
+		});
+	},
 	post: function(url, payload, callback){
 		var _sdop = lcf.sdop;
 		$.ajax({
@@ -85,7 +98,7 @@ lcf.sdop = {
 				lcf.sdop.log("<b class='c_red'>请求失败！</b>2秒后再次尝试！");
 				setTimeout(lcf.sdop.post, 2000, url, payload, callback);
 			}
-		})
+		});
 	},
 	checkError: function(data, msg){
 		if (data.args.message) {
@@ -721,7 +734,7 @@ lcf.sdop.boss.getRaidBossResultData = function(raidBossId, callback){
 	var url = _sdop.httpUrlPrefix + "/GetForRaidBossResult/getRaidBossResultData";
 	var params = _sdop.createGetParams();
 	params.raidBossId = raidBossId;
-	$.get(url, params, function(data){
+	lcf.sdop.get(url, params, function(data){
 		//console.info(data);
 		if (_sdop.checkError(data, "getRaidBossResultData")) {
 			return;
@@ -1104,7 +1117,7 @@ lcf.sdop.boss.getRaidBossBattleData = function(raidBossId, callback){
 	var url = _sdop.httpUrlPrefix + "/GetForQuestBattle/getRaidBossBattleData";
 	var params = _sdop.createGetParams();
 	params.raidBossId = raidBossId;
-	$.get(url, params, function(data){
+	lcf.sdop.get(url, params, function(data){
 		//console.log(data);
 		if (_sdop.checkError(data, "getRaidBossBattleData")) {
 			return;
@@ -1126,7 +1139,7 @@ lcf.sdop.boss.getRaidBossBattleData = function(raidBossId, callback){
 lcf.sdop.boss.getBattleData = function(callback){
 	var _sdop = lcf.sdop;
 	var url = _sdop.httpUrlPrefix + "/GetForQuestBattle/getBattleData";
-	$.get(url, _sdop.createGetParams(), function(data){
+	lcf.sdop.get(url, _sdop.createGetParams(), function(data){
 		//console.log(data);
 		if (_sdop.checkError(data, "getBattleData")) {
 			return;
