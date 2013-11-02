@@ -1792,14 +1792,14 @@ lcf.sdop.ui = {
 		
 		btnStartDuel.click(function(){
 			_sdop.startAutoDuel(sltDuelTargetUnitAttribute.val());
-			btnStartDuel.toggle();
-			btnCancelDuel.toggle();
+			btnStartDuel.hide();
+			btnCancelDuel.show();
 		});
 		
 		btnCancelDuel.click(function(){
 			_sdop.cancelAutoDuel();
-			btnStartDuel.toggle();
-			btnCancelDuel.toggle();
+			btnStartDuel.show();
+			btnCancelDuel.hide();
 		});
 		
 		pPanel.append(pAutoDuel);
@@ -1813,14 +1813,14 @@ lcf.sdop.ui = {
 		
 		btnStartSuperRaidBoss.click(function(){
 			lcf.sdop.boss.AI.startAutoSuperRaidBoss();
-			btnStartSuperRaidBoss.toggle();
-			btnCancelSuperRaidBoss.toggle();
+			btnStartSuperRaidBoss.hide();
+			btnCancelSuperRaidBoss.show();
 		});
 		
 		btnCancelSuperRaidBoss.click(function(){
 			lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
-			btnStartSuperRaidBoss.toggle();
-			btnCancelSuperRaidBoss.toggle();
+			btnStartSuperRaidBoss.show();
+			btnCancelSuperRaidBoss.hide();
 		});
 		
 		pAutoDuel.append(btnStartSuperRaidBoss);
@@ -1836,14 +1836,14 @@ lcf.sdop.ui = {
 		
 		btnStartAutoReload.click(function(){
 			lcf.sdop.reloadMode = 1;
-			btnStartAutoReload.toggle();
-			btnCancelAutoReload.toggle();
+			btnStartAutoReload.hide();
+			btnCancelAutoReload.show();
 		});
 		
 		btnCancelAutoReload.click(function(){
 			lcf.sdop.reloadMode = 0;
-			btnStartAutoReload.toggle();
-			btnCancelAutoReload.toggle();
+			btnStartAutoReload.show();
+			btnCancelAutoReload.hide();
 		});
 		
 		pAutoDuel.append(btnStartAutoReload);
