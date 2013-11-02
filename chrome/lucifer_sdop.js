@@ -172,7 +172,8 @@ lcf.sdop.checkAuto = function(){
 		if (opValue == null) {
 			return;
 		}
-		lcf.sdop.reloadMode = 1;
+		lcf.sdop.ui.btnStartAutoReload.click();
+		//lcf.sdop.reloadMode = 1;
 		$("#flash_container").text('');//移除, 怕重复登录请求, 导致依然失败
 		lcf.sdop.login(function(){
 			lcf.sdop.ui.btnInit.click();
@@ -1693,6 +1694,7 @@ lcf.sdop.ui = {
 	btnInit: null,
 	btnStartDuel: null,
 	btnStartSuperRaidBoss: null,
+	btnStartAutoReload: null,
 	addInAfterPanel: function(jqueryObj){
 		var _ui = lcf.sdop.ui;
 		for (var i in _ui.initAfterPanel) {
@@ -1830,6 +1832,8 @@ lcf.sdop.ui = {
 		var btnStartAutoReload = $('<input type="button">').val("开启挂机模式");
 		var btnCancelAutoReload = $('<input type="button">').val("取消挂机模式");
 		btnCancelAutoReload.hide();
+		
+		_ui.btnStartAutoReload = btnStartAutoReload;
 		
 		btnStartAutoReload.click(function(){
 			lcf.sdop.reloadMode = 1;
