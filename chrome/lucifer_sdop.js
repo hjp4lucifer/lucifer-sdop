@@ -1810,7 +1810,6 @@ lcf.sdop.ui = {
 		var btnStartSuperRaidBoss = $('<input type="button">').val("开始自动超总");
 		var btnCancelSuperRaidBoss = $('<input type="button">').val("停止自动超总");
 		btnCancelSuperRaidBoss.hide();
-		_ui.btnStartSuperRaidBoss = btnStartSuperRaidBoss;
 		
 		btnStartSuperRaidBoss.click(function(){
 			lcf.sdop.boss.AI.startAutoSuperRaidBoss();
@@ -1827,13 +1826,13 @@ lcf.sdop.ui = {
 		pAutoDuel.append(btnStartSuperRaidBoss);
 		pAutoDuel.append(btnCancelSuperRaidBoss);
 		
+		_ui.btnStartSuperRaidBoss = btnStartSuperRaidBoss;
+		
 		///////////////////////////////////////////////////////////
 		
 		var btnStartAutoReload = $('<input type="button">').val("开启挂机模式");
 		var btnCancelAutoReload = $('<input type="button">').val("取消挂机模式");
 		btnCancelAutoReload.hide();
-		
-		_ui.btnStartAutoReload = btnStartAutoReload;
 		
 		btnStartAutoReload.click(function(){
 			lcf.sdop.reloadMode = 1;
@@ -1849,6 +1848,8 @@ lcf.sdop.ui = {
 		
 		pAutoDuel.append(btnStartAutoReload);
 		pAutoDuel.append(btnCancelAutoReload);
+		
+		_ui.btnStartAutoReload = btnStartAutoReload;
 		
 		///////////////////////////////////////////////////////////
 		
