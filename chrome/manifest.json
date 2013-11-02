@@ -11,5 +11,5 @@
 	"background": {
 		"scripts": ["background.js"]
 	},
-	"permissions": ["webRequest", "webRequestBlocking", "http://sdop-g.bandainamco-ol.jp/", "http://sdop-g.bandainamco-ol.jp/game/top", "http://sdop-g.bandainamco-ol.jp/GetForProfile/getOwnProfileDetail*"]
+	"permissions": ["webRequest", "webRequestBlocking", "storage", "http://sdop-g.bandainamco-ol.jp/", "http://sdop-g.bandainamco-ol.jp/game/top", "http://sdop-g.bandainamco-ol.jp/GetForProfile/getOwnProfileDetail*"]
 }

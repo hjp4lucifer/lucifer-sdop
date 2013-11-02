@@ -71,15 +71,15 @@ lcf.sdop = {
 	logCallback: function(data){
 		console.info(data);
 	},
-	get: function(url, data, callback){
+	get: function(url, payload, callback){
 		$.ajax({
 			url: url,
 			type: "GET",
-			data: data,
+			data: payload,
 			success: callback,
 			error: function(){
 				lcf.sdop.log("<b class='c_red'>请求失败！</b>2秒后再次尝试！");
-				setTimeout(lcf.sdop.get, 2000, url, data, callback);
+				setTimeout(lcf.sdop.get, 2000, url, payload, callback);
 			}
 		});
 	},
@@ -99,12 +99,33 @@ lcf.sdop = {
 			}
 		});
 	},
+	reloadMode: 0,
+	checkReload: function(data){
+		if (lcf.sdop.reloadMode == 0) {
+			return;
+		}
+		if (data.args.message.indexOf("再度ログインお願いします。") > 0) {
+			var opValue = 0;
+			if (lcf.sdop.auto.setting.duel) {
+				opValue = 1;
+			} else if (lcf.sdop.auto.setting.boss) {
+				opValue = 2;
+			}
+			if (opValue == 0) {
+				return;
+			}
+			chrome.storage.local.set({
+				op: opValue
+			}, function(){
+				location.href = "http://sdop.bandainamco-ol.jp/api/sdop-g/login.php";
+			});
+		}
+	},
 	checkError: function(data, msg){
 		if (data.args.message) {
 			console.warn(data);
-			//"http://sdop.bandainamco-ol.jp/api/sdop-g/login.php"
-			//"再度ログインお願いします。"
 			lcf.sdop.log(msg + "：" + data.args.message);
+			lcf.sdop.checkReload(data);
 			return true;
 		}
 		return false;
@@ -138,7 +159,33 @@ lcf.sdop.login = function(callback){
 		if (_sdop.checkError(data, "enter_Response")) {
 			return;
 		}
-		lcf.sdop.ui.btnInit.click();
+		lcf.sdop.checkCallback(callback);
+	});
+};
+
+/**
+ * 检查自动, 在挂机时使用
+ */
+lcf.sdop.checkAuto = function(){
+	chrome.storage.local.get("op", function(items){
+		var opValue = items.op;
+		if (opValue == null) {
+			return;
+		}
+		lcf.sdop.reloadMode = 1;
+		$("#flash_container").text('');//移除, 怕重复登录请求, 导致依然失败
+		lcf.sdop.login(function(){
+			lcf.sdop.ui.btnInit.click();
+			switch (opValue) {
+			case 1:
+				lcf.sdop.ui.btnStartDuel.click();
+				break;
+			case 2:
+				lcf.sdop.ui.btnStartSuperRaidBoss.click();
+				break;
+			}
+		});
+		chrome.storage.local.clear();
 	});
 };
 
@@ -1644,6 +1691,8 @@ lcf.sdop.boss.AI.cancelAutoSuperRaidBoss = function(){
 lcf.sdop.ui = {
 	initAfterPanel: [],
 	btnInit: null,
+	btnStartDuel: null,
+	btnStartSuperRaidBoss: null,
 	addInAfterPanel: function(jqueryObj){
 		var _ui = lcf.sdop.ui;
 		for (var i in _ui.initAfterPanel) {
@@ -1654,7 +1703,7 @@ lcf.sdop.ui = {
 		jqueryObj.hide();
 		_ui.initAfterPanel[_ui.initAfterPanel.length] = jqueryObj;
 	},
-	init: function(){
+	init: function(callback){
 		var _ui = lcf.sdop.ui;
 		var _sdop = lcf.sdop;
 		var footer = $("#footer");
@@ -1716,6 +1765,8 @@ lcf.sdop.ui = {
 		
 		footer.append(pInit).append(pPanel);
 		_ui.initFunPanel(pPanel);
+		
+		lcf.sdop.checkCallback(callback);
 	},
 	initFunPanel: function(pPanel){
 		var _ui = lcf.sdop.ui;
@@ -1731,6 +1782,7 @@ lcf.sdop.ui = {
 		
 		var btnStartDuel = $('<input type="button">').val("开始");
 		pAutoDuel.append(btnStartDuel);
+		_ui.btnStartDuel = btnStartDuel;
 		
 		var btnCancelDuel = $('<input type="button">').val("停止");
 		btnCancelDuel.hide();
@@ -1756,6 +1808,7 @@ lcf.sdop.ui = {
 		var btnStartSuperRaidBoss = $('<input type="button">').val("开始自动超总");
 		var btnCancelSuperRaidBoss = $('<input type="button">').val("停止自动超总");
 		btnCancelSuperRaidBoss.hide();
+		_ui.btnStartSuperRaidBoss = btnStartSuperRaidBoss;
 		
 		btnStartSuperRaidBoss.click(function(){
 			lcf.sdop.boss.AI.startAutoSuperRaidBoss();
@@ -1771,6 +1824,27 @@ lcf.sdop.ui = {
 		
 		pAutoDuel.append(btnStartSuperRaidBoss);
 		pAutoDuel.append(btnCancelSuperRaidBoss);
+		
+		///////////////////////////////////////////////////////////
+		
+		var btnStartAutoReload = $('<input type="button">').val("开启挂机模式");
+		var btnCancelAutoReload = $('<input type="button">').val("取消挂机模式");
+		btnCancelAutoReload.hide();
+		
+		btnStartAutoReload.click(function(){
+			lcf.sdop.reloadMode = 1;
+			btnStartAutoReload.toggle();
+			btnCancelAutoReload.toggle();
+		});
+		
+		btnCancelAutoReload.click(function(){
+			lcf.sdop.reloadMode = 0;
+			btnStartAutoReload.toggle();
+			btnCancelAutoReload.toggle();
+		});
+		
+		pAutoDuel.append(btnStartAutoReload);
+		pAutoDuel.append(btnCancelAutoReload);
 		
 		///////////////////////////////////////////////////////////
 		
@@ -1839,7 +1913,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 
 
 $(function(){
-	lcf.sdop.ui.init();
+	lcf.sdop.ui.init(function(){
+		lcf.sdop.checkAuto();
+	});
 });
 
 window.$lcf = lcf;
