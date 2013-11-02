@@ -102,96 +102,115 @@ lcf.sdop = {
 	checkError: function(data, msg){
 		if (data.args.message) {
 			console.warn(data);
+			//"http://sdop.bandainamco-ol.jp/api/sdop-g/login.php"
+			//"再度ログインお願いします。"
 			lcf.sdop.log(msg + "：" + data.args.message);
 			return true;
 		}
 		return false;
+	},
+	checkCallback: function(callback){
+		if (callback) {
+			setTimeout(callback, 100);
+		}
 	}
 };
 
-lcf.sdop.getOwnTeamData = function(){
+/**
+ * 挂机状态下使用
+ * @param {Object} callback
+ */
+lcf.sdop.login = function(callback){
+	var _sdop = lcf.sdop;
+	var url = _sdop.httpUrlPrefix + "/PostForAuthentication/enter";
+	var payload = {
+		"args": {
+			"loginParameterSet": {
+				"timeStamp": "123456789",
+				"userId": "idstring",
+				"checkCode": "checkcode"
+			}
+		},
+		"procedure": "enter"
+	};
+	lcf.sdop.post(url, payload, function(data){
+		lcf.sdop.tokenId = data.args.tokenId;
+		if (_sdop.checkError(data, "enter_Response")) {
+			return;
+		}
+		lcf.sdop.ui.btnInit.click();
+	});
+};
+
+lcf.sdop.getOwnTeamData = function(callback){
 	var _sdop = lcf.sdop;
 	var url = _sdop.httpUrlPrefix + "/GetForTeam/getOwnTeamData";
 	if (_sdop.members.length > 0) {
+		lcf.sdop.checkCallback(callback);
 		return;
 	}
-	$.ajax({
-		url: url,
-		type: "GET",
-		async: false,
-		data: _sdop.createGetParams(),
-		success: function(data){
-			//console.log(data);
-			if (_sdop.checkError(data, "getOwnTeamData")) {
-				return;
-			}
-			var team = data.args;
-			_sdop.myUserId = team.userId;
-			
-			var teamInfo = team.data;
-			var memberList = teamInfo.memberList;
-			
-			for (var i in memberList) {
-				var m = memberList[i];
-				if (_sdop.myUserId == m.id) {
-					continue;
-				}
-				_sdop.members[m.id] = m.name;
-			}
+	lcf.sdop.get(url, _sdop.createGetParams(), function(data){
+		if (_sdop.checkError(data, "getOwnTeamData")) {
+			return;
 		}
+		var team = data.args;
+		_sdop.myUserId = team.userId;
+		
+		var teamInfo = team.data;
+		var memberList = teamInfo.memberList;
+		
+		for (var i in memberList) {
+			var m = memberList[i];
+			if (_sdop.myUserId == m.id) {
+				continue;
+			}
+			_sdop.members[m.id] = m.name;
+		}
+		lcf.sdop.checkCallback(callback);
 	});
 };
 
-lcf.sdop.getGreetingList = function(){
+lcf.sdop.getGreetingList = function(callback){
 	var _sdop = lcf.sdop;
 	var url = _sdop.httpUrlPrefix + "/GetForProfile/getGreetingList";
 	if (_sdop.greetingUsers.length > 0) {
+		lcf.sdop.checkCallback(callback);
 		return;
 	}
-	$.ajax({
-		url: url,
-		type: "GET",
-		async: false,
-		data: _sdop.createGetParams(),
-		success: function(data){
-			//console.log(data);
-			if (_sdop.checkError(data, "getGreetingList")) {
-				return;
-			}
-			var greetingList = data.args.greetingList;
-			
-			for (var i in greetingList) {
-				var g = greetingList[i];
-				_sdop.greetingUsers[g.userId] = g.name;
-			}
+	lcf.sdop.get(url, _sdop.createGetParams(), function(data){
+		if (_sdop.checkError(data, "getGreetingList")) {
+			return;
 		}
+		var greetingList = data.args.greetingList;
+		
+		for (var i in greetingList) {
+			var g = greetingList[i];
+			_sdop.greetingUsers[g.userId] = g.name;
+		}
+		
+		lcf.sdop.checkCallback(callback);
 	});
 };
 
-lcf.sdop.getGreetingCondition = function(userId){
+lcf.sdop.getGreetingCondition = function(userId, callback){
 	var _sdop = lcf.sdop;
 	var url = _sdop.httpUrlPrefix + "/GetForProfile/getGreetingCondition";
 	var params = _sdop.createGetParams();
 	params.userId = userId;
 	
-	var isHello = true;
-	$.ajax({
-		url: url,
-		type: "GET",
-		async: false,
-		data: params,
-		success: function(data){
-			//console.log(data);
-			if (_sdop.checkError(data, "getGreetingCondition")) {
-				return;
-			}
-			isHello = data.args.greetingCondition.greeted;
+	lcf.sdop.get(url, params, function(data){
+		if (_sdop.checkError(data, "getGreetingCondition")) {
+			return;
+		}
+		
+		var isHello = data.args.greetingCondition.greeted;
+		if (callback) {
+			setTimeout(callback, 100, isHello);
 		}
 	});
-	return isHello;
 };
 
-lcf.sdop.postGreeting = function(greetingUserId, comment){
+lcf.sdop.postGreeting = function(greetingUserId, comment, callback){
 	var _sdop = lcf.sdop;
 	var url = _sdop.httpUrlPrefix + "/PostForProfile/postGreeting?ssid=" + _sdop.ssid;
 	var payload = _sdop.createBasePayload("postGreeting", {
@@ -203,6 +222,7 @@ lcf.sdop.postGreeting = function(greetingUserId, comment){
 		if (_sdop.checkError(data, "postGreeting")) {
 			return;
 		}
+		lcf.sdop.checkCallback(callback);
 	});
 };
 
@@ -534,23 +554,28 @@ lcf.sdop.autoSayHello = function(validate, comment){
 		comment = "hello";
 	}
 	
-	_sdop.getOwnTeamData();
-	_sdop.getGreetingList();
-	var users = lcf.mergeObject(_sdop.members, _sdop.greetingUsers);
-	var userIndex = 0;
-	for (var uid in users) {
-		if (validate) {
-			if (_sdop.getGreetingCondition(uid)) {
-				continue;
+	lcf.sdop.getOwnTeamData(function(){
+		lcf.sdop.getGreetingList(function(){
+			var users = lcf.mergeObject(_sdop.members, _sdop.greetingUsers);
+			var userIndex = 0;
+			for (var uid in users) {
+				setTimeout(function(uid){
+					if (validate) {
+						lcf.sdop.getGreetingCondition(uid, function(isHello){
+							if (!isHello) {
+								_sdop.log("对【" + users[uid] + "】说：" + comment);
+								_sdop.postGreeting(uid, comment);
+							}
+							return;
+						});
+					} else {
+						lcf.sdop.log("对【" + users[uid] + "】说：" + comment);
+						lcf.sdop.postGreeting(uid, comment);
+					}
+				}, ++userIndex * 1234, uid);
 			}
-		}
-		setTimeout(function(uid){
-			//console.log(uid + " : " + users[uid]);
-			//_sdop.postGreeting(uid, "hello " + users[uid]);
-			_sdop.log("对【" + users[uid] + "】说：" + comment);
-			_sdop.postGreeting(uid, comment);
-		}, ++userIndex * 1234, uid);
-	}
+		});
+	});
 };
 
 lcf.sdop.equipItem4Sp = function(callback){
@@ -1618,6 +1643,7 @@ lcf.sdop.boss.AI.cancelAutoSuperRaidBoss = function(){
 
 lcf.sdop.ui = {
 	initAfterPanel: [],
+	btnInit: null,
 	addInAfterPanel: function(jqueryObj){
 		var _ui = lcf.sdop.ui;
 		for (var i in _ui.initAfterPanel) {
@@ -1639,6 +1665,7 @@ lcf.sdop.ui = {
 		_ui.addInAfterPanel(pPanel);
 		
 		var btnInit = $('<input type="button">').val("初始化脚本, 初始化前, 请先点击【プロフィール】!");
+		_ui.btnInit = btnInit;
 		
 		pInit.append(btnInit);
 		
