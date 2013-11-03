@@ -989,7 +989,7 @@ lcf.sdop.boss.postRaidBossBattleEntry = function(bossId, callback, failCallback)
 	_sdop.post(url, payload, function(data){
 		//console.info(data);
 		if (_sdop.checkError(data, "postRaidBossBattleEntry")) {
-			if (data.args.message == "BPが不足しています") {
+			if (data.args.message.indexOf("BPが不足しています") != -1) {
 				return;
 			}
 			if (failCallback) {
