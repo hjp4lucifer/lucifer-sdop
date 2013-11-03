@@ -1,6 +1,6 @@
 {
 	"name": "Lucifer for sdop",
-	"version": "0.9.5",
+	"version": "0.9.6",
 	"manifest_version": 2,
 	"description": "Lucifer procedure",
 	"content_scripts": [{

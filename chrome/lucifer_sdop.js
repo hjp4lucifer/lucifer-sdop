@@ -121,11 +121,18 @@ lcf.sdop = {
 			});
 		}
 	},
+	checkBattleFinished: function(data){
+		if (data.args.message.indexOf("戦闘は既に終了") > 0) {
+			lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
+			lcf.sdop.boss.AI.startAutoSuperRaidBoss();
+		}
+	},
 	checkError: function(data, msg){
 		if (data.args.message) {
 			console.warn(data);
 			lcf.sdop.log(msg + "：" + data.args.message);
 			lcf.sdop.checkReload(data);
+			lcf.sdop.checkBattleFinished(data);
 			return true;
 		}
 		return false;
