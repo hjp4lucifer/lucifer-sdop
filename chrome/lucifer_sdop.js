@@ -1908,7 +1908,7 @@ lcf.sdop.ui = {
 		
 		btnAutoSayHello.click(function(){
 			var validate = eval(sltValidate.val());
-			var helloContent = txtHelloContent.text();
+			var helloContent = txtHelloContent.val();
 			if (helloContent.length > 1) {
 				lcf.sdop.autoSayHelloContent = helloContent;
 			}
