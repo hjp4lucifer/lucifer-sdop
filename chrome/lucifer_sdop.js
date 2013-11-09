@@ -506,9 +506,7 @@ lcf.sdop.duel.getDuelData = function(callback){
 			_sdop.bp = headerDetail.bpDetail.currentValue;
 			_sdop.ep = headerDetail.energyDetail.energy;
 			//_sdop.log("getDuelData请求成功！当前bp:" + _sdop.bp + ", ep: " + _sdop.ep);
-			if (callback) {
-				setTimeout(callback, 100);
-			}
+			lcf.sdop.checkCallback(callback);
 		},
 		error: function(){
 			_sdop.bp = 0;
@@ -592,7 +590,7 @@ lcf.sdop.startAutoDuel = function(unitAttributeIndex){
 		}
 	}
 	_sdop.log("针对【" + _sdop.duel.targetUnitAttribute + "】的自动GB开始！");
-	_sdop.duel.checkAndExecute();
+	lcf.sdop.duel.checkAndExecute();
 };
 
 lcf.sdop.cancelAutoDuel = function(){
@@ -602,14 +600,12 @@ lcf.sdop.cancelAutoDuel = function(){
 	_sdop.log("自动GB停止成功！");
 };
 
-lcf.sdop.autoSayHello = function(validate, comment){
+lcf.sdop.autoSayHelloContent = "hello";
+lcf.sdop.autoSayHello = function(validate){
 	var _sdop = lcf.sdop;
 	if (!_sdop.tokenId) {
 		alert("请输入tokenId!");
 		return;
-	}
-	if (!comment) {
-		comment = "hello";
 	}
 	
 	lcf.sdop.getOwnTeamData(function(){
@@ -621,14 +617,14 @@ lcf.sdop.autoSayHello = function(validate, comment){
 					if (validate) {
 						lcf.sdop.getGreetingCondition(uid, function(isHello){
 							if (!isHello) {
-								_sdop.log("对【" + users[uid] + "】说：" + comment);
-								_sdop.postGreeting(uid, comment);
+								_sdop.log("对【" + users[uid] + "】说：" + lcf.sdop.autoSayHelloContent);
+								_sdop.postGreeting(uid, lcf.sdop.autoSayHelloContent);
 							}
 							return;
 						});
 					} else {
-						lcf.sdop.log("对【" + users[uid] + "】说：" + comment);
-						lcf.sdop.postGreeting(uid, comment);
+						lcf.sdop.log("对【" + users[uid] + "】说：" + lcf.sdop.autoSayHelloContent);
+						lcf.sdop.postGreeting(uid, lcf.sdop.autoSayHelloContent);
 					}
 				}, ++userIndex * 1234, uid);
 			}
@@ -757,7 +753,7 @@ lcf.sdop.boss.initRaidBossOutlineList = function(callback){
 		}
 	});
 	_sdop.post(url, payload, function(data){
-		if (_sdop.checkError(data, "initRaidBossOutlineList")) {
+		if (lcf.sdop.checkError(data, "initRaidBossOutlineList")) {
 			return;
 		}
 		var headerDetail = data.args.headerDetail;
@@ -959,6 +955,9 @@ lcf.sdop.boss.getRaidBossOutlineList = function(callback, noListCallback){
 		var list = data.args.list;
 		if (!list || list.length == 0) {
 			_sdop.log("没有对应等级的boss！");
+			if (!lcf.sdop.auto.setting.boss) {
+				return;
+			}
 			if (noListCallback) {
 				setTimeout(noListCallback, 100);
 			}
@@ -1909,7 +1908,11 @@ lcf.sdop.ui = {
 		
 		btnAutoSayHello.click(function(){
 			var validate = eval(sltValidate.val());
-			_sdop.autoSayHello(validate, txtHelloContent.text());
+			var helloContent = txtHelloContent.text();
+			if (helloContent.length > 1) {
+				lcf.sdop.autoSayHelloContent = helloContent;
+			}
+			_sdop.autoSayHello(validate);
 			btnAutoSayHello.hide();
 		});
 		
