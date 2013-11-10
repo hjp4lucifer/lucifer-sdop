@@ -122,12 +122,14 @@ lcf.sdop = {
 		}
 	},
 	checkBattleFinished: function(data){
-		if (data.args.message.indexOf("戦闘は既に終了") > 0) {
-			lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
-			lcf.sdop.boss.AI.startAutoSuperRaidBoss();
-		} else if (data.args.message.indexOf("しばらく時間を置いてからアクセスして頂き") > 0) {
-			lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
-			setTimeout(lcf.sdop.boss.AI.startAutoSuperRaidBoss, 60000);
+		if (lcf.sdop.auto.setting.boss) {
+			if (data.args.message.indexOf("戦闘は既に終了") > 0) {
+				lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
+				lcf.sdop.boss.AI.startAutoSuperRaidBoss();
+			} else if (data.args.message.indexOf("しばらく時間を置いてからアクセスして頂き") > 0) {
+				lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
+				setTimeout(lcf.sdop.boss.AI.startAutoSuperRaidBoss, 60000);
+			}
 		}
 	},
 	checkError: function(data, msg){
