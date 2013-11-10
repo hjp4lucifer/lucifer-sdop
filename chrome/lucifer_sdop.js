@@ -130,6 +130,14 @@ lcf.sdop = {
 				lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
 				setTimeout(lcf.sdop.boss.AI.startAutoSuperRaidBoss, 60000);
 			}
+			return;
+		}
+		if(lcf.sdop.auto.setting.duel){
+			if (data.args.message.indexOf("しばらく時間を置いてからアクセスして頂き") > 0) {
+				lcf.sdop.cancelAutoDuel();
+				lcf.sdop.startAutoDuel();
+			}
+			return;
 		}
 	},
 	checkError: function(data, msg){
