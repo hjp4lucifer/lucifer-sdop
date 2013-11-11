@@ -1,16 +1,13 @@
-package cn.lucifer.sdop;
+package cn.lucifer.sdop.ui;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
+import cn.lucifer.sdop.R;
+import cn.lucifer.sdop.Lcf;
 import cn.lucifer.sdop.adt.LogAdapter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,13 +32,13 @@ public class MainActivity extends BaseActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// super.onActivityResult(requestCode, resultCode, data);
-
 		Log.i("Lucifer", requestCode + " : " + R.id.action_login + " : "
 				+ resultCode);
 		if (requestCode == R.id.action_login && resultCode == RESULT_OK) {
-			String text = data.getStringExtra("cookies");
-			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-			addLog(text);
+			String cookies = data.getStringExtra("cookies");
+			Toast.makeText(this, cookies, Toast.LENGTH_LONG).show();
+
+			addLog("获得ssid : " + Lcf.getInstance().getCookie(cookies, "ssid"));
 		}
 	}
 

@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" android:largeHeap="true">
         <activity
-            android:name="cn.lucifer.sdop.MainActivity"
+            android:name="cn.lucifer.sdop.ui.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="cn.lucifer.sdop.WebActivity"
+            android:name="cn.lucifer.sdop.ui.WebActivity"
             android:label="@string/action_login" >
         </activity>
     </application>

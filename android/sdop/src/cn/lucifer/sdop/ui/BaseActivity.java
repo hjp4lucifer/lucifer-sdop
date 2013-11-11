@@ -1,5 +1,8 @@
-package cn.lucifer.sdop;
+package cn.lucifer.sdop.ui;
 
+import cn.lucifer.sdop.R;
+import cn.lucifer.sdop.R.id;
+import cn.lucifer.sdop.R.menu;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
