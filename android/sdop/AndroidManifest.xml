@@ -7,12 +7,22 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
+    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" android:largeHeap="true">
         <activity
             android:name="cn.lucifer.sdop.MainActivity"
             android:label="@string/app_name" >
@@ -21,6 +31,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="cn.lucifer.sdop.WebActivity"
+            android:label="@string/action_login" >
         </activity>
     </application>
 

@@ -1,10 +1,11 @@
 package cn.lucifer.sdop;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
+import android.util.Log;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -13,10 +14,14 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// super.onActivityResult(requestCode, resultCode, data);
+
+		Log.i("Lucifer", requestCode + " : " + R.id.action_login + " : " + resultCode);
+		if (requestCode == R.id.action_login && resultCode == RESULT_OK) {
+			String text = data.getStringExtra("cookies");
+			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+		}
 	}
 
 }
