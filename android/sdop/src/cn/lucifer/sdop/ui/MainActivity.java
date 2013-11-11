@@ -1,6 +1,5 @@
 package cn.lucifer.sdop.ui;
 
-
 import cn.lucifer.sdop.R;
 import cn.lucifer.sdop.Lcf;
 import cn.lucifer.sdop.adt.LogAdapter;
@@ -41,8 +40,13 @@ public class MainActivity extends BaseActivity {
 			addLog("获得ssid : " + Lcf.getInstance().getCookie(cookies, "ssid"));
 		}
 	}
+	
+	
 
 	protected void addLog(String text) {
+		if (logAdapter.getCount() > 100) {
+			logAdapter.clear();
+		}
 		logAdapter.add(text);
 	}
 
