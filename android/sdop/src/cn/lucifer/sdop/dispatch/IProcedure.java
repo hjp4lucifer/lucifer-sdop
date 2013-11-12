@@ -1,7 +1,5 @@
 package cn.lucifer.sdop.dispatch;
 
-import org.json.JSONObject;
-
 /**
  * 产品接口
  * 
@@ -10,6 +8,6 @@ import org.json.JSONObject;
  */
 public interface IProcedure {
 
-	public void callback(JSONObject json);
+	public void callback(byte[] response);
 
 }

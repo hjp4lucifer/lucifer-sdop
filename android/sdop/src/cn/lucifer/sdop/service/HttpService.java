@@ -13,6 +13,7 @@ import org.apache.commons.io.IOUtils;
 
 import cn.lucifer.sdop.IGetLcf;
 import cn.lucifer.sdop.Lcf;
+import cn.lucifer.sdop.dispatch.DF;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,7 +48,7 @@ public class HttpService extends Service implements IGetLcf {
 			String action = intent.getAction();
 			if (action.equals(GET)) {
 				try {
-					byte[] response = get(intent.getExtras());
+					get(intent.getExtras());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -57,7 +58,7 @@ public class HttpService extends Service implements IGetLcf {
 
 			if (action.equals(POST)) {
 				try {
-					byte[] response = post(intent.getExtras());
+					post(intent.getExtras());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -68,7 +69,7 @@ public class HttpService extends Service implements IGetLcf {
 
 	};
 
-	protected byte[] post(Bundle bundle) throws IOException {
+	protected void post(Bundle bundle) throws IOException {
 		URL url = new URL(bundle.getString("url"));
 		String payload = bundle.getString("payload");
 
@@ -77,7 +78,7 @@ public class HttpService extends Service implements IGetLcf {
 		conn.setDoOutput(true);// //POST专用
 
 		if (payload == null) {
-			return null;
+			return;
 		}
 
 		conn.setRequestMethod(POST);
@@ -91,10 +92,10 @@ public class HttpService extends Service implements IGetLcf {
 		pw.write(payload);
 		pw.close();
 
-		return getResponse(conn);
+		getResponse(conn, bundle.getString("callbackProcedure"));
 	}
 
-	protected byte[] get(Bundle bundle) throws IOException {
+	protected void get(Bundle bundle) throws IOException {
 		URL url = new URL(bundle.getString("url"));
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -105,10 +106,11 @@ public class HttpService extends Service implements IGetLcf {
 
 		conn(conn);
 
-		return getResponse(conn);
+		getResponse(conn, bundle.getString("callbackProcedure"));
 	}
 
-	private byte[] getResponse(HttpURLConnection conn) throws IOException {
+	private void getResponse(HttpURLConnection conn, String callbackProcedure)
+			throws IOException {
 		InputStream is = conn.getInputStream();
 		GZIPInputStream gzin = new GZIPInputStream(is);
 
@@ -120,7 +122,9 @@ public class HttpService extends Service implements IGetLcf {
 
 		is.close();
 
-		return response;
+		if (callbackProcedure != null) {
+			DF.dispatch(callbackProcedure, response);
+		}
 	}
 
 	private void conn(HttpURLConnection conn) throws IOException {

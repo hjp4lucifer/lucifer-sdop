@@ -30,19 +30,18 @@ public final class DF {
 		return map.get(procedure);
 	}
 
-	private static final String procedure = "procedure";
-
-	public static void dispatch(byte[] response) throws JSONException {
-		JSONObject json = new JSONObject(new String(response));
-		String procedure = json.getString(DF.procedure);
-		if (procedure == null) {
-			Log.e("Lucifer", "procedure is null");
+	public static void dispatch(String callbackProcedure, byte[] response) {
+		if (callbackProcedure == null) {
+			Log.e("Lucifer", "callbackProcedure is null");
 		}
-		IProcedure iProcedure = get(procedure);
+		if (response == null) {
+			Log.e("Lucifer", "no response !");
+		}
+		IProcedure iProcedure = get(callbackProcedure);
 		if (iProcedure == null) {
 			Log.e("Lucifer", "iProcedure is null");
 		}
-		
-		iProcedure.callback(json);
+
+		iProcedure.callback(response);
 	}
 }
