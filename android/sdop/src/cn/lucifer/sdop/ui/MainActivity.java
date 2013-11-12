@@ -84,6 +84,7 @@ public class MainActivity extends BaseActivity {
 			String ssid = data.getStringExtra("ssid");
 			Toast.makeText(this, "ssid : " + ssid, Toast.LENGTH_LONG).show();
 
+			lcf().sdop.login();
 			// addLog("获得ssid : " + Lcf.getInstance().getCookie(cookies,
 			// "ssid"));
 		}

@@ -97,7 +97,6 @@ public class Sdop extends LcfExtend {
 		}
 		this.ssid = ssid;
 		log("获取 ssid 成功！");
-		login();
 	}
 
 	public String getUserAgent() {

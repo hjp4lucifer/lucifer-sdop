@@ -36,6 +36,7 @@
             android:name="cn.lucifer.sdop.ui.WebActivity"
             android:label="@string/action_login" >
         </activity>
+        <service android:name="cn.lucifer.sdop.service.HttpService"></service>
     </application>
 
 </manifest>

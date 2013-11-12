@@ -40,6 +40,8 @@ public class HttpService extends Service implements IGetLcf {
 		IntentFilter filter = new IntentFilter(GET_ACTION);
 		filter.addAction(POST_ACTION);
 		registerReceiver(httpReceiver, filter);
+		
+		Log.i("Lucifer", "--------- HttpService onCreate ! ");
 	}
 
 	private BroadcastReceiver httpReceiver = new BroadcastReceiver() {
