@@ -19,14 +19,14 @@ import android.widget.ProgressBar;
 
 public class WebActivity extends BaseActivity {
 
-	String url = "http://sdop.bandainamco-ol.jp/";
-	final String game_url = "http://sdop-g.bandainamco-ol.jp/game/top";
-	final String login_url = "http://sdop.bandainamco-ol.jp/api/sdop-g/login.php";
+	private String url;
 
-	WebView wv;
-	ProgressBar progressBar;
+	private WebView wv;
+	private ProgressBar progressBar;
 
 	private OnReceivedErrorListener errorListener;
+
+	protected String game_url;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +35,15 @@ public class WebActivity extends BaseActivity {
 
 		wv = (WebView) findViewById(R.id.wv);
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+		Intent beforeIntent = getIntent();
+		url = beforeIntent.getExtras().getString("url");
+		game_url = lcf().sdop.game_url;
+
 		viewInit();
 	}
 
-	void viewInit() {
+	private void viewInit() {
 
 		wv.getSettings().setJavaScriptEnabled(true);// 可用JS
 		// 不保存表单数据
@@ -65,12 +70,20 @@ public class WebActivity extends BaseActivity {
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				if (url.equals(game_url)) {
+
 					CookieManager cookieManager = CookieManager.getInstance();
 					Intent data = new Intent();
 					String cookies = cookieManager.getCookie(game_url);
-					Log.i("Lucifer", "url : " + url + "\n" + "cookies : "
-							+ cookies);
-					data.putExtra("cookies", cookies);
+					Log.i("Lucifer", "cookies : " + cookies);
+					// data.putExtra("cookies", cookies);
+					String userAgent = view.getSettings().getUserAgentString();
+					Log.i("Lucifer", "userAgent : " + userAgent);
+					// data.putExtra("userAgent", userAgent);
+
+					lcf().sdop.setCookies(cookies);
+					lcf().sdop.setUserAgent(userAgent);
+
+					data.putExtra("ssid", lcf().sdop.getSsid());
 					setResult(RESULT_OK, data);// 通过setResult来返回主页
 					finish();
 				}

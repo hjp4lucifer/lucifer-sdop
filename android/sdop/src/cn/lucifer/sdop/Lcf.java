@@ -7,8 +7,9 @@ public final class Lcf {
 
 	private static Lcf _instance;
 
+	public Sdop sdop = new Sdop();
+
 	private Lcf() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public static Lcf getInstance() {

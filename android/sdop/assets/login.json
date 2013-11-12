@@ -1,0 +1,10 @@
+{
+		"args": {
+			"loginParameterSet": {
+				"timeStamp": "123456789",
+				"userId": "idstring",
+				"checkCode": "checkcode"
+			}
+		},
+		"procedure": "enter"
+}
