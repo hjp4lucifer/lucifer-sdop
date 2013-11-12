@@ -40,7 +40,7 @@ public class HttpService extends Service implements IGetLcf {
 		IntentFilter filter = new IntentFilter(GET_ACTION);
 		filter.addAction(POST_ACTION);
 		registerReceiver(httpReceiver, filter);
-		
+
 		Log.i("Lucifer", "--------- HttpService onCreate ! ");
 	}
 
@@ -50,22 +50,28 @@ public class HttpService extends Service implements IGetLcf {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			Log.i("Lucifer", "--------- action : " + action);
+			Bundle bundle = intent.getExtras();
+			String url = bundle.getString("url");
+			String callback = bundle.getString("callback");
 			if (action.equals(GET_ACTION)) {
 				try {
-					get(intent.getExtras());
+					get(url, callback);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Log.e("Lucifer", "GET IOException", e);
 				}
 				return;
 			}
 
 			if (action.equals(POST_ACTION)) {
 				try {
-					post(intent.getExtras());
+					String payload = bundle.getString("payload");
+					post(url, payload, callback);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					Log.e("Lucifer", "POST IOException", e);
 				}
 				return;
 			}
@@ -75,9 +81,9 @@ public class HttpService extends Service implements IGetLcf {
 
 	private final String GET = "GET", POST = "POST";
 
-	protected void post(Bundle bundle) throws IOException {
-		URL url = new URL(bundle.getString("url"));
-		String payload = bundle.getString("payload");
+	protected void post(String urlStr, String payload, String callback)
+			throws IOException {
+		URL url = new URL(urlStr);
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoInput(true);
@@ -86,6 +92,7 @@ public class HttpService extends Service implements IGetLcf {
 		if (payload == null) {
 			return;
 		}
+		Log.i("Lucifer", "payload : " + payload);
 
 		conn.setRequestMethod(POST);
 		conn.setRequestProperty("Content-Length",
@@ -98,11 +105,11 @@ public class HttpService extends Service implements IGetLcf {
 		pw.write(payload);
 		pw.close();
 
-		getResponse(conn, bundle);
+		getResponse(conn, callback);
 	}
 
-	protected void get(Bundle bundle) throws IOException {
-		URL url = new URL(bundle.getString("url"));
+	protected void get(String urlStr, String callback) throws IOException {
+		URL url = new URL(urlStr);
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoInput(true);
@@ -112,12 +119,11 @@ public class HttpService extends Service implements IGetLcf {
 
 		conn(conn);
 
-		getResponse(conn, bundle);
+		getResponse(conn, callback);
 	}
 
-	private void getResponse(HttpURLConnection conn, Bundle bundle)
+	private void getResponse(HttpURLConnection conn, String callback)
 			throws IOException {
-		String callback = bundle.getString("callback");
 		InputStream is = conn.getInputStream();
 		GZIPInputStream gzin = new GZIPInputStream(is);
 

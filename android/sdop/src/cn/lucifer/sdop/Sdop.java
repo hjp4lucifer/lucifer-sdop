@@ -80,6 +80,7 @@ public class Sdop extends LcfExtend {
 		try {
 			InputStream input = context.getAssets().open("login.json");
 			List<String> lines = IOUtils.readLines(input);
+			IOUtils.closeQuietly(input);
 			String payload = lines.get(0);// 这里处理过gson, 所以只有一行
 			post(url, payload, Enter.procedure);
 		} catch (IOException e) {
