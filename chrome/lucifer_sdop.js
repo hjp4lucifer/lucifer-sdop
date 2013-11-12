@@ -704,8 +704,8 @@ lcf.sdop.boss = {
 	kind: ["NORMAL", "SUPER"],
 	currentMode: 'RAID_BOSS',
 	currentKind: 'SUPER',
-	x3: 250035,
-	x6: 250036,
+	x3: 250037,
+	x6: 250038,
 	getTopLevel: function(list){
 		var target, _currentBoss;
 		for (var i in list) {
