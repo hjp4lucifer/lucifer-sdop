@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.util.Log;
 
@@ -17,6 +16,7 @@ public final class DF {
 			return;
 		}
 		map = new HashMap<String, IProcedure>();
+		map.put(Enter.procedure, new Enter());
 	}
 
 	private static void put(String procedure, IProcedure impl) {
@@ -30,18 +30,23 @@ public final class DF {
 		return map.get(procedure);
 	}
 
-	public static void dispatch(String callbackProcedure, byte[] response) {
-		if (callbackProcedure == null) {
-			Log.e("Lucifer", "callbackProcedure is null");
+	public static void dispatch(String callback, byte[] response) {
+		if (callback == null) {
+			Log.e("Lucifer", "callback is null");
 		}
 		if (response == null) {
 			Log.e("Lucifer", "no response !");
 		}
-		IProcedure iProcedure = get(callbackProcedure);
+		IProcedure iProcedure = get(callback);
 		if (iProcedure == null) {
 			Log.e("Lucifer", "iProcedure is null");
 		}
 
-		iProcedure.callback(response);
+		try {
+			iProcedure.callback(response);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

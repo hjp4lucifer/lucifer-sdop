@@ -27,7 +27,7 @@ public class MainActivity extends BaseActivity {
 
 		lcf().sdop.context = getApplicationContext();
 
-		Intent httpService = new Intent(this, HttpService.class);
+		Intent httpService = new Intent(lcf().sdop.context, HttpService.class);
 		startService(httpService);
 		
 		viewInit();
