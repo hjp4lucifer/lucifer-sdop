@@ -122,7 +122,7 @@ public class Sdop extends LcfExtend {
 
 	public void setTokenId(String tokenId) {
 		this.tokenId = tokenId;
-		log("获取 ssid 成功！" + tokenId);
+		log("获取 tokenId 成功！" + tokenId);
 	}
 
 }

@@ -42,6 +42,7 @@ public class HttpService extends Service implements IGetLcf {
 		registerReceiver(httpReceiver, filter);
 
 		Log.i("Lucifer", "--------- HttpService onCreate ! ");
+		DF.init();
 	}
 
 	private BroadcastReceiver httpReceiver = new BroadcastReceiver() {
@@ -53,6 +54,26 @@ public class HttpService extends Service implements IGetLcf {
 			Bundle bundle = intent.getExtras();
 			String url = bundle.getString("url");
 			String callback = bundle.getString("callback");
+			String payload = bundle.getString("payload");
+			new HttpThread(action, url, payload, callback).start();
+		}
+
+	};
+
+	private class HttpThread extends Thread {
+		private String action, url, payload, callback;
+
+		public HttpThread(String action, String url, String payload,
+				String callback) {
+			super();
+			this.action = action;
+			this.url = url;
+			this.payload = payload;
+			this.callback = callback;
+		}
+
+		@Override
+		public void run() {
 			if (action.equals(GET_ACTION)) {
 				try {
 					get(url, callback);
@@ -66,7 +87,6 @@ public class HttpService extends Service implements IGetLcf {
 
 			if (action.equals(POST_ACTION)) {
 				try {
-					String payload = bundle.getString("payload");
 					post(url, payload, callback);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -76,8 +96,7 @@ public class HttpService extends Service implements IGetLcf {
 				return;
 			}
 		}
-
-	};
+	}
 
 	private final String GET = "GET", POST = "POST";
 

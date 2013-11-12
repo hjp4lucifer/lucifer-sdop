@@ -16,7 +16,7 @@ public final class DF {
 			return;
 		}
 		map = new HashMap<String, IProcedure>();
-		map.put(Enter.procedure, new Enter());
+		put(Enter.procedure, new Enter());
 	}
 
 	private static void put(String procedure, IProcedure impl) {
