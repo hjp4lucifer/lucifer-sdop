@@ -23,17 +23,17 @@ public final class CB {
 		map.put(callback, impl);
 	}
 
-	public static ICallback get(String callback) {
+	static ICallback get(String callback) {
 		return map.get(callback);
 	}
 
-	public static void dispatch(String callback, Object... args) {
+	static void dispatch(String callback, Object[] args) {
 		if (callback == null) {
-			Log.e("Lucifer", "procedure is null");
+			Log.e("Lucifer", "callback is null");
 		}
 		ICallback iCallback = get(callback);
 		if (iCallback == null) {
-			Log.e("Lucifer", "iProcedure is null");
+			Log.e("Lucifer", "iCallback is null");
 		}
 
 		iCallback.callback(args);
