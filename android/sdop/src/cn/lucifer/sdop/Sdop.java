@@ -49,6 +49,8 @@ public class Sdop extends LcfExtend {
 
 	public Context context;
 
+	public Auto auto = new Auto();
+
 	public final String EXTRA_LOG_NAME = "log";
 
 	public void log(String msg) {

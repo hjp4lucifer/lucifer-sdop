@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,6 +58,7 @@ public class MainActivity extends BaseActivity {
 		super.onPrepareOptionsMenu(menu);
 		if (isDisabledLoginMenu && lcf().sdop.getTokenId() != null) {
 			menu.findItem(R.id.action_test_hello).setEnabled(true);
+			menu.findItem(R.id.action_auto_GB).setEnabled(true);
 			isDisabledLoginMenu = false;
 		}
 		return true;
@@ -65,13 +67,29 @@ public class MainActivity extends BaseActivity {
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_login:
+		case R.id.action_login: {
 			Intent intent = new Intent(this, WebActivity.class);
 			intent.putExtra("url", lcf().sdop.custom_login_url);
 			startActivityForResult(intent, R.id.action_login);
 			break;
+		}
+		case R.id.action_auto_login: {
+			Intent intent = new Intent(MainActivity.this, WebActivity.class);
+			intent.putExtra("url", lcf().sdop.login_url);
+			startActivityForResult(intent, R.id.action_login);
+			break;
+		}
 		case R.id.action_test_hello:
 			lcf().sdop.testToAdsPostGreeting();
+			break;
+		// case R.id.action_auto_GB:
+		// lcf().sdop.log("action_auto_GB");
+		// break;
+		case R.id.action_auto_GB_on:
+			lcf().sdop.log("action_auto_GB_on");
+			break;
+		case R.id.action_auto_GB_off:
+			lcf().sdop.log("action_auto_GB_off");
 			break;
 		case R.id.action_exit:
 			exit();
