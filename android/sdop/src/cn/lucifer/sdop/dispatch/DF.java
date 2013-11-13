@@ -6,10 +6,10 @@ import java.util.Map;
 import org.json.JSONException;
 
 import cn.lucifer.sdop.dispatch.ex.Enter;
+import cn.lucifer.sdop.dispatch.ex.ExecuteDuelBattle;
+import cn.lucifer.sdop.dispatch.ex.GetDuelData;
 import cn.lucifer.sdop.dispatch.ex.GetEntryData;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
-
-import android.util.Log;
 
 public final class DF {
 
@@ -25,6 +25,8 @@ public final class DF {
 		put(PostGreeting.procedure, new PostGreeting());
 
 		put(GetEntryData.procedure, new GetEntryData());
+		put(GetDuelData.procedure, new GetDuelData());
+		put(ExecuteDuelBattle.procedure, new ExecuteDuelBattle());
 	}
 
 	private static void put(String procedure, BaseDispatch impl) {

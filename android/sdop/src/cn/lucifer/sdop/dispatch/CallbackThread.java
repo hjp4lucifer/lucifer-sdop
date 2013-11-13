@@ -1,6 +1,8 @@
 package cn.lucifer.sdop.dispatch;
 
-public class CallbackThread extends Thread {
+import java.util.TimerTask;
+
+public class CallbackThread extends TimerTask {
 
 	private String callback;
 	private Object[] args;

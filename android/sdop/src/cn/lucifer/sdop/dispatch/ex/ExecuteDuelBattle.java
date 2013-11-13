@@ -17,8 +17,9 @@ public class ExecuteDuelBattle extends BaseDispatch {
 		String result = args.getJSONObject("result").getBoolean("isWin") ? lcf().sdop
 				.getRedMsg("胜利") : lcf().sdop.getBlueMsg("失败");
 		StringBuffer logMsg = new StringBuffer();
-		logMsg.append("挑战【");
-		logMsg.append(data.getJSONObject("enemyData").getString("name"));
+		logMsg.append("挑战【")
+				.append(data.getJSONObject("enemyData").getString("name"))
+				.append("】");
 		logMsg.append(result);
 		logMsg.append("！对方MS阵容：");
 
@@ -35,7 +36,7 @@ public class ExecuteDuelBattle extends BaseDispatch {
 	@Override
 	public void callback(Object[] args) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

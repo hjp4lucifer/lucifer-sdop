@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -19,6 +20,7 @@ import cn.lucifer.sdop.service.HttpService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class Sdop extends LcfExtend {
@@ -112,10 +114,10 @@ public class Sdop extends LcfExtend {
 
 	public boolean checkError(JSONObject dataArgs, String msg)
 			throws JSONException {
-		String message = dataArgs.getString("message");
-		if (message == null) {
+		if (!dataArgs.has("message")) {
 			return false;
 		}
+		String message = dataArgs.getString("message");
 		Log.w("Lucifer", dataArgs.toString());
 		log(msg + "：" + message);
 		// lcf.sdop.checkReload(data);
@@ -137,8 +139,7 @@ public class Sdop extends LcfExtend {
 		if (callback == null) {
 			return;
 		}
-		new Handler().postDelayed(new CallbackThread(callback, args),
-				delayMillis);
+		new Timer().schedule(new CallbackThread(callback, args), delayMillis);
 	}
 
 	public void login() {
@@ -184,12 +185,12 @@ public class Sdop extends LcfExtend {
 	public String getRedMsg(String msg) {
 		return "<font color=\"#FF0000\">" + msg + "</font>";
 	}
-	
-	public String getRedBoldMsg(String msg){
+
+	public String getRedBoldMsg(String msg) {
 		return "<font color=\"#FF0000\"><b>" + msg + "</b></font>";
 	}
-	
-	public String getBoldMsg(String msg){
+
+	public String getBoldMsg(String msg) {
 		return "<b>" + msg + "</b>";
 	}
 

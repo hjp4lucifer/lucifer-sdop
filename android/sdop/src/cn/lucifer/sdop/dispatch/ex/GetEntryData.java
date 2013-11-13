@@ -1,6 +1,5 @@
 package cn.lucifer.sdop.dispatch.ex;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
