@@ -129,7 +129,7 @@ public class Sdop extends LcfExtend {
 		checkCallback(callback, delayMillis, null);
 	}
 
-	public void checkCallback(String callback, Object... args) {
+	public void checkCallback(String callback, Object[] args) {
 		checkCallback(callback, delayMillis, args);
 	}
 

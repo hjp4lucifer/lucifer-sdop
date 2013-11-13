@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.lucifer.sdop.dispatch.BaseDispatch;
+import cn.lucifer.sdop.domain.Player;
 
 public class GetEntryData extends BaseDispatch {
 
@@ -18,14 +19,29 @@ public class GetEntryData extends BaseDispatch {
 			return;
 		}
 
-		JSONArray entryList = args.getJSONArray("list");
+		Player[] entryList = lcf().gson.fromJson(args.getString("list"),
+				Player[].class);
 		lcf().sdop.checkCallback(callback, entryList);
 	}
 
 	@Override
 	public void callback(Object[] args) {
-		// TODO Auto-generated method stub
-		
+		Player[] entryList = (Player[]) args;
+		int targetId = 0;
+		Player entry;
+		for (int i = 0; i < entryList.length; i++) {
+			entry = entryList[i];
+			if (entry.unitAttribute.value
+					.equals(lcf().sdop.duel.targetUnitAttribute)) {
+				targetId = entry.playerId;
+				lcf().sdop.log("准备对【" + entry.playerName + "】发起挑战，对方属性是【"
+						+ entry.unitAttribute.value + "】" + entry.unitName
+						+ "！");
+				break;
+			}
+		}
+		entryList = null;
+		lcf().sdop.duel.executeDuelBattle(targetId);
 	}
 
 }

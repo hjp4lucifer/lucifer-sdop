@@ -20,10 +20,10 @@ public final class DF {
 			return;
 		}
 		map = new HashMap<String, IProcedure>();
-		
+
 		put(Enter.procedure, new Enter());
 		put(PostGreeting.procedure, new PostGreeting());
-		
+
 		put(GetEntryData.procedure, new GetEntryData());
 	}
 
@@ -40,16 +40,7 @@ public final class DF {
 
 	public static void dispatch(String procedure, byte[] response,
 			String callback) {
-		if (procedure == null) {
-			Log.e("Lucifer", "procedure is null");
-		}
-		if (response == null) {
-			Log.e("Lucifer", "no response !");
-		}
 		IProcedure iProcedure = get(procedure);
-		if (iProcedure == null) {
-			Log.e("Lucifer", "iProcedure is null");
-		}
 
 		try {
 			iProcedure.process(response, callback);
@@ -60,13 +51,7 @@ public final class DF {
 	}
 
 	public static void callback(String procedure, Object[] args) {
-		if (procedure == null) {
-			Log.e("Lucifer", "callback is null");
-		}
 		IProcedure iProcedure = get(procedure);
-		if (iProcedure == null) {
-			Log.e("Lucifer", "iCallback is null");
-		}
 
 		iProcedure.callback(args);
 	}

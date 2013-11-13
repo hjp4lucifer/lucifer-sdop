@@ -88,13 +88,16 @@ public class MainActivity extends BaseActivity {
 		// lcf().sdop.log("action_auto_GB");
 		// break;
 		case R.id.action_auto_GB_FIGHT:
-			lcf().sdop.log("action_auto_GB_FIGHT");
+			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[0];
+			lcf().sdop.duel.checkAndExecute();
 			break;
 		case R.id.action_auto_GB_SPECIAL:
-			lcf().sdop.log("action_auto_GB_SPECIAL");
+			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[0];
+			lcf().sdop.duel.checkAndExecute();
 			break;
 		case R.id.action_auto_GB_SHOOT:
-			lcf().sdop.log("action_auto_GB_SHOOT");
+			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[0];
+			lcf().sdop.duel.checkAndExecute();
 			break;
 		case R.id.action_auto_GB_off:
 			lcf().sdop.log("action_auto_GB_off");

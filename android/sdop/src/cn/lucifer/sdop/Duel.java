@@ -47,6 +47,6 @@ public class Duel extends LcfExtend {
 	}
 	
 	public void checkAndExecute(){
-		
+		getDuelData(GetDuelData.procedure);
 	}
 }
