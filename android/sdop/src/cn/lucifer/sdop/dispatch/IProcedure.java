@@ -12,4 +12,6 @@ public interface IProcedure {
 
 	public void process(byte[] response, String callback) throws JSONException;
 
+	public void callback(Object[] args);
+
 }

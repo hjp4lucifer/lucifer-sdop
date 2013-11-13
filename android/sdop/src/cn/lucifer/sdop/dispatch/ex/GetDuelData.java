@@ -31,8 +31,11 @@ public class GetDuelData extends BaseDispatch {
 
 	@Override
 	public void callback(Object[] args) {
-		// TODO Auto-generated method stub
-		
+		if (lcf().sdop.bp < 5) {
+			lcf().sdop.log("当前bp为" + lcf().sdop.bp + "，少于5, 等待下次检查！");
+			return;
+		}
+		lcf().sdop.duel.getEntryData(GetEntryData.procedure);
 	}
 
 }
