@@ -39,7 +39,9 @@ public class MainActivity extends BaseActivity {
 
 	void viewInit() {
 		listView_log = (ListView) findViewById(R.id.listView_log);
-		logAdapter = new LogAdapter(this, android.R.layout.simple_list_item_1);
+		// logAdapter = new LogAdapter(this,
+		// android.R.layout.simple_list_item_1);
+		logAdapter = new LogAdapter(this);
 		listView_log.setAdapter(logAdapter);
 	}
 
@@ -85,8 +87,14 @@ public class MainActivity extends BaseActivity {
 		// case R.id.action_auto_GB:
 		// lcf().sdop.log("action_auto_GB");
 		// break;
-		case R.id.action_auto_GB_on:
-			lcf().sdop.log("action_auto_GB_on");
+		case R.id.action_auto_GB_FIGHT:
+			lcf().sdop.log("action_auto_GB_FIGHT");
+			break;
+		case R.id.action_auto_GB_SPECIAL:
+			lcf().sdop.log("action_auto_GB_SPECIAL");
+			break;
+		case R.id.action_auto_GB_SHOOT:
+			lcf().sdop.log("action_auto_GB_SHOOT");
 			break;
 		case R.id.action_auto_GB_off:
 			lcf().sdop.log("action_auto_GB_off");
@@ -122,7 +130,7 @@ public class MainActivity extends BaseActivity {
 		if (logAdapter.getCount() > 100) {
 			logAdapter.clear();
 		}
-		logAdapter.add(text);
+		logAdapter.addFirst(text);
 		// logAdapter.notifyDataSetChanged();//数据发生变化, 刷新
 	}
 

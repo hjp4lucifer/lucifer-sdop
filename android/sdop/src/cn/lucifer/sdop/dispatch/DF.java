@@ -6,6 +6,7 @@ import java.util.Map;
 import org.json.JSONException;
 
 import cn.lucifer.sdop.dispatch.ex.Enter;
+import cn.lucifer.sdop.dispatch.ex.GetEntryData;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 
 import android.util.Log;
@@ -21,6 +22,8 @@ public final class DF {
 		map = new HashMap<String, IProcedure>();
 		put(Enter.procedure, new Enter());
 		put(PostGreeting.procedure, new PostGreeting());
+		
+		put(GetEntryData.procedure, new GetEntryData());
 	}
 
 	private static void put(String procedure, IProcedure impl) {
@@ -34,20 +37,21 @@ public final class DF {
 		return map.get(procedure);
 	}
 
-	public static void dispatch(String callback, byte[] response) {
-		if (callback == null) {
-			Log.e("Lucifer", "callback is null");
+	public static void dispatch(String procedure, byte[] response,
+			String callback) {
+		if (procedure == null) {
+			Log.e("Lucifer", "procedure is null");
 		}
 		if (response == null) {
 			Log.e("Lucifer", "no response !");
 		}
-		IProcedure iProcedure = get(callback);
+		IProcedure iProcedure = get(procedure);
 		if (iProcedure == null) {
 			Log.e("Lucifer", "iProcedure is null");
 		}
 
 		try {
-			iProcedure.callback(response);
+			iProcedure.process(response, callback);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

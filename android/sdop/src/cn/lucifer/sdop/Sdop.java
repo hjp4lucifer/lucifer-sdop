@@ -11,12 +11,14 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.lucifer.sdop.callback.CallbackTimeoutThread;
 import cn.lucifer.sdop.dispatch.ex.Enter;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.service.HttpService;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 
 public class Sdop extends LcfExtend {
@@ -26,17 +28,17 @@ public class Sdop extends LcfExtend {
 	private String cookies;
 	private String userAgent;
 
-	private String ssid;
+	public String ssid;
 
 	private String tokenId;
 	private String myUserId;
-	private int bp;
-	private int ep;
+	public int bp;
+	public int ep;
 	private int maxSp;
 	private int currentSp;
 
 	public final String host = "sdop-g.bandainamco-ol.jp";
-	private final String httpUrlPrefix = "http://sdop-g.bandainamco-ol.jp";
+	public final String httpUrlPrefix = "http://sdop-g.bandainamco-ol.jp";
 
 	public final String custom_login_url = "http://sdop.bandainamco-ol.jp/";
 	public final String game_url = "http://sdop-g.bandainamco-ol.jp/game/top";
@@ -49,7 +51,8 @@ public class Sdop extends LcfExtend {
 
 	public Context context;
 
-	public Auto auto = new Auto();
+	public final Auto auto = new Auto();
+	public final Ms ms = new Ms();
 
 	public final String EXTRA_LOG_NAME = "log";
 
@@ -78,7 +81,7 @@ public class Sdop extends LcfExtend {
 		return json;
 	}
 
-	public void get(String url, String callback) {
+	public void get(String url, String procedure, String callback) {
 		if (context == null) {
 			Log.i("Lucifer", "post : no context");
 			return;
@@ -86,11 +89,13 @@ public class Sdop extends LcfExtend {
 		Log.i("Lucifer", "get : " + url);
 		Intent intent = new Intent(HttpService.GET_ACTION);
 		intent.putExtra("url", url);
+		intent.putExtra("procedure", procedure);
 		intent.putExtra("callback", callback);
 		context.sendBroadcast(intent);
 	}
 
-	public void post(String url, String payload, String callback) {
+	public void post(String url, String payload, String procedure,
+			String callback) {
 		if (context == null) {
 			Log.i("Lucifer", "post : no context");
 			return;
@@ -99,8 +104,40 @@ public class Sdop extends LcfExtend {
 		Intent intent = new Intent(HttpService.POST_ACTION);
 		intent.putExtra("url", url);
 		intent.putExtra("payload", payload);
+		intent.putExtra("procedure", procedure);
 		intent.putExtra("callback", callback);
 		context.sendBroadcast(intent);
+	}
+
+	public boolean checkError(JSONObject dataArgs, String msg)
+			throws JSONException {
+		String message = dataArgs.getString("message");
+		if (message == null) {
+			return false;
+		}
+		Log.w("Lucifer", dataArgs.toString());
+		log(msg + "：" + message);
+		// lcf.sdop.checkReload(data);
+		// lcf.sdop.checkBattleFinished(data);
+		return true;
+	}
+
+	final long delayMillis = 100;
+
+	public void checkCallback(String callback) {
+		checkCallback(callback, delayMillis, null);
+	}
+
+	public void checkCallback(String callback, Object... args) {
+		checkCallback(callback, delayMillis, args);
+	}
+
+	public void checkCallback(String callback, long delayMillis, Object[] args) {
+		if (callback == null) {
+			return;
+		}
+		new Handler().postDelayed(new CallbackTimeoutThread(callback, args),
+				delayMillis);
 	}
 
 	public void login() {
@@ -110,7 +147,7 @@ public class Sdop extends LcfExtend {
 			List<String> lines = IOUtils.readLines(input);
 			IOUtils.closeQuietly(input);
 			String payload = lines.get(0);// 这里处理过gson, 所以只有一行
-			post(url, payload, Enter.procedure);
+			post(url, payload, Enter.procedure, null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -125,7 +162,7 @@ public class Sdop extends LcfExtend {
 					PostGreeting.procedure,
 					new JSONObject().put("comment", "hello").put(
 							"greetingUserId", 339947));
-			post(url, payload.toString(), PostGreeting.procedure);
+			post(url, payload.toString(), PostGreeting.procedure, null);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -141,6 +178,14 @@ public class Sdop extends LcfExtend {
 		}
 		this.ssid = ssid;
 		log("获取 ssid 成功！");
+	}
+
+	public String getRedMsg(String msg) {
+		return "<font color=\"#FF0000\">" + msg + "</font>";
+	}
+
+	public String getBlueMsg(String msg) {
+		return "<font color=\"#0000FF\">" + msg + "</font>";
 	}
 
 	public String getUserAgent() {

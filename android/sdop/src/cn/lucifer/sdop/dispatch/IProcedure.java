@@ -10,6 +10,6 @@ import org.json.JSONException;
  */
 public interface IProcedure {
 
-	public void callback(byte[] response) throws JSONException;
+	public void process(byte[] response, String callback) throws JSONException;
 
 }

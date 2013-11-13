@@ -4,7 +4,7 @@ public class Auto {
 
 	public Setting setting = new Setting();
 
-	private class Setting {
+	public class Setting {
 		public boolean duel;
 		public boolean boss;
 	}

@@ -9,7 +9,7 @@ public class PostGreeting extends BaseDispatch {
 	public static final String procedure = "postGreeting";
 
 	@Override
-	public void callback(byte[] response) throws JSONException {
+	public void process(byte[] response, String callback) throws JSONException {
 		// JSONObject json = new JSONObject(new String(response));
 		lcf().sdop.log("hello 成功");
 	}

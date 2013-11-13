@@ -3,11 +3,15 @@ package cn.lucifer.sdop;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
+
 public final class Lcf {
 
 	private static Lcf _instance;
 
 	public Sdop sdop = new Sdop();
+	
+	public Gson gson = new Gson();
 
 	private Lcf() {
 	}

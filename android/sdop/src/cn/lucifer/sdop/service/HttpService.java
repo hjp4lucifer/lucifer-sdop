@@ -13,6 +13,7 @@ import org.apache.commons.io.IOUtils;
 
 import cn.lucifer.sdop.IGetLcf;
 import cn.lucifer.sdop.Lcf;
+import cn.lucifer.sdop.callback.CB;
 import cn.lucifer.sdop.dispatch.DF;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -43,6 +44,7 @@ public class HttpService extends Service implements IGetLcf {
 
 		Log.i("Lucifer", "--------- HttpService onCreate ! ");
 		DF.init();
+		CB.init();
 	}
 
 	private BroadcastReceiver httpReceiver = new BroadcastReceiver() {
@@ -53,22 +55,24 @@ public class HttpService extends Service implements IGetLcf {
 			Log.i("Lucifer", "--------- action : " + action);
 			Bundle bundle = intent.getExtras();
 			String url = bundle.getString("url");
-			String callback = bundle.getString("callback");
 			String payload = bundle.getString("payload");
-			new HttpThread(action, url, payload, callback).start();
+			String procedure = bundle.getString("procedure");
+			String callback = bundle.getString("callback");
+			new HttpThread(action, url, payload, procedure, callback).start();
 		}
 
 	};
 
 	private class HttpThread extends Thread {
-		private String action, url, payload, callback;
+		private String action, url, payload, procedure, callback;
 
 		public HttpThread(String action, String url, String payload,
-				String callback) {
+				String procedure, String callback) {
 			super();
 			this.action = action;
 			this.url = url;
 			this.payload = payload;
+			this.procedure = procedure;
 			this.callback = callback;
 		}
 
@@ -76,7 +80,7 @@ public class HttpService extends Service implements IGetLcf {
 		public void run() {
 			if (action.equals(GET_ACTION)) {
 				try {
-					get(url, callback);
+					get(url, procedure, callback);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					// e.printStackTrace();
@@ -87,7 +91,7 @@ public class HttpService extends Service implements IGetLcf {
 
 			if (action.equals(POST_ACTION)) {
 				try {
-					post(url, payload, callback);
+					post(url, payload, procedure, callback);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					// e.printStackTrace();
@@ -100,8 +104,8 @@ public class HttpService extends Service implements IGetLcf {
 
 	private final String GET = "GET", POST = "POST";
 
-	protected void post(String urlStr, String payload, String callback)
-			throws IOException {
+	protected void post(String urlStr, String payload, String procedure,
+			String callback) throws IOException {
 		URL url = new URL(urlStr);
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -124,10 +128,11 @@ public class HttpService extends Service implements IGetLcf {
 		pw.write(payload);
 		pw.close();
 
-		getResponse(conn, callback);
+		getResponse(conn, procedure, callback);
 	}
 
-	protected void get(String urlStr, String callback) throws IOException {
+	protected void get(String urlStr, String procedure, String callback)
+			throws IOException {
 		URL url = new URL(urlStr);
 
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -138,7 +143,7 @@ public class HttpService extends Service implements IGetLcf {
 
 		conn(conn);
 
-		getResponse(conn, callback);
+		getResponse(conn, procedure, callback);
 	}
 
 	private void conn(HttpURLConnection conn) throws IOException {
@@ -154,8 +159,8 @@ public class HttpService extends Service implements IGetLcf {
 		conn.connect();
 	}
 
-	private void getResponse(HttpURLConnection conn, String callback)
-			throws IOException {
+	private void getResponse(HttpURLConnection conn, String procedure,
+			String callback) throws IOException {
 		InputStream is = conn.getInputStream();
 		GZIPInputStream gzin = new GZIPInputStream(is);
 
@@ -167,8 +172,8 @@ public class HttpService extends Service implements IGetLcf {
 
 		IOUtils.closeQuietly(is);
 
-		if (callback != null) {
-			DF.dispatch(callback, response);
+		if (procedure != null) {
+			DF.dispatch(procedure, response, callback);
 		}
 	}
 
