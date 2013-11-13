@@ -11,7 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import cn.lucifer.sdop.callback.CallbackTimeoutThread;
+import cn.lucifer.sdop.dispatch.CallbackThread;
 import cn.lucifer.sdop.dispatch.ex.Enter;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.service.HttpService;
@@ -137,7 +137,7 @@ public class Sdop extends LcfExtend {
 		if (callback == null) {
 			return;
 		}
-		new Handler().postDelayed(new CallbackTimeoutThread(callback, args),
+		new Handler().postDelayed(new CallbackThread(callback, args),
 				delayMillis);
 	}
 
