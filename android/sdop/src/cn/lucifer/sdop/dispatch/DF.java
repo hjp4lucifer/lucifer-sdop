@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.json.JSONException;
 
+import cn.lucifer.sdop.dispatch.ex.Enter;
+import cn.lucifer.sdop.dispatch.ex.PostGreeting;
+
 import android.util.Log;
 
 public final class DF {
@@ -17,6 +20,7 @@ public final class DF {
 		}
 		map = new HashMap<String, IProcedure>();
 		put(Enter.procedure, new Enter());
+		put(PostGreeting.procedure, new PostGreeting());
 	}
 
 	private static void put(String procedure, IProcedure impl) {

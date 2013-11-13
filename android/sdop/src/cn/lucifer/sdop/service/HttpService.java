@@ -79,7 +79,7 @@ public class HttpService extends Service implements IGetLcf {
 					get(url, callback);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					// e.printStackTrace();
 					Log.e("Lucifer", "GET IOException", e);
 				}
 				return;
@@ -90,7 +90,7 @@ public class HttpService extends Service implements IGetLcf {
 					post(url, payload, callback);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					// e.printStackTrace();
 					Log.e("Lucifer", "POST IOException", e);
 				}
 				return;
@@ -141,24 +141,6 @@ public class HttpService extends Service implements IGetLcf {
 		getResponse(conn, callback);
 	}
 
-	private void getResponse(HttpURLConnection conn, String callback)
-			throws IOException {
-		InputStream is = conn.getInputStream();
-		GZIPInputStream gzin = new GZIPInputStream(is);
-
-		byte[] response = IOUtils.toByteArray(gzin);
-
-		// 获取cookies的set信息
-		// Map<String, List<String>> map = conn.getHeaderFields();
-		// List<String> newCookies = map.get("Set-Cookie");
-
-		is.close();
-
-		if (callback != null) {
-			DF.dispatch(callback, response);
-		}
-	}
-
 	private void conn(HttpURLConnection conn) throws IOException {
 		conn.setRequestProperty("Cookie", lcf().sdop.getCookies());
 		conn.setRequestProperty("Content-Type", "application/octet-stream");
@@ -170,6 +152,24 @@ public class HttpService extends Service implements IGetLcf {
 		conn.setRequestProperty("User-Agent", lcf().sdop.getUserAgent());
 
 		conn.connect();
+	}
+
+	private void getResponse(HttpURLConnection conn, String callback)
+			throws IOException {
+		InputStream is = conn.getInputStream();
+		GZIPInputStream gzin = new GZIPInputStream(is);
+
+		byte[] response = IOUtils.toByteArray(gzin);
+
+		// 获取cookies的set信息
+		// Map<String, List<String>> map = conn.getHeaderFields();
+		// List<String> newCookies = map.get("Set-Cookie");
+
+		IOUtils.closeQuietly(is);
+
+		if (callback != null) {
+			DF.dispatch(callback, response);
+		}
 	}
 
 	@Override

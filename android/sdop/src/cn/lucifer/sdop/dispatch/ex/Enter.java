@@ -1,7 +1,9 @@
-package cn.lucifer.sdop.dispatch;
+package cn.lucifer.sdop.dispatch.ex;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import cn.lucifer.sdop.dispatch.BaseDispatch;
 
 public class Enter extends BaseDispatch {
 

@@ -3,6 +3,7 @@
 
     <string name="app_name">sdop</string>
     <string name="action_login">登录</string>
+    <string name="action_test_hello">对ads测试hello</string>
     <string name="action_exit">退出</string>
 
 </resources>

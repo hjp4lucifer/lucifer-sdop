@@ -1,6 +1,5 @@
 package cn.lucifer.sdop;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -9,8 +8,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import cn.lucifer.sdop.dispatch.Enter;
+import cn.lucifer.sdop.dispatch.ex.Enter;
+import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.service.HttpService;
 
 import android.content.Context;
@@ -59,6 +61,33 @@ public class Sdop extends LcfExtend {
 		context.sendBroadcast(intent);
 	}
 
+	public String createGetParams() {
+		return String.format("ssid=%s&tokenId=%s&timeStamp=%d", ssid, tokenId,
+				lcf().getTimeStamp());
+	}
+
+	public JSONObject createBasePayload(String procedure, JSONObject args)
+			throws JSONException {
+		JSONObject json = new JSONObject();
+		json.put("procedure", procedure);
+		json.put("tokenId", tokenId);
+		json.put("ssid", ssid);
+		json.put("args", args);
+		return json;
+	}
+
+	public void get(String url, String callback) {
+		if (context == null) {
+			Log.i("Lucifer", "post : no context");
+			return;
+		}
+		Log.i("Lucifer", "get : " + url);
+		Intent intent = new Intent(HttpService.GET_ACTION);
+		intent.putExtra("url", url);
+		intent.putExtra("callback", callback);
+		context.sendBroadcast(intent);
+	}
+
 	public void post(String url, String payload, String callback) {
 		if (context == null) {
 			Log.i("Lucifer", "post : no context");
@@ -74,9 +103,6 @@ public class Sdop extends LcfExtend {
 
 	public void login() {
 		String url = httpUrlPrefix + "/PostForAuthentication/enter";
-		if (context == null) {
-			return;
-		}
 		try {
 			InputStream input = context.getAssets().open("login.json");
 			List<String> lines = IOUtils.readLines(input);
@@ -84,6 +110,21 @@ public class Sdop extends LcfExtend {
 			String payload = lines.get(0);// 这里处理过gson, 所以只有一行
 			post(url, payload, Enter.procedure);
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void testToAdsPostGreeting() {
+		String url = httpUrlPrefix + "/PostForProfile/postGreeting?ssid="
+				+ ssid;
+		try {
+			JSONObject payload = createBasePayload(
+					PostGreeting.procedure,
+					new JSONObject().put("comment", "hello").put(
+							"greetingUserId", 339947));
+			post(url, payload.toString(), PostGreeting.procedure);
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

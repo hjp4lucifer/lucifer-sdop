@@ -29,7 +29,7 @@ public class MainActivity extends BaseActivity {
 
 		Intent httpService = new Intent(this, HttpService.class);
 		startService(httpService);
-		
+
 		viewInit();
 	}
 
@@ -47,17 +47,31 @@ public class MainActivity extends BaseActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		// menu.add(int groupId, int itemId, int order, CharSequence title);
-		// menu.add(1, 1, 1, "he");
+		return true;
+	}
+
+	private boolean isDisabledLoginMenu = true;
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		if (isDisabledLoginMenu && lcf().sdop.getTokenId() != null) {
+			menu.findItem(R.id.action_test_hello).setEnabled(true);
+			isDisabledLoginMenu = false;
+		}
 		return true;
 	}
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		Intent intent = null;
 		switch (item.getItemId()) {
 		case R.id.action_login:
-			intent = new Intent(this, WebActivity.class);
+			Intent intent = new Intent(this, WebActivity.class);
 			intent.putExtra("url", lcf().sdop.custom_login_url);
+			startActivityForResult(intent, R.id.action_login);
+			break;
+		case R.id.action_test_hello:
+			lcf().sdop.testToAdsPostGreeting();
 			break;
 		case R.id.action_exit:
 			exit();
@@ -65,10 +79,6 @@ public class MainActivity extends BaseActivity {
 
 		default:
 			break;
-		}
-
-		if (intent != null) {
-			startActivityForResult(intent, R.id.action_login);
 		}
 
 		// return super.onMenuItemSelected(featureId, item);
@@ -108,6 +118,7 @@ public class MainActivity extends BaseActivity {
 		}
 
 	};
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
