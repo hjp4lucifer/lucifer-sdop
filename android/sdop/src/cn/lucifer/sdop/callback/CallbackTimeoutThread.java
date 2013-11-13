@@ -1,5 +1,7 @@
 package cn.lucifer.sdop.callback;
 
+import cn.lucifer.sdop.dispatch.DF;
+
 public class CallbackTimeoutThread extends Thread {
 
 	private String callback;
@@ -13,6 +15,6 @@ public class CallbackTimeoutThread extends Thread {
 
 	@Override
 	public void run() {
-		CB.dispatch(callback, args);
+		DF.callback(callback, args);
 	}
 }
