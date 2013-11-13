@@ -25,13 +25,23 @@
         android:title="@string/action_auto_GB" android:enabled="false">
         <menu>
 			<item
-		        android:id="@+id/action_auto_GB_on"
-		        android:orderInCategory="62"
+		        android:id="@+id/action_auto_GB_FIGHT"
+		        android:orderInCategory="65"
 		        android:showAsAction="never"
-		        android:title="@string/action_auto_on"/>
+		        android:title="@string/action_auto_GB_FIGHT"/>
+			<item
+		        android:id="@+id/action_auto_GB_SPECIAL"
+		        android:orderInCategory="66"
+		        android:showAsAction="never"
+		        android:title="@string/action_auto_GB_SPECIAL"/>
+			<item
+		        android:id="@+id/action_auto_GB_SHOOT"
+		        android:orderInCategory="67"
+		        android:showAsAction="never"
+		        android:title="@string/action_auto_GB_SHOOT"/>
 			<item
 		        android:id="@+id/action_auto_GB_off"
-		        android:orderInCategory="63"
+		        android:orderInCategory="69"
 		        android:showAsAction="never"
 		        android:title="@string/action_auto_off"/>
 		</menu>
