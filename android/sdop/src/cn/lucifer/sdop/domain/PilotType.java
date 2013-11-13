@@ -4,7 +4,7 @@ public class PilotType {
 
 	public int id;
 	public String name;
-	public String smallThumbnailPath;
-	public String thumbnailPath;
-	
+	// public String smallThumbnailPath;
+	// public String thumbnailPath;
+
 }

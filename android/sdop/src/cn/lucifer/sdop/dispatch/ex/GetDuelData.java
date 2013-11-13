@@ -29,4 +29,10 @@ public class GetDuelData extends BaseDispatch {
 		lcf().sdop.checkCallback(callback);
 	}
 
+	@Override
+	public void callback(Object[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

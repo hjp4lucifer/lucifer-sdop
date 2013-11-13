@@ -22,4 +22,10 @@ public class GetEntryData extends BaseDispatch {
 		lcf().sdop.checkCallback(callback, entryList);
 	}
 
+	@Override
+	public void callback(Object[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

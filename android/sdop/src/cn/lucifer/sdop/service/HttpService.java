@@ -13,7 +13,6 @@ import org.apache.commons.io.IOUtils;
 
 import cn.lucifer.sdop.IGetLcf;
 import cn.lucifer.sdop.Lcf;
-import cn.lucifer.sdop.callback.CB;
 import cn.lucifer.sdop.dispatch.DF;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -44,7 +43,6 @@ public class HttpService extends Service implements IGetLcf {
 
 		Log.i("Lucifer", "--------- HttpService onCreate ! ");
 		DF.init();
-		CB.init();
 	}
 
 	private BroadcastReceiver httpReceiver = new BroadcastReceiver() {

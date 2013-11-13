@@ -1,10 +1,10 @@
 package cn.lucifer.sdop.dispatch.ex;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.lucifer.sdop.dispatch.BaseDispatch;
+import cn.lucifer.sdop.domain.Ms;
 
 public class ExecuteDuelBattle extends BaseDispatch {
 	public static final String procedure = "executeDuelBattle";
@@ -22,7 +22,20 @@ public class ExecuteDuelBattle extends BaseDispatch {
 		logMsg.append(result);
 		logMsg.append("！对方MS阵容：");
 
-		String enemyMsList = data.getString("enemyMsList");
+		Ms[] enemyMsList = lcf().gson.fromJson(data.getString("enemyMsList"),
+				Ms[].class);
+
+		logMsg.append(lcf().sdop.ms.logMsList(enemyMsList));
+
+		lcf().sdop.log(logMsg.toString());
+
+		logMsg = null;
+	}
+
+	@Override
+	public void callback(Object[] args) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

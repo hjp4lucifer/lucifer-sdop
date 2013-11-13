@@ -17,4 +17,10 @@ public class Enter extends BaseDispatch {
 		lcf().sdop.setTokenId(tokenId);
 	}
 
+	@Override
+	public void callback(Object[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

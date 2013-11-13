@@ -14,4 +14,10 @@ public class PostGreeting extends BaseDispatch {
 		lcf().sdop.log("hello 成功");
 	}
 
+	@Override
+	public void callback(Object[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
