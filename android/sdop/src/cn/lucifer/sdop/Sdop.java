@@ -183,6 +183,14 @@ public class Sdop extends LcfExtend {
 	public String getRedMsg(String msg) {
 		return "<font color=\"#FF0000\">" + msg + "</font>";
 	}
+	
+	public String getRedBoldMsg(String msg){
+		return "<font color=\"#FF0000\"><b>" + msg + "</b></font>";
+	}
+	
+	public String getBoldMsg(String msg){
+		return "<b>" + msg + "</b>";
+	}
 
 	public String getBlueMsg(String msg) {
 		return "<font color=\"#0000FF\">" + msg + "</font>";

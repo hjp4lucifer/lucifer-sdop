@@ -45,4 +45,8 @@ public class Duel extends LcfExtend {
 			e.printStackTrace();
 		}
 	}
+	
+	public void checkAndExecute(){
+		
+	}
 }
