@@ -120,14 +120,14 @@ public class Sdop extends LcfExtend {
 		String message = dataArgs.getString("message");
 		Log.w("Lucifer", dataArgs.toString());
 		log(msg + "：" + message);
-		
+
 		checkReload(message);
 		// lcf.sdop.checkBattleFinished(data);
-		
+
 		return true;
 	}
-	
-	protected void checkReload(String message){
+
+	protected void checkReload(String message) {
 		if (message.indexOf("再度ログインお願いします。") > 0) {
 			Intent intent = new Intent(AUTO_LOGIN_RECEIVER_ACTION);
 			context.sendBroadcast(intent);
@@ -169,15 +169,26 @@ public class Sdop extends LcfExtend {
 				TimeUnit.MILLISECONDS);
 	}
 
+	public String loadJson(String assetsFileName) throws IOException {
+		InputStream input = lcf().sdop.context.getAssets().open(assetsFileName);
+		List<String> lines = IOUtils.readLines(input);
+		IOUtils.closeQuietly(input);
+		String json = lines.get(0);// 这里处理过gson, 所以只有一行
+		lines = null;
+
+		return json;
+	}
+
+	public JSONObject loadJsonObject(String assetsFileName) throws IOException,
+			JSONException {
+		return new JSONObject(loadJson(assetsFileName));
+	}
+
 	public void login() {
 		String url = httpUrlPrefix + "/PostForAuthentication/enter";
 		try {
-			InputStream input = context.getAssets().open("login.json");
-			List<String> lines = IOUtils.readLines(input);
-			IOUtils.closeQuietly(input);
-			String payload = lines.get(0);// 这里处理过gson, 所以只有一行
-			lines = null;
-			
+			String payload = loadJson("login.json");
+
 			post(url, payload, Enter.procedure, null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
