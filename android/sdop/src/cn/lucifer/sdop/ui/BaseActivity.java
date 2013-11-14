@@ -14,6 +14,8 @@ public class BaseActivity extends Activity implements IGetLcf {
 	}
 
 	protected void exit() {
+		lcf().sdop.clearAllJob();
+		
 		Intent httpService = new Intent(this, HttpService.class);
 		stopService(httpService);
 

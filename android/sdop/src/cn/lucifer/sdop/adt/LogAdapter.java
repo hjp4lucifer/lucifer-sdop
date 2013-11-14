@@ -28,11 +28,17 @@ public class LogAdapter extends BaseAdapter {
 
 	public void addFirst(String text) {
 		msgs.addFirst(text);
+		if (getCount() > 30) {
+			msgs.removeLast();
+		}
 		notifyDataSetChanged();
 	}
 
 	public void addLast(String text) {
 		msgs.addLast(text);
+		if (getCount() > 30) {
+			msgs.removeFirst();
+		}
 		notifyDataSetChanged();
 	}
 

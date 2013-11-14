@@ -45,8 +45,30 @@ public class Duel extends LcfExtend {
 			e.printStackTrace();
 		}
 	}
-	
-	public void checkAndExecute(){
+
+	public void checkAndExecute() {
+		if (!lcf().sdop.auto.setting.duel) {
+			return;
+		}
 		getDuelData(GetDuelData.procedure);
+	}
+
+	public void startAutoDuel() {
+		lcf().sdop.clearAllJob();
+		lcf().sdop.auto.setting.duel = true;
+		lcf().sdop.log("针对【" + targetUnitAttribute + "】的自动GB开始！");
+		lcf().sdop.startJob(new Runnable() {
+			@Override
+			public void run() {
+				Log.i("Lucifer", "autoDuel ----------");
+				lcf().sdop.duel.checkAndExecute();
+			}
+		}, 0, 180000);
+	}
+
+	public void cancelAutoDuel() {
+		lcf().sdop.auto.setting.duel = false;
+		lcf().sdop.clearAllJob();
+		lcf().sdop.log("自动GB停止成功！");
 	}
 }

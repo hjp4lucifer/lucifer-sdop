@@ -6,7 +6,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -19,13 +20,12 @@ import cn.lucifer.sdop.service.HttpService;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 public class Sdop extends LcfExtend {
 
 	public final String LOG_RECEIVER_ACTION = "lcf.sdop.ui.Log";
+	public final String AUTO_LOGIN_RECEIVER_ACTION = "lcf.sdop.autoLogin";
 
 	private String cookies;
 	private String userAgent;
@@ -114,15 +114,24 @@ public class Sdop extends LcfExtend {
 
 	public boolean checkError(JSONObject dataArgs, String msg)
 			throws JSONException {
-		if (!dataArgs.has("message")) {
+		if (dataArgs.isNull("message")) {
 			return false;
 		}
 		String message = dataArgs.getString("message");
 		Log.w("Lucifer", dataArgs.toString());
 		log(msg + "：" + message);
-		// lcf.sdop.checkReload(data);
+		
+		checkReload(message);
 		// lcf.sdop.checkBattleFinished(data);
+		
 		return true;
+	}
+	
+	protected void checkReload(String message){
+		if (message.indexOf("再度ログインお願いします。") > 0) {
+			Intent intent = new Intent(AUTO_LOGIN_RECEIVER_ACTION);
+			context.sendBroadcast(intent);
+		}
 	}
 
 	final long delayMillis = 100;
@@ -135,11 +144,29 @@ public class Sdop extends LcfExtend {
 		checkCallback(callback, delayMillis, args);
 	}
 
+	private static ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
+			10);
+
 	public void checkCallback(String callback, long delayMillis, Object[] args) {
 		if (callback == null) {
 			return;
 		}
-		new Timer().schedule(new CallbackThread(callback, args), delayMillis);
+		executor.schedule(new CallbackThread(callback, args), delayMillis,
+				TimeUnit.MILLISECONDS);
+	}
+
+	public void clearAllJob() {
+		if (executor != null) {
+			executor.shutdownNow();
+			executor.getQueue().clear();
+		}
+		executor = new ScheduledThreadPoolExecutor(10);
+	}
+
+	public void startJob(Runnable command, long initialDelayMillis,
+			long periodMillis) {
+		executor.scheduleAtFixedRate(command, initialDelayMillis, periodMillis,
+				TimeUnit.MILLISECONDS);
 	}
 
 	public void login() {
@@ -149,6 +176,8 @@ public class Sdop extends LcfExtend {
 			List<String> lines = IOUtils.readLines(input);
 			IOUtils.closeQuietly(input);
 			String payload = lines.get(0);// 这里处理过gson, 所以只有一行
+			lines = null;
+			
 			post(url, payload, Enter.procedure, null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

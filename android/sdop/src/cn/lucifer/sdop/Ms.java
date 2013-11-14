@@ -22,11 +22,11 @@ public class Ms extends LcfExtend {
 				}
 			}
 			logMsg.append(card.rarity).append('c').append(card.cost)
-					.append('【').append(card.type.name).append("】，level：")
-					.append(card.level).append("，属性：")
-					.append(card.attribute.value).append("，attack：")
-					.append(card.attack).append("，max HP：").append(card.maxHp)
-					.append("，speed：").append(card.speed);
+					.append('【').append(card.type.name).append("】, level：")
+					.append(card.level).append(", 属性：")
+					.append(card.attribute.value).append(", attack：")
+					.append(card.attack).append(", max HP：").append(card.maxHp)
+					.append(", speed：").append(card.speed);
 
 			for (int j = 0; j < card.characteristicList.length; j++) {
 				logMsg.append("<br>　　插件").append(j).append("：")
@@ -36,7 +36,7 @@ public class Ms extends LcfExtend {
 			pilot = card.pilot;
 			logMsg.append("<br>　pilot：").append(pilot.rarity).append('c')
 					.append(pilot.cost).append('【').append(pilot.type.name)
-					.append("】，level：").append(pilot.level);
+					.append("】, level：").append(pilot.level);
 
 			if (pilot.activeSkillList != null) {
 				for (int j = 0; j < pilot.activeSkillList.length; j++) {

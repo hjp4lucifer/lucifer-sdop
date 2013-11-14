@@ -19,9 +19,9 @@ public class ExecuteDuelBattle extends BaseDispatch {
 		StringBuffer logMsg = new StringBuffer();
 		logMsg.append("挑战【")
 				.append(data.getJSONObject("enemyData").getString("name"))
-				.append("】");
+				.append("】 ");
 		logMsg.append(result);
-		logMsg.append("！对方MS阵容：");
+		logMsg.append("! 对方MS阵容：");
 
 		Ms[] enemyMsList = lcf().gson.fromJson(data.getString("enemyMsList"),
 				Ms[].class);

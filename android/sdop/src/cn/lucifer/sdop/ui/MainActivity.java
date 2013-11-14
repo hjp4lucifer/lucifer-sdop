@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -21,9 +22,14 @@ public class MainActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(lcf().sdop.LOG_RECEIVER_ACTION);
 		registerReceiver(logReceiver, filter);
+
+		filter = new IntentFilter();
+		filter.addAction(lcf().sdop.AUTO_LOGIN_RECEIVER_ACTION);
+		registerReceiver(autologinReceiver, filter);
 
 		lcf().sdop.context = getApplicationContext();
 
@@ -75,9 +81,7 @@ public class MainActivity extends BaseActivity {
 			break;
 		}
 		case R.id.action_auto_login: {
-			Intent intent = new Intent(MainActivity.this, WebActivity.class);
-			intent.putExtra("url", lcf().sdop.login_url);
-			startActivityForResult(intent, R.id.action_login);
+			autoLogin();
 			break;
 		}
 		case R.id.action_test_hello:
@@ -88,18 +92,18 @@ public class MainActivity extends BaseActivity {
 		// break;
 		case R.id.action_auto_GB_FIGHT:
 			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[0];
-			lcf().sdop.duel.checkAndExecute();
+			lcf().sdop.duel.startAutoDuel();
 			break;
 		case R.id.action_auto_GB_SPECIAL:
 			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[0];
-			lcf().sdop.duel.checkAndExecute();
+			lcf().sdop.duel.startAutoDuel();
 			break;
 		case R.id.action_auto_GB_SHOOT:
 			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[0];
-			lcf().sdop.duel.checkAndExecute();
+			lcf().sdop.duel.startAutoDuel();
 			break;
 		case R.id.action_auto_GB_off:
-			lcf().sdop.log("action_auto_GB_off");
+			lcf().sdop.duel.cancelAutoDuel();
 			break;
 		case R.id.action_exit:
 			exit();
@@ -113,6 +117,12 @@ public class MainActivity extends BaseActivity {
 		return true;
 	}
 
+	private void autoLogin() {
+		Intent intent = new Intent(MainActivity.this, WebActivity.class);
+		intent.putExtra("url", lcf().sdop.login_url);
+		startActivityForResult(intent, R.id.action_login);
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// super.onActivityResult(requestCode, resultCode, data);
@@ -120,7 +130,7 @@ public class MainActivity extends BaseActivity {
 				+ resultCode);
 		if (requestCode == R.id.action_login && resultCode == RESULT_OK) {
 			String ssid = data.getStringExtra("ssid");
-			Toast.makeText(this, "ssid : " + ssid, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "ssid : " + ssid, Toast.LENGTH_SHORT).show();
 
 			lcf().sdop.login();
 			// addLog("获得ssid : " + Lcf.getInstance().getCookie(cookies,
@@ -129,9 +139,6 @@ public class MainActivity extends BaseActivity {
 	}
 
 	protected void addLog(String text) {
-		if (logAdapter.getCount() > 100) {
-			logAdapter.clear();
-		}
 		logAdapter.addFirst(text);
 		// logAdapter.notifyDataSetChanged();//数据发生变化, 刷新
 	}
@@ -140,9 +147,18 @@ public class MainActivity extends BaseActivity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(lcf().sdop.LOG_RECEIVER_ACTION)) {
-				addLog(intent.getExtras().getString(lcf().sdop.EXTRA_LOG_NAME));
-			}
+			// if (intent.getAction().equals(lcf().sdop.LOG_RECEIVER_ACTION)) {
+			addLog(intent.getExtras().getString(lcf().sdop.EXTRA_LOG_NAME));
+			// }
+		}
+
+	};
+
+	private BroadcastReceiver autologinReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			autoLogin();
 		}
 
 	};
@@ -151,6 +167,24 @@ public class MainActivity extends BaseActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(logReceiver);
+		unregisterReceiver(autologinReceiver);
+	}
+
+	private long exitTime = 0;
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if ((System.currentTimeMillis() - exitTime) > 2000) {
+				Toast.makeText(getApplicationContext(), "再按一次退出！",
+						Toast.LENGTH_SHORT).show();
+				exitTime = System.currentTimeMillis();
+			} else {
+				exit();
+			}
+			return true;
+		}
+		return false;
 	}
 
 }
