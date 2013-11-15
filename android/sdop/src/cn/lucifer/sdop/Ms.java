@@ -6,6 +6,9 @@ import cn.lucifer.sdop.domain.Pilot;
 public class Ms extends LcfExtend {
 
 	public final String[] unitAttribute = { "FIGHT", "SPECIAL", "SHOOT" };
+	
+	public int max;
+	public int current;
 
 	public String logMsList(cn.lucifer.sdop.domain.Ms[] msList) {
 		StringBuffer logMsg = new StringBuffer();

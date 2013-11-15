@@ -1,13 +1,10 @@
 package cn.lucifer.sdop;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 
 public class Boss extends LcfExtend {
@@ -16,6 +13,8 @@ public class Boss extends LcfExtend {
 
 	public final int x3 = 250037;
 	public final int x6 = 250038;
+
+	public final AI AI = new AI();
 
 	public JSONObject getCurrentType() {
 		if (currentType == null) {
@@ -66,6 +65,27 @@ public class Boss extends LcfExtend {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void getRaidBossOutlineList(String callback) {
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForRaidBossList/getRaidBossOutlineList";
+		try {
+			JSONObject payload = lcf().sdop.createBasePayload(
+					"getRaidBossOutlineList", lcf().sdop.boss.getCurrentType());
+			lcf().sdop.post(url, payload.toString(),
+					GetRaidBossOutlineList.procedure, callback);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void autoSuperRaidBoss() {
+		if (!lcf().sdop.auto.setting.boss) {
+			return;
+		}
+
 	}
 
 }

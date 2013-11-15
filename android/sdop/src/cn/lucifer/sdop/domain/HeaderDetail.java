@@ -5,5 +5,9 @@ public class HeaderDetail {
 	public BpDetail bpDetail;
 	
 	public EnergyDetail energyDetail;
-	
+
+	public int ms;
+	public int msMax;
+	public int pilot;
+	public int pilotMax;
 }

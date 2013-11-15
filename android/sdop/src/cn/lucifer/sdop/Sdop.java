@@ -55,7 +55,9 @@ public class Sdop extends LcfExtend {
 
 	public final Auto auto = new Auto();
 	public final Ms ms = new Ms();
+	public final Pilot pilot = new Pilot();
 	public final Duel duel = new Duel();
+	public final Boss boss = new Boss();
 
 	public final String EXTRA_LOG_NAME = "log";
 
