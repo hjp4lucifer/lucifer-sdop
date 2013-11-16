@@ -28,16 +28,18 @@ public class GetRaidBossOutlineList extends BaseDispatch {
 		}
 
 		Boss target = lcf().sdop.boss.AI.getTopLevel(bosses);
-//		_sdop.log(lcf.sdop.boss.currentKind + "目标boss等级：<b class='c_red'>" + target.level + "</b>，残余血量：" + target.currentHp + "，【" + target.comment + "】");
-//		if (callback) {
-//			setTimeout(callback, 100, target);
-//		}
+		lcf().sdop.log("目标boss等级："
+				+ lcf().sdop.getRedMsg(String.valueOf(target.level))
+				+ ", 残余血量：" + target.currentHp + ", 【" + target.comment + "】");
+
+		lcf().sdop.checkCallback(callback, new Object[] { target });
 	}
 
 	@Override
 	public void callback(Object[] args) {
-		// TODO Auto-generated method stub
-
+		Boss boss = (Boss) args[0];
+		lcf().sdop.boss.postRaidBossBattleEntry(boss.id,
+				PostRaidBossBattleEntry.procedure);
 	}
 
 	public void noList() {

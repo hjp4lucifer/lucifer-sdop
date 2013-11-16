@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
+import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
 
 public class Boss extends LcfExtend {
 
@@ -67,6 +68,24 @@ public class Boss extends LcfExtend {
 		}
 	}
 
+	public void postRaidBossBattleEntry(int bossId, String callback) {
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForRaidBossList/postRaidBossBattleEntry";
+
+		try {
+			JSONObject payload = lcf().sdop.createBasePayload(
+					"getRaidBossOutlineList", new JSONObject()
+							.put("id", bossId).put("isChargeBp", false));
+			lcf().sdop.post(url, payload.toString(),
+					PostRaidBossBattleEntry.procedure,
+					PostRaidBossBattleEntry.procedure);
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void getRaidBossOutlineList(String callback) {
 		String url = lcf().sdop.httpUrlPrefix
 				+ "/PostForRaidBossList/getRaidBossOutlineList";
@@ -81,11 +100,14 @@ public class Boss extends LcfExtend {
 		}
 	}
 
+	/**
+	 * 自动超总
+	 */
 	public void autoSuperRaidBoss() {
 		if (!lcf().sdop.auto.setting.boss) {
 			return;
 		}
-
+		getRaidBossOutlineList(GetRaidBossOutlineList.procedure);
 	}
 
 }
