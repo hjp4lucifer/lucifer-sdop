@@ -47,6 +47,7 @@ public class GetRaidBossOutlineList extends BaseDispatch {
 		if (!lcf().sdop.auto.setting.boss) {
 			return;
 		}
+		lcf().sdop.checkCallback(AutoSuperRaidBoss.procedure, 1000, null);
 	}
 
 }

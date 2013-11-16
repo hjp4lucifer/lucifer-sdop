@@ -1,21 +1,31 @@
 package cn.lucifer.sdop;
 
 import java.io.IOException;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.lucifer.sdop.dispatch.ex.ExecuteBattleStart;
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
+import cn.lucifer.sdop.domain.Card;
+import cn.lucifer.sdop.domain.Unit;
+import cn.lucifer.sdop.domain.Value;
 
 public class Boss extends LcfExtend {
 
 	private JSONObject currentType;
-
+	private JSONObject currentMode;
 	public final int x3 = 250037;
 	public final int x6 = 250038;
 
 	public final AI AI = new AI();
+
+	public Integer targetBossId;
+	public Integer battleId;
 
 	public JSONObject getCurrentType() {
 		if (currentType == null) {
@@ -30,6 +40,54 @@ public class Boss extends LcfExtend {
 			}
 		}
 		return currentType;
+	}
+
+	public JSONObject getCurrentMode() {
+		if (currentMode == null) {
+			Value mode = new Value();
+			mode.value = "RAID_BOSS";
+			try {
+				currentMode = new JSONObject(lcf().gson.toJson(mode));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return currentMode;
+	}
+
+	/**
+	 * 检查是否x6机体
+	 * 
+	 * @param m
+	 *            members中的member, playerList中的player.card
+	 * @return
+	 */
+	public boolean checkX6(Card m) {
+		for (int j = 0; j < m.characteristicList.length; j++) {
+			if (m.characteristicList[j].id == x6) {
+				m.lcf_attack = 6;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 检查是否x3机体
+	 * 
+	 * @param m
+	 *            members中的member, playerList中的player.card
+	 * @return
+	 */
+	public boolean checkX3(Card m) {
+		for (int j = 0; j < m.characteristicList.length; j++) {
+			if (m.characteristicList[j].id == x3) {
+				m.lcf_attack = 3;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private JSONObject initRaidBossOutlineList_args;
@@ -68,17 +126,66 @@ public class Boss extends LcfExtend {
 		}
 	}
 
+	/**
+	 * 选好人, 并开始boss战斗
+	 * 
+	 * @param callback
+	 */
+	public void executeBattleStart(String callback) {
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForQuestBattle/executeBattleStart";
+		try {
+			Unit[] unitList = new Unit[3];
+			unitList[0] = new Unit();
+			unitList[0].id = lcf().sdop.myUserId;
+			unitList[0].setArrangementValue(0);
+			unitList[0].isLeader = true;
+
+			unitList[1] = new Unit();
+			unitList[1].id = AI.attackMember.id;
+			unitList[1].setArrangementValue(1);
+
+			unitList[2] = new Unit();
+			unitList[2].id = AI.helpMember.id;
+			unitList[2].setArrangementValue(2);
+
+			JSONObject payload = lcf().sdop.createBasePayload(
+					"executeBattleStart",
+					new JSONObject()
+							.put("battleId", battleId)
+							.put("unitList",
+									new JSONArray(lcf().gson.toJson(unitList)))
+							.put("isAutoBattle", false)
+							.put("mode", getCurrentMode()));
+			lcf().sdop.post(url, payload.toString(),
+					ExecuteBattleStart.procedure, callback);
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void getRaidBossBattleData(String callback) {
+		if (targetBossId == null) {
+			return;
+		}
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/GetForQuestBattle/getRaidBossBattleData?"
+				+ lcf().sdop.createGetParams() + "&raidBossId=" + targetBossId;
+		lcf().sdop.get(url, GetRaidBossBattleData.procedure, callback);
+	}
+
 	public void postRaidBossBattleEntry(int bossId, String callback) {
 		String url = lcf().sdop.httpUrlPrefix
 				+ "/PostForRaidBossList/postRaidBossBattleEntry";
-
+		targetBossId = bossId;
 		try {
 			JSONObject payload = lcf().sdop.createBasePayload(
 					"getRaidBossOutlineList", new JSONObject()
 							.put("id", bossId).put("isChargeBp", false));
 			lcf().sdop.post(url, payload.toString(),
-					PostRaidBossBattleEntry.procedure,
-					PostRaidBossBattleEntry.procedure);
+					PostRaidBossBattleEntry.procedure, callback);
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -107,6 +214,10 @@ public class Boss extends LcfExtend {
 		if (!lcf().sdop.auto.setting.boss) {
 			return;
 		}
+
+		// 注意, 这里开始后, 因为要连续各种不同的参数, 所以代码中存在线性安全问题, 但同样的, 理论上这是对一个帐号的处理,
+		// 不应该会同时触发相同的事件, 所以线性安全性实际上不存在
+		// targetBossId = null;
 		getRaidBossOutlineList(GetRaidBossOutlineList.procedure);
 	}
 

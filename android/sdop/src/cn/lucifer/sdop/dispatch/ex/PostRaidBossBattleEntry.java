@@ -26,12 +26,11 @@ public class PostRaidBossBattleEntry extends BaseDispatch {
 
 	@Override
 	public void callback(Object[] args) {
-		// TODO Auto-generated method stub
 
 	}
-	
-	public void failCallback(){
-		
+
+	public void failCallback() {
+		lcf().sdop.checkCallback(AutoSuperRaidBoss.procedure, null);
 	}
 
 }

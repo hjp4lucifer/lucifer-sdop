@@ -45,7 +45,11 @@ public class Card extends BaseCard {
 	public List<Weapon> weaponList;
 
 	// 其他地方的扩展
+	public int coolTime;
 	public String userName;
 
 	public int lcf_attack;
+	public int lcf_speed;
+	public boolean lcf_isHelp;
+	
 }

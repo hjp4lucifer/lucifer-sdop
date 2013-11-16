@@ -12,6 +12,10 @@ public class ExecuteDuelBattle extends BaseDispatch {
 	@Override
 	public void process(byte[] response, String callback) throws JSONException {
 		JSONObject args = getArgs(response);
+		if (lcf().sdop.checkError(args, procedure)) {
+			//lcf().sdop.auto.setting.duel = false;
+			return;
+		}
 		JSONObject data = args.getJSONObject("data");
 
 		String result = args.getJSONObject("result").getBoolean("isWin") ? lcf().sdop
