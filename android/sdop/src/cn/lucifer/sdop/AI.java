@@ -519,7 +519,7 @@ public class AI extends LcfExtend {
 	/**
 	 * 开始自动超总, UI调用
 	 */
-	public void startAutoSuperRaidBoss(int delayMillis) {
+	public void startAutoSuperRaidBoss() {
 		lcf().sdop.auto.setting.boss = true;
 		lcf().sdop.clearAllJob();
 		lcf().sdop.boss

@@ -64,8 +64,9 @@ public class MainActivity extends BaseActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		if (isDisabledLoginMenu && lcf().sdop.getTokenId() != null) {
-			menu.findItem(R.id.action_test_hello).setEnabled(true);
+			// menu.findItem(R.id.action_test_hello).setEnabled(true);
 			menu.findItem(R.id.action_auto_GB).setEnabled(true);
+			menu.findItem(R.id.action_auto_boss).setEnabled(true);
 			isDisabledLoginMenu = false;
 		}
 		return true;
@@ -84,12 +85,6 @@ public class MainActivity extends BaseActivity {
 			autoLogin();
 			break;
 		}
-		case R.id.action_test_hello:
-			lcf().sdop.testToAdsPostGreeting();
-			break;
-		// case R.id.action_auto_GB:
-		// lcf().sdop.log("action_auto_GB");
-		// break;
 		case R.id.action_auto_GB_FIGHT:
 			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[0];
 			lcf().sdop.duel.startAutoDuel();
@@ -104,6 +99,15 @@ public class MainActivity extends BaseActivity {
 			break;
 		case R.id.action_auto_GB_off:
 			lcf().sdop.duel.cancelAutoDuel();
+			break;
+		case R.id.action_auto_boss_start:
+			lcf().sdop.boss.AI.startAutoSuperRaidBoss();
+			break;
+		case R.id.action_equip_item_4_sp:
+			lcf().sdop.equipItem4Sp(null);
+			break;
+		case R.id.action_auto_boss_off:
+			lcf().sdop.boss.AI.cancelAutoSuperRaidBoss();
 			break;
 		case R.id.action_exit:
 			exit();
