@@ -16,7 +16,7 @@ public class AutoBattle extends BaseDispatch {
 
 	@Override
 	public void callback(Object[] args) {
-		
+		lcf().sdop.boss.AI.autoBattleAttack();
 	}
 
 }

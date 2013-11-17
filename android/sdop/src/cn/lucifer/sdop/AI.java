@@ -3,9 +3,15 @@ package cn.lucifer.sdop;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
+import cn.lucifer.sdop.dispatch.ex.AutoBattle;
+import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
+import cn.lucifer.sdop.domain.ActionOrder;
 import cn.lucifer.sdop.domain.ActiveSkill;
 import cn.lucifer.sdop.domain.Card;
 import cn.lucifer.sdop.domain.Item;
@@ -297,10 +303,216 @@ public class AI extends LcfExtend {
 			}
 		}
 	}
-	
-	public void autoBattle(JSONObject battleArgs){
-		
+
+	public Ms getPlayerByOwnerId(int ownerId) {
+		for (Ms player : playerMsList) {
+			if (ownerId == player.id) {
+				return player;
+			}
+		}
+		return null;
 	}
+
+	private int ownerId;
+	private Ms _player;
+
+	public void autoBattle(JSONObject battleArgs) throws JSONException {
+		JSONArray actionOrderList = battleArgs.getJSONArray("actionOrderList");
+		ActionOrder actionOrder = lcf().gson.fromJson(
+				actionOrderList.getString(actionOrderList.length() - 1),
+				ActionOrder.class);
+		// 仅针对超总的判断, 或者可根据data.resultDate是否为空来判断
+		if (!battleArgs.isNull("resultData")) {
+			// console.info(data);
+			Log.i("Lucifer", battleArgs.toString());
+			lcf().sdop.log("Boss战结束！");
+			return;
+		}
+
+		_player = getPlayerByOwnerId(actionOrder.ownerId);
+		if (_player == null) {
+			lcf().sdop.log("没有对应的ownerId：" + actionOrder.ownerId);
+			return;
+		}
+		ownerId = actionOrder.ownerId;
+
+		checkSp(AutoBattle.procedure);
+	}
+
+	public void autoBattleAttack() {
+		int actionCode = _player.getActionCode();
+		itemTurn = false;
+		Ms targetPlayer;
+		int targetId, actionId;
+		Skill skill;
+		StringBuffer logMsg;
+		if (_player.lcf_attack > 1) {
+			logMsg = new StringBuffer(
+					lcf().sdop.getRedBoldMsg(_player.card.userName));
+		} else {
+			logMsg = new StringBuffer("【").append(_player.card.userName)
+					.append("】");
+		}
+
+		switch (actionCode) {
+		case 0:// 普通攻击
+			targetId = 1;
+			actionId = _player.card.weaponList[0].id;
+			lcf().sdop.boss.executeActionCommand(lcf().sdop.boss.battleId,
+					lcf().sdop.boss.actionType[2], targetId, ownerId, actionId,
+					ExecuteActionCommand.procedure);
+			logMsg.append("对Boss使用武器").append(_player.card.weaponList[0].name)
+					.append("进行攻击！");
+			break;
+		case 1:// 给队友加攻击状态
+			targetPlayer = getFixAttackPlayerInBattle();
+			targetId = targetPlayer.id;
+			actionId = 21001;
+			skill = lcf().sdop.pilot.activeSkill.get(actionId);
+			lcf().sdop.currentSp -= skill.cost;
+			lcf().sdop.boss.executeActionCommand(lcf().sdop.boss.battleId,
+					lcf().sdop.boss.actionType[1], targetId, ownerId, actionId,
+					ExecuteActionCommand.procedure);
+			logMsg.append("对队友【").append(targetPlayer.card.userName)
+					.append("】使用技能【").append(skill.prefix).append("】, 消耗SP：")
+					.append(skill.cost).append(", 剩余SP：")
+					.append(lcf().sdop.currentSp).append("！");
+			break;
+		case 2:// 给队友加速度状态
+			targetPlayer = getFixAttackPlayerInBattle();
+			targetId = targetPlayer.id;
+			actionId = 21002;
+			skill = lcf().sdop.pilot.activeSkill.get(actionId);
+			lcf().sdop.currentSp -= skill.cost;
+			lcf().sdop.boss.executeActionCommand(lcf().sdop.boss.battleId,
+					lcf().sdop.boss.actionType[1], targetId, ownerId, actionId,
+					ExecuteActionCommand.procedure);
+			logMsg.append("对队友【").append(targetPlayer.card.userName)
+					.append("】使用技能【").append(skill.prefix).append("】, 消耗SP：")
+					.append(skill.cost).append(", 剩余SP：")
+					.append(lcf().sdop.currentSp).append("！");
+			break;
+		case 3:// 单体技能攻击
+			targetId = 1;
+			actionId = _player.card.weaponList[0].id;
+			int actionTypeIndex = 2;
+			ActiveSkill attackSkill = getAttackSkill(_player);
+			if (attackSkill != null) {
+				actionId = attackSkill.id;
+				actionTypeIndex = 1;
+				lcf().sdop.currentSp -= attackSkill.cost;
+				logMsg.append("对Boss使用技能【").append(attackSkill.description)
+						.append("】, 消耗SP：").append(attackSkill.cost)
+						.append(", 剩余SP：").append(lcf().sdop.currentSp)
+						.append("！");
+			} else {
+				logMsg.append("对Boss使用武器")
+						.append(_player.card.weaponList[0].name)
+						.append("进行攻击！");
+			}
+			lcf().sdop.boss.executeActionCommand(lcf().sdop.boss.battleId,
+					lcf().sdop.boss.actionType[actionTypeIndex], targetId,
+					ownerId, actionId, ExecuteActionCommand.procedure);
+			break;
+		}
+		_player.AITurn++;
+		lcf().sdop.log(logMsg.toString());
+	}
+
+	/**
+	 * 获取合适的倍机
+	 * 
+	 * @return
+	 */
+	public Ms getFixAttackPlayerInBattle() {
+		Ms _fixPlayer = null;
+		for (Ms _player : attackPlayers) {
+			if (_fixPlayer == null) {
+				_fixPlayer = _player;
+				continue;
+			}
+			if (_fixPlayer.lcf_attack_buff > _player.lcf_attack_buff) {// 状态的次数多
+				_fixPlayer = _player;
+				continue;
+			}
+			if (_fixPlayer.lcf_attack < _player.lcf_attack) {// 相同时比较倍数
+				_fixPlayer = _player;
+				continue;
+			}
+		}
+		return _fixPlayer;
+	}
+
+	private boolean itemTurn;
+
+	/**
+	 * 检查当前sp, 根据条件执行
+	 * 
+	 * @param callback
+	 */
+	public void checkSp(String callback) {
+		lcf().sdop.log("开始校验SP！当前SP：" + lcf().sdop.currentSp + ", 最大SP："
+				+ lcf().sdop.maxSp + ", 上一个动作是否使用物品：" + itemTurn);
+		if (lcf().sdop.maxSp - lcf().sdop.currentSp <= 30 || itemTurn) {
+			lcf().sdop.checkCallback(callback);
+			return;
+		}
+
+		int _itemId = 20006;
+		if (lcf().sdop.maxSp - lcf().sdop.currentSp > 30) {
+			for (Item _item : itemList) {
+				if (_item.num > 0) {
+					_item.num--;
+					lcf().sdop.currentSp += 30;
+					itemTurn = true;
+					lcf().sdop.log("使用【" + _item.name + "】，当前SP："
+							+ lcf().sdop.currentSp);
+
+					lcf().sdop.boss.executeActionCommand(
+							lcf().sdop.boss.battleId,
+							lcf().sdop.boss.actionType[0], ownerId, ownerId,
+							_itemId, callback);
+					return;
+				}
+			}
+		}
+
+		_itemId = 20013;
+		if (lcf().sdop.currentSp < 30) {
+			for (Item _item : itemList) {
+				if (_item.id == _itemId) {
+					if (_item.num > 0) {
+						_item.num--;
+						lcf().sdop.currentSp += 60;
+						itemTurn = true;
+						lcf().sdop.log("使用【" + _item.name + "】，当前SP："
+								+ lcf().sdop.currentSp);
+
+						lcf().sdop.boss.executeActionCommand(
+								lcf().sdop.boss.battleId,
+								lcf().sdop.boss.actionType[0], ownerId,
+								ownerId, _itemId, callback);
+						return;
+					}
+				}
+			}
+		}
+
+		lcf().sdop.checkCallback(callback);
+	}
+
+	public ActiveSkill getAttackSkill(Ms player) {
+		ActiveSkill[] activeSkillList = player.card.pilot.activeSkillList;
+		if (activeSkillList == null) {
+			return null;
+		}
+		for (ActiveSkill activeSkill : activeSkillList) {
+			if (activeSkill.description.startsWith(actionCode[3].prefix)) {
+				return activeSkill;
+			}
+		}
+		return null;
+	};
 
 	public void startAutoSuperRaidBoss(int delayTime) {
 

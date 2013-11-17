@@ -5,11 +5,20 @@ import java.util.Map;
 
 import org.json.JSONException;
 
+import cn.lucifer.sdop.dispatch.ex.AutoBattle;
+import cn.lucifer.sdop.dispatch.ex.AutoSuperRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.Enter;
+import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
+import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
+import cn.lucifer.sdop.dispatch.ex.ExecuteBattleStart;
 import cn.lucifer.sdop.dispatch.ex.ExecuteDuelBattle;
 import cn.lucifer.sdop.dispatch.ex.GetDuelData;
 import cn.lucifer.sdop.dispatch.ex.GetEntryData;
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
+import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
+import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
 
 public final class DF {
 
@@ -27,6 +36,18 @@ public final class DF {
 		put(GetEntryData.procedure, new GetEntryData());
 		put(GetDuelData.procedure, new GetDuelData());
 		put(ExecuteDuelBattle.procedure, new ExecuteDuelBattle());
+
+		put(EquipItem4Sp.procedure, new EquipItem4Sp());
+
+		put(AutoBattle.procedure, new AutoBattle());
+		put(AutoSuperRaidBoss.procedure, new AutoSuperRaidBoss());
+		put(ExecuteActionCommand.procedure, new ExecuteActionCommand());
+		put(ExecuteBattleStart.procedure, new ExecuteBattleStart());
+		put(GetRaidBossBattleData.procedure, new GetRaidBossBattleData());
+		put(GetRaidBossOutlineList.procedure, new GetRaidBossOutlineList());
+		put(InitRaidBossOutlineList.procedure, new InitRaidBossOutlineList());
+		put(PostRaidBossBattleEntry.procedure, new PostRaidBossBattleEntry());
+
 	}
 
 	private static void put(String procedure, BaseDispatch impl) {

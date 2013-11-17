@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.ExecuteBattleStart;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
@@ -14,10 +15,12 @@ import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
 import cn.lucifer.sdop.domain.Card;
 import cn.lucifer.sdop.domain.Unit;
 import cn.lucifer.sdop.domain.Value;
+import cn.lucifer.sdop.domain.args.ExecuteActionCommandArgs;
 
 public class Boss extends LcfExtend {
 
 	private JSONObject currentType;
+	private final String currentModeValue = "RAID_BOSS";
 	private JSONObject currentMode;
 	public final int x3 = 250037;
 	public final int x6 = 250038;
@@ -45,7 +48,7 @@ public class Boss extends LcfExtend {
 	public JSONObject getCurrentMode() {
 		if (currentMode == null) {
 			Value mode = new Value();
-			mode.value = "RAID_BOSS";
+			mode.value = currentModeValue;
 			try {
 				currentMode = new JSONObject(lcf().gson.toJson(mode));
 			} catch (JSONException e) {
@@ -221,4 +224,38 @@ public class Boss extends LcfExtend {
 		getRaidBossOutlineList(GetRaidBossOutlineList.procedure);
 	}
 
+	public final String[] actionType = { "ITEM", "SKILL", "ATTACK" };
+
+	/**
+	 * 执行技能
+	 * 
+	 * @param battleId
+	 * @param actionTypeValue
+	 *            对应{@link #actionType}
+	 * @param targetId
+	 *            1为boss, 2-4为参战队友
+	 * @param playerId
+	 *            同targetId
+	 * @param actionId
+	 *            技能代号, 30sp药为20006
+	 * @param callback
+	 */
+	public void executeActionCommand(int battleId, String actionTypeValue,
+			int targetId, int playerId, int actionId, String callback) {
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForQuestBattle/executeActionCommand";
+		try {
+			JSONObject args = new JSONObject(
+					lcf().gson.toJson(new ExecuteActionCommandArgs(battleId,
+							actionTypeValue, currentModeValue, targetId,
+							playerId, actionId)));
+			JSONObject payload = lcf().sdop.createBasePayload(
+					"executeActionCommand", args);
+			lcf().sdop.post(url, payload.toString(),
+					ExecuteActionCommand.procedure, callback);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

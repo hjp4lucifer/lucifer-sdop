@@ -42,7 +42,7 @@ public class Card extends BaseCard {
 
 	public int weakUnitDamageRate;
 
-	public List<Weapon> weaponList;
+	public Weapon[] weaponList;
 
 	// 其他地方的扩展
 	public int coolTime;
