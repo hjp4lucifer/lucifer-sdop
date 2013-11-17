@@ -26,7 +26,7 @@ public class PostRaidBossBattleEntry extends BaseDispatch {
 
 	@Override
 	public void callback(Object[] args) {
-
+		lcf().sdop.boss.getRaidBossBattleData(GetRaidBossBattleData.procedure);
 	}
 
 	public void failCallback() {

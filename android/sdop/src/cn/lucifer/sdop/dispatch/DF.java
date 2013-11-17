@@ -19,6 +19,7 @@ import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
+import cn.lucifer.sdop.dispatch.ex.StartAutoSuperRaidBoss;
 
 public final class DF {
 
@@ -39,6 +40,7 @@ public final class DF {
 
 		put(EquipItem4Sp.procedure, new EquipItem4Sp());
 
+		put(StartAutoSuperRaidBoss.procedure, new StartAutoSuperRaidBoss());
 		put(AutoBattle.procedure, new AutoBattle());
 		put(AutoSuperRaidBoss.procedure, new AutoSuperRaidBoss());
 		put(ExecuteActionCommand.procedure, new ExecuteActionCommand());

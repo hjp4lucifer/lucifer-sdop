@@ -11,6 +11,8 @@ import android.util.Log;
 
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
+import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
+import cn.lucifer.sdop.dispatch.ex.StartAutoSuperRaidBoss;
 import cn.lucifer.sdop.domain.ActionOrder;
 import cn.lucifer.sdop.domain.ActiveSkill;
 import cn.lucifer.sdop.domain.Card;
@@ -514,7 +516,22 @@ public class AI extends LcfExtend {
 		return null;
 	};
 
-	public void startAutoSuperRaidBoss(int delayTime) {
+	/**
+	 * 开始自动超总, UI调用
+	 */
+	public void startAutoSuperRaidBoss(int delayMillis) {
+		lcf().sdop.auto.setting.boss = true;
+		lcf().sdop.clearAllJob();
+		lcf().sdop.boss
+				.initRaidBossOutlineList(InitRaidBossOutlineList.procedure);
+	}
 
+	/**
+	 * 取消自动超总, UI调用
+	 */
+	public void cancelAutoSuperRaidBoss() {
+		lcf().sdop.auto.setting.boss = false;
+		lcf().sdop.clearAllJob();
+		lcf().sdop.log("自动超总停止成功！");
 	}
 }

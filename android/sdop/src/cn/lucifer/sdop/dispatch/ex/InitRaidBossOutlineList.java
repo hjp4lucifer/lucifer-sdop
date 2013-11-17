@@ -50,7 +50,9 @@ public class InitRaidBossOutlineList extends BaseDispatch {
 			logMsg.append(", 不满足超总要求！").append(delayTime).append("秒后再尝试！");
 		}
 		lcf().sdop.log(logMsg.toString());
-		lcf().sdop.boss.AI.startAutoSuperRaidBoss(delayTime * 1000);
+
+		lcf().sdop.checkCallback(StartAutoSuperRaidBoss.procedure,
+				delayTime * 1000, null);
 	}
 
 }
