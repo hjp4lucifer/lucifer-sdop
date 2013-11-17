@@ -13,12 +13,6 @@
         android:title="@string/action_auto_login"/>
     
     <item
-        android:id="@+id/action_test_hello"
-        android:orderInCategory="55"
-        android:showAsAction="never"
-        android:title="@string/action_test_hello" android:enabled="false"/>
-    
-    <item
         android:id="@+id/action_auto_GB"
         android:orderInCategory="61"
         android:showAsAction="never"
@@ -42,6 +36,31 @@
 			<item
 		        android:id="@+id/action_auto_GB_off"
 		        android:orderInCategory="69"
+		        android:showAsAction="never"
+		        android:title="@string/action_auto_off"/>
+		</menu>
+    </item>
+    
+    
+    <item
+        android:id="@+id/action_auto_boss"
+        android:orderInCategory="71"
+        android:showAsAction="never"
+        android:title="@string/action_auto_boss" android:enabled="false">
+        <menu>
+			<item
+		        android:id="@+id/action_auto_boss_start"
+		        android:orderInCategory="72"
+		        android:showAsAction="never"
+		        android:title="@string/action_auto_boss"/>
+			<item
+		        android:id="@+id/action_equip_item_4_sp"
+		        android:orderInCategory="75"
+		        android:showAsAction="never"
+		        android:title="@string/action_equip_item_4_sp"/>
+			<item
+		        android:id="@+id/action_auto_boss_off"
+		        android:orderInCategory="79"
 		        android:showAsAction="never"
 		        android:title="@string/action_auto_off"/>
 		</menu>
