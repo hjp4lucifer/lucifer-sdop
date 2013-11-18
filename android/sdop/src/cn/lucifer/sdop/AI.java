@@ -1,12 +1,19 @@
 package cn.lucifer.sdop;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gson.JsonSyntaxException;
+
+import android.os.Environment;
 import android.util.Log;
 
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
@@ -64,10 +71,9 @@ public class AI extends LcfExtend {
 	}
 
 	public Card getFixAttackMember(Card[] members) {
+		Log.i("Lucifer", "getFixAttackMember start !");
 		Card attackMember = null;
-		Card m;
-		for (int i = 0; i < members.length; i++) {
-			m = members[i];
+		for (Card m : members) {
 			if (m.id == lcf().sdop.myUserId) {// 不能是自己
 				continue;
 			}
@@ -127,15 +133,15 @@ public class AI extends LcfExtend {
 	 * @return
 	 */
 	public Card getFixHelpMember(Card[] members, Card attackMember) {
+		Log.i("Lucifer", "getFixHelpMember start !");
 		if (attackMember == null) {
+			Log.i("Lucifer", "attackMember is null !");
 			return null;
 		}
 		attackMember.lcf_speed = getTrueSpeed(attackMember);
 		Card helpMember = null;
 		ActiveSkill skill;
-		Card m;
-		for (int i = 0; i < members.length; i++) {
-			m = members[i];
+		for (Card m : members) {
 			if (m.id == lcf().sdop.myUserId) {// 不能是自己
 				continue;
 			}
@@ -195,19 +201,46 @@ public class AI extends LcfExtend {
 	 * @throws JSONException
 	 */
 	public void setFixMember(JSONObject battleArgs) throws JSONException {
+		Log.i("Lucifer", "setFixMember start !");
+
 		lcf().sdop.myUserId = battleArgs.getInt("leaderCardId");
 
 		Ms[] playerMsList = lcf().gson.fromJson(
 				battleArgs.getString("playerMsList"), Ms[].class);
+		Log.i("Lucifer", "playerMsList length : " + playerMsList.length);
+
 		Card myCard = playerMsList[0].card;
+		Log.i("Lucifer", "setFixMember 1 !");
 		lcf().sdop.currentSp = myCard.currentSp;
+		Log.i("Lucifer", "setFixMember 2 !");
 		lcf().sdop.maxSp = myCard.maxSp;
+		Log.i("Lucifer", "setFixMember 3 !");
 
 		lcf().sdop.boss.battleId = battleArgs.getInt("battleId");
-		Card[] members = lcf().gson.fromJson(
-				battleArgs.getString("memberCardList"), Card[].class);
+		Log.i("Lucifer", "setFixMember 4 !");
+		String memberCardList = battleArgs.getString("memberCardList");
+		Log.i("Lucifer", "memberCardList : " + memberCardList);
+		Card[] members;
+		try {
+			String SDPATH = Environment.getExternalStorageDirectory().getPath();
+			Writer output = new FileWriter(SDPATH + "/tmp/" + System.currentTimeMillis() + ".txt");
+			IOUtils.write(memberCardList, output );
+			IOUtils.closeQuietly(output);
+			
+			members = lcf().gson.fromJson(memberCardList, Card[].class);
+		} catch (JsonSyntaxException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+		Log.i("Lucifer", "members length : " + members.length);
+
 		attackMember = getFixAttackMember(members);
 		helpMember = getFixHelpMember(members, attackMember);
+		Log.i("Lucifer", "setFixMember end !");
 	}
 
 	/**

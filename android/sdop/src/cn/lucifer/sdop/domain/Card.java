@@ -1,7 +1,5 @@
 package cn.lucifer.sdop.domain;
 
-import java.util.List;
-
 public class Card extends BaseCard {
 
 	public int attack;
@@ -51,5 +49,5 @@ public class Card extends BaseCard {
 	public int lcf_attack;
 	public int lcf_speed;
 	public boolean lcf_isHelp;
-	
+
 }

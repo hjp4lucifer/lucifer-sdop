@@ -53,13 +53,36 @@ public class Sdop extends LcfExtend {
 	private final DateFormat timeFormat = new SimpleDateFormat(
 			"M月d日 HH:mm:ss.SSS");
 
-	public Context context;
+	private Context context;
 
-	public final Auto auto = new Auto();
-	public final Ms ms = new Ms();
-	public final Pilot pilot = new Pilot();
-	public final Duel duel = new Duel();
-	public final Boss boss = new Boss();
+	public void setContext(Context context) {
+		this.context = context;
+		initAfterContext();
+	}
+
+	public Auto auto;
+	public Ms ms;
+	public Pilot pilot;
+	public Duel duel;
+	public Boss boss;
+
+	public void initAfterContext() {
+		if (auto == null) {
+			auto = new Auto();
+		}
+		if (ms == null) {
+			ms = new Ms();
+		}
+		if (pilot == null) {
+			pilot = new Pilot();
+		}
+		if (duel == null) {
+			duel = new Duel();
+		}
+		if (boss == null) {
+			boss = new Boss();
+		}
+	}
 
 	public final String EXTRA_LOG_NAME = "log";
 
@@ -153,6 +176,7 @@ public class Sdop extends LcfExtend {
 
 	public void checkCallback(String callback, long delayMillis, Object[] args) {
 		if (callback == null) {
+			Log.i("Lucifer", "callback is null , return !");
 			return;
 		}
 		executor.schedule(new CallbackThread(callback, args), delayMillis,
@@ -160,6 +184,8 @@ public class Sdop extends LcfExtend {
 	}
 
 	public void clearAllJob() {
+		Log.i("Lucifer", "clearAllJob");
+		LogUtils.log();
 		if (executor != null) {
 			executor.shutdownNow();
 			executor.getQueue().clear();
@@ -215,16 +241,18 @@ public class Sdop extends LcfExtend {
 		}
 	}
 
-	private final int[] itemIdList = new int[] { 20006, 20011, 20013 };
+	// private final int[] itemIdList = new int[] { 20006, 20011, 20013 };
+	private final String itemIdList_json = "[ 20006, 20011, 20013 ]";
 
 	public void equipItem4Sp(String callback) {
+		Log.i("Lucifer", "equipItem4Sp start !");
 		String url = httpUrlPrefix + "/PostForCardPlatoon/equipItem?ssid="
 				+ ssid;
 		try {
 			JSONObject payload = createBasePayload(EquipItem4Sp.procedure,
-					new JSONObject().put("itemIdList",
-							new JSONArray(itemIdList)));
-			post(url, payload.toString(), EquipItem4Sp.procedure, null);
+					new JSONObject().put("itemIdList", new JSONArray(
+							itemIdList_json)));
+			post(url, payload.toString(), EquipItem4Sp.procedure, callback);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

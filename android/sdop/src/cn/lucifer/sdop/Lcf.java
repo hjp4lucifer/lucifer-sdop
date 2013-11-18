@@ -10,7 +10,7 @@ public final class Lcf {
 	private static Lcf _instance;
 
 	public Sdop sdop = new Sdop();
-	
+
 	public Gson gson = new Gson();
 
 	private Lcf() {

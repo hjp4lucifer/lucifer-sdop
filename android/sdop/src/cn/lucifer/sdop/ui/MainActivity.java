@@ -31,7 +31,7 @@ public class MainActivity extends BaseActivity {
 		filter.addAction(lcf().sdop.AUTO_LOGIN_RECEIVER_ACTION);
 		registerReceiver(autologinReceiver, filter);
 
-		lcf().sdop.context = getApplicationContext();
+		lcf().sdop.setContext(getApplicationContext());
 
 		Intent httpService = new Intent(this, HttpService.class);
 		startService(httpService);

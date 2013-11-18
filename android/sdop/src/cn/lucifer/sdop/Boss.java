@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.ExecuteBattleStart;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
@@ -171,6 +173,7 @@ public class Boss extends LcfExtend {
 
 	public void getRaidBossBattleData(String callback) {
 		if (targetBossId == null) {
+			Log.e("Lucifer", "targetBossId is null ! " + targetBossId);
 			return;
 		}
 		String url = lcf().sdop.httpUrlPrefix

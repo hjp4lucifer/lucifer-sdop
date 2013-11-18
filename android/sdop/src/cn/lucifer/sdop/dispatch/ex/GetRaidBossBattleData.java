@@ -3,6 +3,8 @@ package cn.lucifer.sdop.dispatch.ex;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import cn.lucifer.sdop.dispatch.BaseDispatch;
 
 public class GetRaidBossBattleData extends BaseDispatch {
@@ -14,6 +16,9 @@ public class GetRaidBossBattleData extends BaseDispatch {
 		if (lcf().sdop.checkError(args, procedure)) {
 			return;
 		}
+		
+
+		Log.i("Lucifer", "GetRaidBossBattleData callback : " + callback);
 
 		// var battleId = data.args.battleId;
 		// var members = data.args.memberCardList;
@@ -23,6 +28,7 @@ public class GetRaidBossBattleData extends BaseDispatch {
 	@Override
 	public void callback(Object[] args) {
 		JSONObject battleArgs = (JSONObject) args[0];
+		Log.i("Lucifer", "GetRaidBossBattleData callback start ! ");
 		try {
 			lcf().sdop.boss.AI.setFixMember(battleArgs);
 			lcf().sdop.equipItem4Sp(EquipItem4Sp.procedure);
