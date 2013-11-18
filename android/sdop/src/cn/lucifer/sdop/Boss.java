@@ -15,6 +15,7 @@ import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
 import cn.lucifer.sdop.domain.Card;
+import cn.lucifer.sdop.domain.CardWithoutWeapon;
 import cn.lucifer.sdop.domain.Unit;
 import cn.lucifer.sdop.domain.Value;
 import cn.lucifer.sdop.domain.args.ExecuteActionCommandArgs;
@@ -68,7 +69,7 @@ public class Boss extends LcfExtend {
 	 *            members中的member, playerList中的player.card
 	 * @return
 	 */
-	public boolean checkX6(Card m) {
+	public boolean checkX6(CardWithoutWeapon m) {
 		for (int j = 0; j < m.characteristicList.length; j++) {
 			if (m.characteristicList[j].id == x6) {
 				m.lcf_attack = 6;
@@ -85,7 +86,7 @@ public class Boss extends LcfExtend {
 	 *            members中的member, playerList中的player.card
 	 * @return
 	 */
-	public boolean checkX3(Card m) {
+	public boolean checkX3(CardWithoutWeapon m) {
 		for (int j = 0; j < m.characteristicList.length; j++) {
 			if (m.characteristicList[j].id == x3) {
 				m.lcf_attack = 3;

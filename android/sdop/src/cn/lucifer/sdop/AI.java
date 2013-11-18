@@ -1,34 +1,27 @@
 package cn.lucifer.sdop;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gson.JsonSyntaxException;
-
-import android.os.Environment;
 import android.util.Log;
 
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
-import cn.lucifer.sdop.dispatch.ex.StartAutoSuperRaidBoss;
 import cn.lucifer.sdop.domain.ActionOrder;
 import cn.lucifer.sdop.domain.ActiveSkill;
 import cn.lucifer.sdop.domain.Card;
+import cn.lucifer.sdop.domain.CardWithoutWeapon;
 import cn.lucifer.sdop.domain.Item;
 import cn.lucifer.sdop.domain.Ms;
 import cn.lucifer.sdop.domain.PassiveSkill;
 
 public class AI extends LcfExtend {
-	public Card attackMember, helpMember;
+	public CardWithoutWeapon attackMember, helpMember;
 	public Ms[] playerMsList;
 	public Item[] itemList;
 
@@ -70,10 +63,10 @@ public class AI extends LcfExtend {
 		return target;
 	}
 
-	public Card getFixAttackMember(Card[] members) {
+	public CardWithoutWeapon getFixAttackMember(CardWithoutWeapon[] members) {
 		Log.i("Lucifer", "getFixAttackMember start !");
-		Card attackMember = null;
-		for (Card m : members) {
+		CardWithoutWeapon attackMember = null;
+		for (CardWithoutWeapon m : members) {
 			if (m.id == lcf().sdop.myUserId) {// 不能是自己
 				continue;
 			}
@@ -108,7 +101,7 @@ public class AI extends LcfExtend {
 		return attackMember;
 	}
 
-	public int getTrueSpeed(Card m) {
+	public int getTrueSpeed(CardWithoutWeapon m) {
 		int speed = m.speed;
 		if (m.pilot.passiveSkillList == null) {
 			return speed;
@@ -132,16 +125,17 @@ public class AI extends LcfExtend {
 	 * @param attackMember
 	 * @return
 	 */
-	public Card getFixHelpMember(Card[] members, Card attackMember) {
+	public CardWithoutWeapon getFixHelpMember(CardWithoutWeapon[] members,
+			CardWithoutWeapon attackMember) {
 		Log.i("Lucifer", "getFixHelpMember start !");
 		if (attackMember == null) {
 			Log.i("Lucifer", "attackMember is null !");
 			return null;
 		}
 		attackMember.lcf_speed = getTrueSpeed(attackMember);
-		Card helpMember = null;
+		CardWithoutWeapon helpMember = null;
 		ActiveSkill skill;
-		for (Card m : members) {
+		for (CardWithoutWeapon m : members) {
 			if (m.id == lcf().sdop.myUserId) {// 不能是自己
 				continue;
 			}
@@ -201,46 +195,28 @@ public class AI extends LcfExtend {
 	 * @throws JSONException
 	 */
 	public void setFixMember(JSONObject battleArgs) throws JSONException {
-		Log.i("Lucifer", "setFixMember start !");
-
 		lcf().sdop.myUserId = battleArgs.getInt("leaderCardId");
 
 		Ms[] playerMsList = lcf().gson.fromJson(
 				battleArgs.getString("playerMsList"), Ms[].class);
-		Log.i("Lucifer", "playerMsList length : " + playerMsList.length);
 
 		Card myCard = playerMsList[0].card;
-		Log.i("Lucifer", "setFixMember 1 !");
 		lcf().sdop.currentSp = myCard.currentSp;
-		Log.i("Lucifer", "setFixMember 2 !");
 		lcf().sdop.maxSp = myCard.maxSp;
-		Log.i("Lucifer", "setFixMember 3 !");
 
 		lcf().sdop.boss.battleId = battleArgs.getInt("battleId");
-		Log.i("Lucifer", "setFixMember 4 !");
-		String memberCardList = battleArgs.getString("memberCardList");
-		Log.i("Lucifer", "memberCardList : " + memberCardList);
-		Card[] members;
-		try {
-			String SDPATH = Environment.getExternalStorageDirectory().getPath();
-			Writer output = new FileWriter(SDPATH + "/tmp/" + System.currentTimeMillis() + ".txt");
-			IOUtils.write(memberCardList, output );
-			IOUtils.closeQuietly(output);
-			
-			members = lcf().gson.fromJson(memberCardList, Card[].class);
-		} catch (JsonSyntaxException e) {
-			e.printStackTrace();
-			throw e;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		Log.i("Lucifer", "members length : " + members.length);
+		// String SDPATH = Environment.getExternalStorageDirectory().getPath();
+		// Writer output = new FileWriter(SDPATH + "/tmp/" +
+		// System.currentTimeMillis() + ".txt");
+		// IOUtils.write(memberCardList, output );
+		// IOUtils.closeQuietly(output);
+
+		CardWithoutWeapon[] members = lcf().gson.fromJson(
+				battleArgs.getString("memberCardList"),
+				CardWithoutWeapon[].class);
 
 		attackMember = getFixAttackMember(members);
 		helpMember = getFixHelpMember(members, attackMember);
-		Log.i("Lucifer", "setFixMember end !");
 	}
 
 	/**
