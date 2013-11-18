@@ -64,7 +64,6 @@ public class AI extends LcfExtend {
 	}
 
 	public CardWithoutWeapon getFixAttackMember(CardWithoutWeapon[] members) {
-		Log.i("Lucifer", "getFixAttackMember start !");
 		CardWithoutWeapon attackMember = null;
 		for (CardWithoutWeapon m : members) {
 			if (m.id == lcf().sdop.myUserId) {// 不能是自己
@@ -104,8 +103,6 @@ public class AI extends LcfExtend {
 	public int getTrueSpeed(CardWithoutWeapon m) {
 		int speed = m.speed;
 		if (m.pilot.passiveSkillList == null) {
-			Log.i("Lucifer", m.userName + "no passiveSkillList ! speed : "
-					+ speed);
 			return speed;
 		}
 		PassiveSkill skill;
@@ -117,7 +114,6 @@ public class AI extends LcfExtend {
 								skill.description) / 100F);
 			}
 		}
-		Log.i("Lucifer", m.userName + " speed : " + speed);
 		return speed;
 	}
 
@@ -131,10 +127,10 @@ public class AI extends LcfExtend {
 	public CardWithoutWeapon getFixHelpMember(CardWithoutWeapon[] members,
 			CardWithoutWeapon attackMember) {
 		if (attackMember == null) {
-			Log.i("Lucifer", "attackMember is null !");
+			Log.e("Lucifer", "attackMember is null !");
+			printStackTrace();
 			return null;
 		}
-		Log.i("Lucifer", "2 getFixHelpMember start !");
 		try {
 			attackMember.lcf_speed = getTrueSpeed(attackMember);
 		} catch (Exception e) {
@@ -193,8 +189,6 @@ public class AI extends LcfExtend {
 			// 剩余的规则没想好
 		}
 
-		Log.i("Lucifer", "getFixHelpMember end ! helpMember : "
-				+ helpMember.userName);
 		return helpMember;
 	}
 
@@ -344,7 +338,6 @@ public class AI extends LcfExtend {
 				ActionOrder.class);
 		// 仅针对超总的判断, 或者可根据data.resultDate是否为空来判断
 		if (!battleArgs.isNull("resultData")) {
-			// console.info(data);
 			Log.i("Lucifer", battleArgs.toString());
 			lcf().sdop.log("Boss战结束！");
 			return;

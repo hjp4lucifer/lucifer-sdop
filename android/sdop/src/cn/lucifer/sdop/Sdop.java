@@ -146,6 +146,7 @@ public class Sdop extends LcfExtend {
 		}
 		String message = dataArgs.getString("message");
 		Log.w("Lucifer", dataArgs.toString());
+		printStackTrace();
 		log(msg + "：" + message);
 
 		checkReload(message);
@@ -176,7 +177,6 @@ public class Sdop extends LcfExtend {
 
 	public void checkCallback(String callback, long delayMillis, Object[] args) {
 		if (callback == null) {
-			Log.i("Lucifer", "callback is null , return !");
 			return;
 		}
 		executor.schedule(new CallbackThread(callback, args), delayMillis,
@@ -184,8 +184,6 @@ public class Sdop extends LcfExtend {
 	}
 
 	public void clearAllJob() {
-		Log.i("Lucifer", "clearAllJob");
-		LogUtils.log();
 		if (executor != null) {
 			executor.shutdownNow();
 			executor.getQueue().clear();

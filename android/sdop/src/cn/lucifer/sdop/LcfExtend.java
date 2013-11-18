@@ -6,5 +6,10 @@ public abstract class LcfExtend implements IGetLcf{
 	public Lcf lcf() {
 		return Lcf.getInstance();
 	}
+	
+	protected void printStackTrace(){
+		Throwable ex = new Throwable();
+		ex.printStackTrace();
+	}
 
 }
