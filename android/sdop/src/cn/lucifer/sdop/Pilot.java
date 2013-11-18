@@ -43,7 +43,7 @@ public class Pilot extends LcfExtend {
 	public int getPassiveSkillUpValue(int skillId, String skillDescription) {
 		Skill skill = passiveSkill.get(skillId);
 		String value = skillDescription.substring(
-				skillDescription.indexOf(skill.prefix + skill.prefix.length()),
+				skillDescription.indexOf(skill.prefix) + skill.prefix.length(),
 				skillDescription.indexOf(skill.suffix));
 		return (int) Float.parseFloat(value);
 	}

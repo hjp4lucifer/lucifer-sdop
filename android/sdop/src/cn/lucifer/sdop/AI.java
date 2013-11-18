@@ -104,6 +104,8 @@ public class AI extends LcfExtend {
 	public int getTrueSpeed(CardWithoutWeapon m) {
 		int speed = m.speed;
 		if (m.pilot.passiveSkillList == null) {
+			Log.i("Lucifer", m.userName + "no passiveSkillList ! speed : "
+					+ speed);
 			return speed;
 		}
 		PassiveSkill skill;
@@ -115,6 +117,7 @@ public class AI extends LcfExtend {
 								skill.description) / 100F);
 			}
 		}
+		Log.i("Lucifer", m.userName + " speed : " + speed);
 		return speed;
 	}
 
@@ -127,12 +130,17 @@ public class AI extends LcfExtend {
 	 */
 	public CardWithoutWeapon getFixHelpMember(CardWithoutWeapon[] members,
 			CardWithoutWeapon attackMember) {
-		Log.i("Lucifer", "getFixHelpMember start !");
 		if (attackMember == null) {
 			Log.i("Lucifer", "attackMember is null !");
 			return null;
 		}
-		attackMember.lcf_speed = getTrueSpeed(attackMember);
+		Log.i("Lucifer", "2 getFixHelpMember start !");
+		try {
+			attackMember.lcf_speed = getTrueSpeed(attackMember);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		CardWithoutWeapon helpMember = null;
 		ActiveSkill skill;
 		for (CardWithoutWeapon m : members) {
@@ -185,6 +193,8 @@ public class AI extends LcfExtend {
 			// 剩余的规则没想好
 		}
 
+		Log.i("Lucifer", "getFixHelpMember end ! helpMember : "
+				+ helpMember.userName);
 		return helpMember;
 	}
 
@@ -472,18 +482,20 @@ public class AI extends LcfExtend {
 		int _itemId = 20006;
 		if (lcf().sdop.maxSp - lcf().sdop.currentSp > 30) {
 			for (Item _item : itemList) {
-				if (_item.num > 0) {
-					_item.num--;
-					lcf().sdop.currentSp += 30;
-					itemTurn = true;
-					lcf().sdop.log("使用【" + _item.name + "】，当前SP："
-							+ lcf().sdop.currentSp);
+				if (_item.id == _itemId) {
+					if (_item.num > 0) {
+						_item.num--;
+						lcf().sdop.currentSp += 30;
+						itemTurn = true;
+						lcf().sdop.log("使用【" + _item.name + "】，当前SP："
+								+ lcf().sdop.currentSp);
 
-					lcf().sdop.boss.executeActionCommand(
-							lcf().sdop.boss.battleId,
-							lcf().sdop.boss.actionType[0], ownerId, ownerId,
-							_itemId, callback);
-					return;
+						lcf().sdop.boss.executeActionCommand(
+								lcf().sdop.boss.battleId,
+								lcf().sdop.boss.actionType[0], ownerId,
+								ownerId, _itemId, callback);
+						return;
+					}
 				}
 			}
 		}
