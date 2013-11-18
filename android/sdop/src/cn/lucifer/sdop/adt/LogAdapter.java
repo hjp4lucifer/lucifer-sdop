@@ -25,10 +25,11 @@ public class LogAdapter extends BaseAdapter {
 	}
 
 	private final int padding = 5;
+	private final int maxCount = 50;
 
 	public void addFirst(String text) {
 		msgs.addFirst(text);
-		if (getCount() > 30) {
+		if (getCount() > maxCount) {
 			msgs.removeLast();
 		}
 		notifyDataSetChanged();
@@ -36,7 +37,7 @@ public class LogAdapter extends BaseAdapter {
 
 	public void addLast(String text) {
 		msgs.addLast(text);
-		if (getCount() > 30) {
+		if (getCount() > maxCount) {
 			msgs.removeFirst();
 		}
 		notifyDataSetChanged();
