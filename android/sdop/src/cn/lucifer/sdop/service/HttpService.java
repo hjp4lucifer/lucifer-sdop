@@ -81,8 +81,9 @@ public class HttpService extends Service implements IGetLcf {
 					get(url, procedure, callback);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					// e.printStackTrace();
 					Log.e("Lucifer", "GET IOException", e);
+					e.printStackTrace();
+					reTry();
 				}
 				return;
 			}
@@ -92,10 +93,27 @@ public class HttpService extends Service implements IGetLcf {
 					post(url, payload, procedure, callback);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					// e.printStackTrace();
 					Log.e("Lucifer", "POST IOException", e);
+					e.printStackTrace();
+					reTry();
 				}
 				return;
+			}
+		}
+
+		private int tryCount = 0;
+
+		private void reTry() {
+			if (tryCount < 3) {
+				tryCount++;
+				try {
+					Log.w("Lucifer", "retry connection ---> " + tryCount);
+					sleep(tryCount * 2000);
+					run();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}

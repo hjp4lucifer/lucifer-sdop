@@ -243,7 +243,6 @@ public class Sdop extends LcfExtend {
 	private final String itemIdList_json = "[ 20006, 20011, 20013 ]";
 
 	public void equipItem4Sp(String callback) {
-		Log.i("Lucifer", "equipItem4Sp start !");
 		String url = httpUrlPrefix + "/PostForCardPlatoon/equipItem?ssid="
 				+ ssid;
 		try {
