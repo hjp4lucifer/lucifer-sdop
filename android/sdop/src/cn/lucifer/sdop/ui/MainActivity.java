@@ -180,7 +180,7 @@ public class MainActivity extends BaseActivity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if ((System.currentTimeMillis() - exitTime) > 2000) {
-				Toast.makeText(getApplicationContext(), "再按一次退出！",
+				Toast.makeText(getApplicationContext(), "再按一次退出sdop！",
 						Toast.LENGTH_SHORT).show();
 				exitTime = System.currentTimeMillis();
 			} else {

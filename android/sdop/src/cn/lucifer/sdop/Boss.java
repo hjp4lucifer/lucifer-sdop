@@ -219,6 +219,7 @@ public class Boss extends LcfExtend {
 	 */
 	public void autoSuperRaidBoss() {
 		if (!lcf().sdop.auto.setting.boss) {
+			Log.i("Lucifer", "auto.setting.boss : " + lcf().sdop.auto.setting.boss);
 			return;
 		}
 

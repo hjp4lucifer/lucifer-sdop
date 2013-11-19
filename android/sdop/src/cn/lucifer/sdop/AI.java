@@ -534,8 +534,8 @@ public class AI extends LcfExtend {
 	 * 开始自动超总, UI调用
 	 */
 	public void startAutoSuperRaidBoss() {
-		lcf().sdop.auto.setting.boss = true;
 		lcf().sdop.clearAllJob();
+		lcf().sdop.auto.setting.boss = true;
 		lcf().sdop.boss
 				.initRaidBossOutlineList(InitRaidBossOutlineList.procedure);
 	}
@@ -544,7 +544,6 @@ public class AI extends LcfExtend {
 	 * 取消自动超总, UI调用
 	 */
 	public void cancelAutoSuperRaidBoss() {
-		lcf().sdop.auto.setting.boss = false;
 		lcf().sdop.clearAllJob();
 		lcf().sdop.log("自动超总停止成功！");
 	}
