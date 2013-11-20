@@ -216,7 +216,6 @@ public class Sdop extends LcfExtend {
 		String url = httpUrlPrefix + "/PostForAuthentication/enter";
 		try {
 			String payload = loadJson("login.json");
-
 			post(url, payload, Enter.procedure, null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

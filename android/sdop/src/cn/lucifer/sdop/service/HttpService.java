@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 public class HttpService extends Service implements IGetLcf {
@@ -43,6 +45,8 @@ public class HttpService extends Service implements IGetLcf {
 
 		Log.i("Lucifer", "--------- HttpService onCreate ! ");
 		DF.init();
+
+		acquireWakeLock();
 	}
 
 	private BroadcastReceiver httpReceiver = new BroadcastReceiver() {
@@ -196,5 +200,42 @@ public class HttpService extends Service implements IGetLcf {
 	@Override
 	public Lcf lcf() {
 		return Lcf.getInstance();
+	}
+
+	private WakeLock mWakeLock;// 电源锁
+
+	/**
+	 * 申请设备电源锁
+	 */
+	private void acquireWakeLock() {
+		if (null == mWakeLock) {
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+					| PowerManager.ON_AFTER_RELEASE, "cn.lucifer.sdop.service");
+			if (null != mWakeLock) {
+				try {
+					mWakeLock.acquire();
+					Log.i("Lucifer", "mWakeLock acquire! =================");
+				} catch (SecurityException e) {
+					mWakeLock = null;
+				}
+			}
+		}
+	}
+
+	/**
+	 * onDestroy时，释放设备电源锁
+	 */
+	private void releaseWakeLock() {
+		if (null != mWakeLock) {
+			mWakeLock.release();
+			Log.i("Lucifer", "mWakeLock release! =================");
+		}
+		mWakeLock = null;
+	}
+
+	@Override
+	public void onDestroy() {
+		releaseWakeLock();
 	}
 }
