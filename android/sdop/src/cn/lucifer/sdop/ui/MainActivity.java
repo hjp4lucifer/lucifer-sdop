@@ -90,11 +90,11 @@ public class MainActivity extends BaseActivity {
 			lcf().sdop.duel.startAutoDuel();
 			break;
 		case R.id.action_auto_GB_SPECIAL:
-			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[0];
+			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[1];
 			lcf().sdop.duel.startAutoDuel();
 			break;
 		case R.id.action_auto_GB_SHOOT:
-			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[0];
+			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[2];
 			lcf().sdop.duel.startAutoDuel();
 			break;
 		case R.id.action_auto_GB_off:
