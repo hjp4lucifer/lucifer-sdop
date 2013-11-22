@@ -63,7 +63,7 @@ public class Duel extends LcfExtend {
 				Log.i("Lucifer", "autoDuel ----------");
 				lcf().sdop.duel.checkAndExecute();
 			}
-		}, 0, 180000);
+		}, 0, 300000);
 	}
 
 	public void cancelAutoDuel() {
