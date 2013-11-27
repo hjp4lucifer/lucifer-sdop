@@ -14,7 +14,6 @@ import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
-import cn.lucifer.sdop.domain.Card;
 import cn.lucifer.sdop.domain.CardWithoutWeapon;
 import cn.lucifer.sdop.domain.Unit;
 import cn.lucifer.sdop.domain.Value;
@@ -25,8 +24,8 @@ public class Boss extends LcfExtend {
 	private JSONObject currentType;
 	private final String currentModeValue = "RAID_BOSS";
 	private JSONObject currentMode;
-	public final int x3 = 250037;
-	public final int x6 = 250038;
+	public final int x3 = 250039;
+	public final int x6 = 250040;
 
 	public final AI AI = new AI();
 
