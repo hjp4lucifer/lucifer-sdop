@@ -24,8 +24,8 @@ public class Boss extends LcfExtend {
 	private JSONObject currentType;
 	private final String currentModeValue = "RAID_BOSS";
 	private JSONObject currentMode;
-	public final int x3 = 250039;
-	public final int x6 = 250040;
+	public final int x3 = 250041;
+	public final int x6 = 250042;
 
 	public final AI AI = new AI();
 
