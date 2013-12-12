@@ -47,6 +47,7 @@ public class Sdop extends LcfExtend {
 	public final String custom_login_url = "http://sdop.bandainamco-ol.jp/";
 	public final String game_url = "http://sdop-g.bandainamco-ol.jp/game/top";
 	public final String login_url = "http://sdop.bandainamco-ol.jp/api/sdop-g/login.php";
+	public final String mobile_index_url ="http://sdop-g.bandainamco-ol.jp/mobile/top";
 
 	private final String space = " ";
 

@@ -1,8 +1,6 @@
 package cn.lucifer.sdop.ui;
 
 import cn.lucifer.sdop.R;
-import cn.lucifer.sdop.R.id;
-import cn.lucifer.sdop.R.layout;
 import android.content.Intent;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -27,6 +25,7 @@ public class WebActivity extends BaseActivity {
 	private OnReceivedErrorListener errorListener;
 
 	protected String game_url;
+	protected String mobile_index_url;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +38,7 @@ public class WebActivity extends BaseActivity {
 		Intent beforeIntent = getIntent();
 		url = beforeIntent.getExtras().getString("url");
 		game_url = lcf().sdop.game_url;
+		mobile_index_url = lcf().sdop.mobile_index_url;
 
 		viewInit();
 	}
@@ -55,6 +55,7 @@ public class WebActivity extends BaseActivity {
 
 		wv.setScrollBarStyle(0);// 滚动条风格，为0就是不给滚动条留空间，滚动条覆盖在网页上
 		wv.setWebViewClient(new WebViewClient() {
+			@Override
 			public boolean shouldOverrideUrlLoading(final WebView view,
 					final String url) {
 				loadurl(view, url);// 载入网页
@@ -69,15 +70,20 @@ public class WebActivity extends BaseActivity {
 
 			@Override
 			public void onPageFinished(WebView view, String url) {
+				Log.i("Lucifer", "page finished : " + url);
+				if (url.equals(mobile_index_url)) {
+					loadurl(view, game_url);
+					return;
+				}
 				if (url.equals(game_url)) {
 
 					CookieManager cookieManager = CookieManager.getInstance();
 					Intent data = new Intent();
 					String cookies = cookieManager.getCookie(game_url);
-					Log.i("Lucifer", "cookies : " + cookies);
+					// Log.i("Lucifer", "cookies : " + cookies);
 					// data.putExtra("cookies", cookies);
 					String userAgent = view.getSettings().getUserAgentString();
-					Log.i("Lucifer", "userAgent : " + userAgent);
+					// Log.i("Lucifer", "userAgent : " + userAgent);
 					// data.putExtra("userAgent", userAgent);
 
 					lcf().sdop.setCookies(cookies);
