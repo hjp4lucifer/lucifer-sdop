@@ -132,7 +132,7 @@ lcf.sdop = {
 			}
 			return;
 		}
-		if(lcf.sdop.auto.setting.duel){
+		if (lcf.sdop.auto.setting.duel) {
 			if (data.args.message.indexOf("しばらく時間を置いてからアクセスして頂き") > 0) {
 				lcf.sdop.cancelAutoDuel();
 				lcf.sdop.startAutoDuel();
@@ -1709,6 +1709,50 @@ lcf.sdop.boss.AI.cancelAutoSuperRaidBoss = function(){
 	lcf.sdop.auto.setting.boss = false;
 	clearTimeout(lcf.sdop.auto.ids.autoRaidBoss);
 	lcf.sdop.log("自动超总停止成功！");
+};
+
+lcf.sdop.map = {};
+
+/**
+ * 查询当前地图
+ * @param {Object} callback
+ */
+lcf.sdop.map.getQuestData = function(callback){
+	var url = lcf.sdop.httpUrlPrefix + "/GetForQuestMap/getQuestData";
+	var payload = lcf.sdop.createGetParams();
+	payload.isEventMap = false;
+	payload.nodeId = 0;
+	lcf.sdop.get(url, payload, function(data){
+		console.info(data);
+		if (lcf.sdop.checkError(data, "GetForQuestMap")) {
+			return;
+		}
+		var playerExist = data.args.playerExist;
+		if (callback) {
+			setTimeout(callback, 100, playerExist);
+		}
+	});
+};
+
+/**
+ * 执行当前地图的探索
+ * @param {int} nodeId 地图node id
+ * @param {Object} callback
+ */
+lcf.sdop.map.executeQuest = function(nodeId, callback){
+	var url = lcf.sdop.httpUrlPrefix + "/PostForQuestMap/executeQuest";
+	var payload = lcf.sdop.createBasePayload("executeQuest", {
+		"isEventMap": false,
+		"nodeId": nodeId,
+		"renderingIdList": []
+	});
+	lcf.sdop.post(url, payload, function(data){
+		console.info(data);
+		if (lcf.sdop.checkError(data, "executeQuest")) {
+			return;
+		}
+		lcf.sdop.checkCallback(callback);
+	});
 };
 
 lcf.sdop.ui = {
