@@ -16,7 +16,6 @@ public class GetRaidBossBattleData extends BaseDispatch {
 		if (lcf().sdop.checkError(args, procedure)) {
 			return;
 		}
-		
 
 		Log.i("Lucifer", "GetRaidBossBattleData callback : " + callback);
 
@@ -31,6 +30,15 @@ public class GetRaidBossBattleData extends BaseDispatch {
 		Log.i("Lucifer", "GetRaidBossBattleData callback start ! ");
 		try {
 			lcf().sdop.boss.AI.setFixMember(battleArgs);
+			switch (lcf().sdop.boss.currentType) {
+			case 0:
+				lcf().sdop.boss.executeBattleStart(null);
+				return;
+
+			default:
+				break;
+			}
+
 			lcf().sdop.equipItem4Sp(EquipItem4Sp.procedure);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

@@ -15,7 +15,7 @@ public class ExecuteBattleStart extends BaseDispatch {
 		if (lcf().sdop.checkError(args, procedure)) {
 			return;
 		}
-		lcf().sdop.log("boss战开始！");
+		lcf().sdop.log("boss战开始！是否自动：" + lcf().sdop.boss.isAutoBattle);
 		lcf().sdop.checkCallback(callback, new Object[] { args });
 	}
 

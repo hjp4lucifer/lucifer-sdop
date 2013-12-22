@@ -39,7 +39,8 @@ public class InitRaidBossOutlineList extends BaseDispatch {
 		int delayTime;
 		if (lcf().sdop.bp >= 10) {
 			lcf().sdop.boss.autoSuperRaidBoss();
-			logMsg.append(", 满足超总要求！");
+			logMsg.append(", 满足").append(lcf().sdop.boss.getCurrentTypeName())
+					.append("要求！");
 			delayTime = 180;
 		} else {
 			int recoveryTime = headerDetail.bpDetail.getTrueRecoveryTime();
@@ -47,7 +48,8 @@ public class InitRaidBossOutlineList extends BaseDispatch {
 			if (delayTime < 0) {
 				delayTime = recoveryTime / 2;
 			}
-			logMsg.append(", 不满足超总要求！").append(delayTime).append("秒后再尝试！");
+			logMsg.append(", 不满足").append(lcf().sdop.boss.getCurrentTypeName())
+					.append("要求！").append(delayTime).append("秒后再尝试！");
 		}
 		lcf().sdop.log(logMsg.toString());
 

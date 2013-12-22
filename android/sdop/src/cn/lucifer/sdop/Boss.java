@@ -21,30 +21,54 @@ import cn.lucifer.sdop.domain.args.ExecuteActionCommandArgs;
 
 public class Boss extends LcfExtend {
 
-	private JSONObject currentType;
+	private JSONObject _normal;
+	private JSONObject _super;
+	/**
+	 * 0表示总力, 1表示超总
+	 */
+	public int currentType = 1;
 	private final String currentModeValue = "RAID_BOSS";
 	private JSONObject currentMode;
-	public final int x3 = 250041;
-	public final int x6 = 250042;
+	public final int x3 = 250043;
+	public final int x6 = 250044;
 
 	public final AI AI = new AI();
 
 	public Integer targetBossId;
 	public Integer battleId;
+	
+	public String getCurrentTypeName(){
+		switch (currentType) {
+		case 0:
+			return "总力";
+
+		default:
+			return "超总";
+		}
+	}
 
 	public JSONObject getCurrentType() {
-		if (currentType == null) {
-			try {
-				currentType = lcf().sdop.loadJsonObject("boss_super.json");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		try {
+			switch (currentType) {
+			case 0:
+				if (_normal == null) {
+					_normal = lcf().sdop.loadJsonObject("boss_normal.json");
+				}
+				return _normal;
+			default:
+				if (_super == null) {
+					_super = lcf().sdop.loadJsonObject("boss_super.json");
+				}
+				return _super;
 			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return currentType;
+		return null;
 	}
 
 	public JSONObject getCurrentMode() {
@@ -132,6 +156,11 @@ public class Boss extends LcfExtend {
 	}
 
 	/**
+	 * true战斗自动, 不进行AI判定
+	 */
+	public boolean isAutoBattle = false;
+
+	/**
 	 * 选好人, 并开始boss战斗
 	 * 
 	 * @param callback
@@ -160,7 +189,7 @@ public class Boss extends LcfExtend {
 							.put("battleId", battleId)
 							.put("unitList",
 									new JSONArray(lcf().gson.toJson(unitList)))
-							.put("isAutoBattle", false)
+							.put("isAutoBattle", isAutoBattle)
 							.put("mode", getCurrentMode()));
 			lcf().sdop.post(url, payload.toString(),
 					ExecuteBattleStart.procedure, callback);
@@ -218,7 +247,8 @@ public class Boss extends LcfExtend {
 	 */
 	public void autoSuperRaidBoss() {
 		if (!lcf().sdop.auto.setting.boss) {
-			Log.i("Lucifer", "auto.setting.boss : " + lcf().sdop.auto.setting.boss);
+			Log.i("Lucifer", "auto.setting.boss : "
+					+ lcf().sdop.auto.setting.boss);
 			return;
 		}
 

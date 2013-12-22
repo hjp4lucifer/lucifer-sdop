@@ -63,6 +63,61 @@ public class AI extends LcfExtend {
 		return target;
 	}
 
+	/**
+	 * 选择非倍机成员
+	 * 
+	 * @param members
+	 * @param other
+	 * @return
+	 */
+	public CardWithoutWeapon getNotAttackMember(CardWithoutWeapon[] members,
+			CardWithoutWeapon other) {
+		CardWithoutWeapon nextMember = null;
+		for (CardWithoutWeapon m : members) {
+			if (m.id == lcf().sdop.myUserId) {// 不能是自己
+				continue;
+			}
+			if ((null != other) && (m.id == other.id)) {// 不能是已选成员
+				continue;
+			}
+			if (m.coolTime != 0) {// 没有冷却
+				continue;
+			}
+			// 校验是否倍机
+			if (lcf().sdop.boss.checkX6(m)) {
+				m.lcf_attack = 6;
+			} else if (lcf().sdop.boss.checkX3(m)) {
+				m.lcf_attack = 3;
+			} else {
+				m.lcf_attack = 1;
+			}
+			if (nextMember == null) {// 默认没有选择时
+				nextMember = m;
+				continue;
+			}
+			if (nextMember.lcf_attack > m.lcf_attack) {// 倍数级别高
+				nextMember = m;
+				continue;
+			} else if (nextMember.lcf_attack < m.lcf_attack) {
+				continue;
+			}
+			// 倍数级别一样
+			if (nextMember.attack < m.attack) {// 攻击低
+				continue;
+			}
+
+			nextMember = m;
+		}
+
+		return nextMember;
+	}
+
+	/**
+	 * 选择合适的倍机
+	 * 
+	 * @param members
+	 * @return
+	 */
 	public CardWithoutWeapon getFixAttackMember(CardWithoutWeapon[] members) {
 		CardWithoutWeapon attackMember = null;
 		for (CardWithoutWeapon m : members) {
@@ -219,8 +274,19 @@ public class AI extends LcfExtend {
 				battleArgs.getString("memberCardList"),
 				CardWithoutWeapon[].class);
 
-		attackMember = getFixAttackMember(members);
-		helpMember = getFixHelpMember(members, attackMember);
+		switch (lcf().sdop.boss.currentType) {
+		case 0:
+			lcf().sdop.boss.isAutoBattle = true;
+			attackMember = getNotAttackMember(members, null);
+			helpMember = getNotAttackMember(members, attackMember);
+			break;
+
+		default:
+			lcf().sdop.boss.isAutoBattle = false;
+			attackMember = getFixAttackMember(members);
+			helpMember = getFixHelpMember(members, attackMember);
+			break;
+		}
 	}
 
 	/**
@@ -536,6 +602,18 @@ public class AI extends LcfExtend {
 	public void startAutoSuperRaidBoss() {
 		lcf().sdop.clearAllJob();
 		lcf().sdop.auto.setting.boss = true;
+		lcf().sdop.boss.currentType = 1;
+		lcf().sdop.boss
+				.initRaidBossOutlineList(InitRaidBossOutlineList.procedure);
+	}
+
+	/**
+	 * 开始自动总力, UI调用
+	 */
+	public void startAutoNormalRaidBoss() {
+		lcf().sdop.clearAllJob();
+		lcf().sdop.auto.setting.boss = true;
+		lcf().sdop.boss.currentType = 0;
 		lcf().sdop.boss
 				.initRaidBossOutlineList(InitRaidBossOutlineList.procedure);
 	}
