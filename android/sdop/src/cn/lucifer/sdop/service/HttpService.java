@@ -112,6 +112,7 @@ public class HttpService extends Service implements IGetLcf {
 				tryCount++;
 				try {
 					Log.w("Lucifer", "retry connection ---> " + tryCount);
+					lcf().sdop.log("请求失败！尝试重连  ---> " + tryCount);
 					sleep(tryCount * 2000);
 					run();
 				} catch (InterruptedException e) {
