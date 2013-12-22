@@ -109,7 +109,13 @@ lcf.sdop = {
 			if (lcf.sdop.auto.setting.duel) {
 				opValue = 1;
 			} else if (lcf.sdop.auto.setting.boss) {
-				opValue = 2;
+				switch (lcf.sdop.boss._currentType) {
+				case 0:
+					opValue = 3;//普通总力
+					break;
+				default://超总
+					opValue = 2;
+				}
 			}
 			if (opValue == 0) {
 				return;
@@ -125,10 +131,24 @@ lcf.sdop = {
 		if (lcf.sdop.auto.setting.boss) {
 			if (data.args.message.indexOf("戦闘は既に終了") > 0) {
 				lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
-				lcf.sdop.boss.AI.startAutoSuperRaidBoss();
+				
+				switch (lcf.sdop.boss._currentType) {
+				case 0:
+					lcf.sdop.boss.AI.startAutoNormalRaidBoss();
+					break;
+				default:
+					lcf.sdop.boss.AI.startAutoSuperRaidBoss();
+				}
 			} else if (data.args.message.indexOf("しばらく時間を置いてからアクセスして頂き") > 0) {
 				lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
-				setTimeout(lcf.sdop.boss.AI.startAutoSuperRaidBoss, 60000);
+				
+				switch (lcf.sdop.boss._currentType) {
+				case 0:
+					setTimeout(lcf.sdop.boss.AI.startAutoNormalRaidBoss, 60000);
+					break;
+				default:
+					setTimeout(lcf.sdop.boss.AI.startAutoSuperRaidBoss, 60000);
+				}
 			}
 			return;
 		}
@@ -204,6 +224,9 @@ lcf.sdop.checkAuto = function(){
 			case 2:
 				lcf.sdop.ui.btnStartSuperRaidBoss.click();
 				break;
+			case 3:
+				lcf.sdop.ui.btnStartNormalRaidBoss.click();
+				break
 			}
 		});
 		chrome.storage.local.clear();
@@ -697,15 +720,22 @@ lcf.sdop.boss = {
 		},
 		start: 0
 	},
+	_currentType: 1,//0表示普通, 1表示超总
 	getCurrentType: function(){
-		return lcf.sdop.boss._super;
+		switch (lcf.sdop.boss._currentType) {
+		case 0:
+			return lcf.sdop.boss._normal;
+			break;
+		default:
+			return lcf.sdop.boss._super;
+		}
 	},
 	mode: ["NORMAL", "RAID_BOSS"],
 	kind: ["NORMAL", "SUPER"],
 	currentMode: 'RAID_BOSS',
 	currentKind: 'SUPER',
-	x3: 250041,
-	x6: 250042,
+	x3: 250043,
+	x6: 250044,
 	getTopLevel: function(list){
 		var target, _currentBoss;
 		for (var i in list) {
@@ -1071,6 +1101,56 @@ lcf.sdop.boss.checkX3 = function(m){
 	return false;
 };
 
+/**
+ * 选择非倍机成员
+ * @param {Array} members
+ * @param {Member} other 已选成员
+ */
+lcf.sdop.boss.getNotAttackMember = function(members, other){
+	var nextMember;
+	for (var i in members) {
+		var m = members[i];
+		if (m.id == lcf.sdop.myUserId) {//不能是自己
+			continue;
+		}
+		if (other && (m.id == other.id)) {//不能是已选成员
+			continue;
+		}
+		if (m.coolTime != 0) {//没有冷却
+			continue;
+		}
+		//校验是否倍机
+		if (lcf.sdop.boss.checkX6(m)) {
+			m.lcf_attack = 6;
+		} else if (lcf.sdop.boss.checkX3(m)) {
+			m.lcf_attack = 3;
+		} else {
+			m.lcf_attack = 1;
+		}
+		if (null == nextMember) {//默认没有选择时
+			nextMember = m;
+			continue;
+		}
+		if (nextMember.lcf_attack > m.lcf_attack) {//倍数级别高
+			nextMember = m;
+			continue;
+		} else if (nextMember.lcf_attack < m.lcf_attack) {
+			continue;
+		}
+		//倍数级别一样
+		if (nextMember.attack < m.attack) {//攻击低
+			continue;
+		}
+		
+		nextMember = m;
+	}
+	return nextMember;
+};
+
+/**
+ * 选择合适的倍机
+ * @param {Array} members
+ */
 lcf.sdop.boss.getFixAttackMember = function(members){
 	var attackMember;
 	//选择倍机
@@ -1245,6 +1325,11 @@ lcf.sdop.boss.getBattleData = function(callback){
 };
 
 /**
+ * true战斗自动, 不进行AI判定
+ */
+lcf.sdop.boss.isAutoBattle = false;
+
+/**
  * 选好人, 并开始boss战斗
  * @param {int} battleId
  * @param {int} firstId
@@ -1284,7 +1369,7 @@ lcf.sdop.boss.executeBattleStart = function(battleId, firstId, secondId, callbac
 			"isLeader": false,
 			"isUseGoldPoint": false
 		}],
-		"isAutoBattle": false,
+		"isAutoBattle": lcf.sdop.boss.isAutoBattle,
 		"mode": {
 			"value": _sdop.boss.currentMode
 		}
@@ -1294,7 +1379,7 @@ lcf.sdop.boss.executeBattleStart = function(battleId, firstId, secondId, callbac
 		if (_sdop.checkError(data, "executeBattleStart")) {
 			return;
 		}
-		_sdop.log("boss战开始！");
+		_sdop.log("boss战开始！是否自动：" + lcf.sdop.boss.isAutoBattle);
 		if (callback) {
 			setTimeout(callback, 100, data.args);
 		}
@@ -1627,6 +1712,39 @@ lcf.sdop.boss.AI.autoBattle = function(data){
 };
 
 /**
+ * 自动总力
+ */
+lcf.sdop.boss.autoNormalRaidBoss = function(){
+	if (!lcf.sdop.auto.setting.boss) {
+		return;
+	}
+	lcf.sdop.boss.getRaidBossOutlineList(function(boss){
+		lcf.sdop.boss.postRaidBossBattleEntry(boss.id, function(){
+			lcf.sdop.boss.getRaidBossBattleData(boss.id, function(battleData){
+				lcf.sdop.myUserId = battleData.leaderCardId;
+				var my = battleData.playerMsList[0];
+				
+				lcf.sdop.currentSp = my.card.currentSp;
+				lcf.sdop.maxSp = my.card.maxSp;
+				
+				lcf.sdop.boss.battleId = battleData.battleId;
+				var members = battleData.memberCardList;
+				var first = lcf.sdop.boss.getNotAttackMember(members);
+				var second = lcf.sdop.boss.getNotAttackMember(members, first);
+				
+				lcf.sdop.boss.isAutoBattle = true;
+				//开始战斗
+				setTimeout(lcf.sdop.boss.executeBattleStart, 3000, lcf.sdop.boss.battleId, first.id, second.id);
+			});
+		}, function(){
+			setTimeout(lcf.sdop.boss.autoNormalRaidBoss, 1000);
+		});
+	}, function(){
+		setTimeout(lcf.sdop.boss.autoNormalRaidBoss, 1000);
+	});
+};
+
+/**
  * 自动超总
  */
 lcf.sdop.boss.autoSuperRaidBoss = function(){
@@ -1648,6 +1766,7 @@ lcf.sdop.boss.autoSuperRaidBoss = function(){
 				var attackMember = lcf.sdop.boss.getFixAttackMember(members);
 				var helpMember = lcf.sdop.boss.getFixHelpMember(members, attackMember);
 				
+				lcf.sdop.boss.isAutoBattle = false;
 				//带药
 				setTimeout(lcf.sdop.equipItem4Sp, 100, function(){
 					//开始战斗
@@ -1672,10 +1791,43 @@ lcf.sdop.boss.autoSuperRaidBoss = function(){
 };
 
 /**
+ * 开始自动总力, UI调用
+ */
+lcf.sdop.boss.AI.startAutoNormalRaidBoss = function(){
+	lcf.sdop.auto.setting.boss = true;
+	lcf.sdop.boss._currentType = 0;
+	clearTimeout(lcf.sdop.auto.ids.autoRaidBoss);
+	//立刻检查BP
+	lcf.sdop.boss.initRaidBossOutlineList(function(data){
+		var bpDetail = data.args.headerDetail.bpDetail;
+		lcf.sdop.bp = bpDetail.currentValue;
+		var logMsg = "当前BP：" + lcf.sdop.bp;
+		
+		var delayTime;
+		if (lcf.sdop.bp >= 10) {
+			setTimeout(lcf.sdop.boss.autoNormalRaidBoss, 100);
+			logMsg += "，满足总力要求！";
+			delayTime = 180;
+		} else {
+			//delayTime = 60000 + Math.round(Math.random() * 2000)
+			var recoveryTime = (bpDetail.maxValue - bpDetail.currentValue - 1) * bpDetail.recoveryInterval + bpDetail.recoveryTime;
+			delayTime = (recoveryTime - 60);
+			if (delayTime < 0) {
+				delayTime = recoveryTime / 2;
+			}
+			logMsg += "，不满足总力要求！" + delayTime + "秒后再尝试！";
+		}
+		lcf.sdop.log(logMsg);
+		lcf.sdop.auto.ids.autoRaidBoss = setTimeout(lcf.sdop.boss.AI.startAutoNormalRaidBoss, delayTime * 1000);
+	});
+};
+
+/**
  * 开始自动超总, UI调用
  */
 lcf.sdop.boss.AI.startAutoSuperRaidBoss = function(){
 	lcf.sdop.auto.setting.boss = true;
+	lcf.sdop.boss._currentType = 1;
 	clearTimeout(lcf.sdop.auto.ids.autoRaidBoss);
 	//立刻检查BP
 	lcf.sdop.boss.initRaidBossOutlineList(function(data){
@@ -1760,6 +1912,7 @@ lcf.sdop.ui = {
 	btnInit: null,
 	btnStartDuel: null,
 	btnStartSuperRaidBoss: null,
+	btnStartNormalRaidBoss: null,
 	btnStartAutoReload: null,
 	addInAfterPanel: function(jqueryObj){
 		var _ui = lcf.sdop.ui;
@@ -1874,25 +2027,38 @@ lcf.sdop.ui = {
 		
 		
 		var btnStartSuperRaidBoss = $('<input type="button">').val("开始自动超总");
-		var btnCancelSuperRaidBoss = $('<input type="button">').val("停止自动超总");
+		var btnStartNormalRaidBoss = $('<input type="button">').val("开始自动总力");
+		var btnCancelSuperRaidBoss = $('<input type="button">').val("停止自动超总/总力");
 		btnCancelSuperRaidBoss.hide();
 		
 		btnStartSuperRaidBoss.click(function(){
 			lcf.sdop.boss.AI.startAutoSuperRaidBoss();
 			btnStartSuperRaidBoss.hide();
+			btnStartNormalRaidBoss.hide();
 			btnCancelSuperRaidBoss.show();
 		});
 		
 		btnCancelSuperRaidBoss.click(function(){
 			lcf.sdop.boss.AI.cancelAutoSuperRaidBoss();
 			btnStartSuperRaidBoss.show();
+			btnStartNormalRaidBoss.show();
 			btnCancelSuperRaidBoss.hide();
 		});
 		
 		pAutoDuel.append(btnStartSuperRaidBoss);
 		pAutoDuel.append(btnCancelSuperRaidBoss);
+		pAutoDuel.append(btnStartNormalRaidBoss);
 		
 		_ui.btnStartSuperRaidBoss = btnStartSuperRaidBoss;
+		
+		btnStartNormalRaidBoss.click(function(){
+			lcf.sdop.boss.AI.startAutoNormalRaidBoss();
+			btnStartSuperRaidBoss.hide();
+			btnStartNormalRaidBoss.hide();
+			btnCancelSuperRaidBoss.show();
+		});
+		
+		_ui.btnStartNormalRaidBoss = btnStartNormalRaidBoss;
 		
 		///////////////////////////////////////////////////////////
 		
