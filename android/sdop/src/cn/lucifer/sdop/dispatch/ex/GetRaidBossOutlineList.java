@@ -34,20 +34,28 @@ public class GetRaidBossOutlineList extends BaseDispatch {
 
 		lcf().sdop.checkCallback(callback, new Object[] { target });
 	}
+	
+	private int tryCount = 0;
 
 	@Override
 	public void callback(Object[] args) {
+		tryCount = 0;
 		Boss boss = (Boss) args[0];
 		lcf().sdop.boss.postRaidBossBattleEntry(boss.id,
 				PostRaidBossBattleEntry.procedure);
 	}
 
 	public void noList() {
-		lcf().sdop.log("没有对应等级的boss！");
+		tryCount++;
+		lcf().sdop.log("没有对应等级的boss！" + tryCount);
 		if (!lcf().sdop.auto.setting.boss) {
 			return;
 		}
-		lcf().sdop.checkCallback(AutoSuperRaidBoss.procedure, 1000, null);
+		long delayMillis = 1000;
+		if (tryCount > 30) {
+			delayMillis *= tryCount;
+		}
+		lcf().sdop.checkCallback(AutoSuperRaidBoss.procedure, delayMillis, null);
 	}
 
 }
