@@ -20,7 +20,14 @@ public class Enter extends BaseDispatch {
 		
 		if (lcf().sdop.auto.setting.boss) {
 			Log.i("Lucifer", "auto boss");
-			lcf().sdop.boss.AI.startAutoSuperRaidBoss();
+			switch (lcf().sdop.boss.currentType) {
+			case 0:
+				lcf().sdop.boss.AI.startAutoNormalRaidBoss();
+				break;
+			default:
+				lcf().sdop.boss.AI.startAutoSuperRaidBoss();
+				break;
+			}
 			return;
 		}
 		Log.i("Lucifer", "no auto boss");
