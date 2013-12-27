@@ -315,8 +315,17 @@ public class AI extends LcfExtend {
 	 * @param player
 	 */
 	public boolean checkAttackSkill(Ms player) {
-		ActiveSkill[] activeSkillList = player.card.pilot.activeSkillList;
+		return checkAttackSkill4Card(player.card);
+	}
 
+	/**
+	 * 返回true表示有攻击性技能
+	 * 
+	 * @param card
+	 * @return
+	 */
+	public boolean checkAttackSkill4Card(Card card) {
+		ActiveSkill[] activeSkillList = card.pilot.activeSkillList;
 		for (ActiveSkill activeSkill : activeSkillList) {
 			if (activeSkill.description.startsWith(actionCode[3].prefix)) {
 				return true;
