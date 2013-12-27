@@ -1907,6 +1907,57 @@ lcf.sdop.map.executeQuest = function(nodeId, callback){
 	});
 };
 
+lcf.sdop.sneaking = {};
+
+lcf.sdop.sneaking.getSneakingMissionTopData = function(callback){
+	var url = lcf.sdop.httpUrlPrefix + "GetForSneakingMission/getSneakingMissionTopData";
+	var payload = lcf.sdop.createGetParams();
+	lcf.sdop.get(url, payload, function(data){
+		console.info(data);
+		if (lcf.sdop.checkError(data, "getSneakingMissionTopData")) {
+			return;
+		}
+	});
+};
+
+lcf.sdop.sneaking.getResultData = function(callback){
+	var url = lcf.sdop.httpUrlPrefix + "PostForSneakingMission/getResultData";
+	var payload = {
+		"tokenId": "972ae783c0d006c85e1a7b6456772579",
+		"procedure": "getResultData",
+		"ssid": "75bvjdup4usmdl3bj0q02k63o7het70k",
+		"args": {
+			"platoonId": 3
+		}
+	};
+	lcf.sdop.post(url, payload, function(data){
+		console.info(data);
+		if (lcf.sdop.checkError(data, "PostForSneakingMission")) {
+			return;
+		}
+	});
+};
+
+lcf.sdop.sneaking.getHighRiskPossibility = function(){
+	var url = lcf.sdop.httpUrlPrefix + "PostForSneakingMission/getHighRiskPossibility";
+	var payload = {
+		"tokenId": "972ae783c0d006c85e1a7b6456772579",
+		"procedure": "getHighRiskPossibility",
+		"ssid": "75bvjdup4usmdl3bj0q02k63o7het70k",
+		"args": {
+			"itemIdList": [ 20006, 20013, 20016 ],
+			"platoonBattleForce": 80909,
+			"destinationId": 302
+		}
+	};
+	lcf.sdop.post(url, payload, function(data){
+		console.info(data);
+		if (lcf.sdop.checkError(data, "getHighRiskPossibility")) {
+			return;
+		}
+	});
+};
+
 lcf.sdop.ui = {
 	initAfterPanel: [],
 	btnInit: null,
