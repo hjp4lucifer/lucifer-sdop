@@ -1938,7 +1938,7 @@ lcf.sdop.sneaking.getResultData = function(callback){
 	});
 };
 
-lcf.sdop.sneaking.getHighRiskPossibility = function(){
+lcf.sdop.sneaking.getHighRiskPossibility = function(callback){
 	var url = lcf.sdop.httpUrlPrefix + "PostForSneakingMission/getHighRiskPossibility";
 	var payload = {
 		"tokenId": "972ae783c0d006c85e1a7b6456772579",
