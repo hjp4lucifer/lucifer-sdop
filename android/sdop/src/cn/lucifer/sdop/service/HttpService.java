@@ -108,7 +108,7 @@ public class HttpService extends Service implements IGetLcf {
 		private int tryCount = 0;
 
 		private void reTry() {
-			if (tryCount < 3) {
+			if (tryCount < 5) {
 				tryCount++;
 				try {
 					Log.w("Lucifer", "retry connection ---> " + tryCount);

@@ -160,6 +160,7 @@ public class Sdop extends LcfExtend {
 		if (message.indexOf("再度ログインお願いします。") > 0) {
 			Intent intent = new Intent(AUTO_LOGIN_RECEIVER_ACTION);
 			context.sendBroadcast(intent);
+			clearAllJob();
 		}
 	}
 

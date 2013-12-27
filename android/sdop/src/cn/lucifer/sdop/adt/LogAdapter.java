@@ -26,9 +26,11 @@ public class LogAdapter extends BaseAdapter {
 
 	private final int padding = 5;
 	private final int maxCount = 50;
+	private boolean oddCount;
 
 	public void addFirst(String text) {
 		msgs.addFirst(text);
+		oddCount = !oddCount;
 		if (getCount() > maxCount) {
 			msgs.removeLast();
 		}
@@ -52,7 +54,8 @@ public class LogAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView tv = new TextView(context);
 		tv.setPadding(padding, padding, padding, padding);
-		tv.setBackgroundColor(position % 2 == 1 ? Color.LTGRAY : Color.GRAY);
+		tv.setBackgroundColor(position % 2 == (oddCount ? 0 : 1) ? Color.LTGRAY
+				: Color.GRAY);
 		tv.setText(getText(getItem(position)));
 		// return super.getView(position, convertView, parent);
 		return tv;
