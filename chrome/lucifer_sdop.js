@@ -1166,7 +1166,11 @@ lcf.sdop.boss.getFixAttackMember = function(members){
 		if (lcf.sdop.boss.checkX6(m)) {
 			m.lcf_attack = 6;
 		} else if (lcf.sdop.boss.checkX3(m)) {
-			m.lcf_attack = 3;
+			if (lcf.sdop.boss.AI.checkAttackSkill4Card(m)) {
+				m.lcf_attack = 3;
+			} else {
+				m.lcf_attack = 2;
+			}
 		} else {
 			m.lcf_attack = 1;
 		}
@@ -1525,7 +1529,15 @@ lcf.sdop.boss.AI.checkMySkill = function(player){
  * @param {Object} player
  */
 lcf.sdop.boss.AI.checkAttackSkill = function(player){
-	var activeSkillList = player.card.pilot.activeSkillList;
+	return lcf.sdop.boss.AI.checkAttackSkill4Card(player.card);
+};
+
+/**
+ * 返回true表示有攻击性技能
+ * @param {Object} card
+ */
+lcf.sdop.boss.AI.checkAttackSkill4Card = function(card){
+	var activeSkillList = card.pilot.activeSkillList;
 	for (var k in activeSkillList) {
 		if (activeSkillList[k].description.indexOf(lcf.sdop.boss.AI.actionCode[3].prefix) === 0) {
 			return true;
@@ -1945,7 +1957,7 @@ lcf.sdop.sneaking.getHighRiskPossibility = function(callback){
 		"procedure": "getHighRiskPossibility",
 		"ssid": "75bvjdup4usmdl3bj0q02k63o7het70k",
 		"args": {
-			"itemIdList": [ 20006, 20013, 20016 ],
+			"itemIdList": [20006, 20013, 20016],
 			"platoonBattleForce": 80909,
 			"destinationId": 302
 		}
