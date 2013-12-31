@@ -34,6 +34,11 @@ public class AI extends LcfExtend {
 
 	}
 
+	/**
+	 * 
+	 * @param bosses
+	 * @return 可为null
+	 */
 	public cn.lucifer.sdop.domain.Boss getTopLevel(
 			cn.lucifer.sdop.domain.Boss[] bosses) {
 		cn.lucifer.sdop.domain.Boss target = null;
@@ -49,7 +54,8 @@ public class AI extends LcfExtend {
 				// }
 				if (target.level > _currentBoss.level) {// 判断等级
 					continue;
-				} else if (target.level < _currentBoss.level) {
+				}
+				if (target.level < _currentBoss.level) {
 					target = _currentBoss;
 					continue;
 				}
@@ -57,6 +63,9 @@ public class AI extends LcfExtend {
 					target = _currentBoss;
 				}
 			} else {
+				if (_currentBoss.level == 1) {
+					continue;
+				}
 				target = _currentBoss;
 			}
 		}

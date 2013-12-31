@@ -28,6 +28,10 @@ public class GetRaidBossOutlineList extends BaseDispatch {
 		}
 
 		Boss target = lcf().sdop.boss.AI.getTopLevel(bosses);
+		if (null == target) {
+			noList();
+			return;
+		}
 		lcf().sdop.log("目标boss等级："
 				+ lcf().sdop.getRedMsg(String.valueOf(target.level))
 				+ ", 残余血量：" + target.currentHp + ", 【" + target.comment + "】");
