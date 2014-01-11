@@ -1922,7 +1922,7 @@ lcf.sdop.map.executeQuest = function(nodeId, callback){
 lcf.sdop.sneaking = {};
 
 lcf.sdop.sneaking.getSneakingMissionTopData = function(callback){
-	var url = lcf.sdop.httpUrlPrefix + "GetForSneakingMission/getSneakingMissionTopData";
+	var url = lcf.sdop.httpUrlPrefix + "/GetForSneakingMission/getSneakingMissionTopData";
 	var payload = lcf.sdop.createGetParams();
 	lcf.sdop.get(url, payload, function(data){
 		console.info(data);
@@ -1933,7 +1933,7 @@ lcf.sdop.sneaking.getSneakingMissionTopData = function(callback){
 };
 
 lcf.sdop.sneaking.getResultData = function(callback){
-	var url = lcf.sdop.httpUrlPrefix + "PostForSneakingMission/getResultData";
+	var url = lcf.sdop.httpUrlPrefix + "/PostForSneakingMission/getResultData";
 	var payload = {
 		"tokenId": "972ae783c0d006c85e1a7b6456772579",
 		"procedure": "getResultData",
@@ -1951,7 +1951,7 @@ lcf.sdop.sneaking.getResultData = function(callback){
 };
 
 lcf.sdop.sneaking.getHighRiskPossibility = function(callback){
-	var url = lcf.sdop.httpUrlPrefix + "PostForSneakingMission/getHighRiskPossibility";
+	var url = lcf.sdop.httpUrlPrefix + "/PostForSneakingMission/getHighRiskPossibility";
 	var payload = {
 		"tokenId": "972ae783c0d006c85e1a7b6456772579",
 		"procedure": "getHighRiskPossibility",
