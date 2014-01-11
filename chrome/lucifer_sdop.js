@@ -1970,6 +1970,26 @@ lcf.sdop.sneaking.getHighRiskPossibility = function(callback){
 	});
 };
 
+lcf.sdop.sneaking.sortieTroops = function(callback){
+	var url = lcf.sdop.httpUrlPrefix + "/PostForSneakingMission/sortieTroops";
+	var payload = {
+		"tokenId": "63c5a73d0970ec5d440397a75afaebf8",
+		"args": {
+			"platoonId": 1,
+			"itemIdList": [20006, 20013, 20016],
+			"msCardIdList": [205786367, 226142975, 218468769],
+			"destinationId": 310
+		},
+		"procedure": "sortieTroops"
+	};
+	lcf.sdop.post(url, payload, function(data){
+		console.info(data);
+		if (lcf.sdop.checkError(data, "sortieTroops")) {
+			return;
+		}
+	});
+};
+
 lcf.sdop.ui = {
 	initAfterPanel: [],
 	btnInit: null,
