@@ -1,13 +1,15 @@
 package cn.lucifer.sdop.domain;
 
 public class SneakingPlatoon {
-
+	public int platoonId;
 	/**
 	 * 最大使用cost
 	 */
 	public int cost;
 
 	public String destinationName;
+
+	public boolean isSecret;
 
 	public int[] msCardIdList;
 	public String platoonName;
