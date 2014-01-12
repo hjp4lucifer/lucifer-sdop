@@ -7,6 +7,9 @@ public class SneakingPlatoon {
 	 */
 	public int cost;
 
+	/**
+	 * 潜入地点
+	 */
 	public String destinationName;
 
 	public boolean isSecret;
