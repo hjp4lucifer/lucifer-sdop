@@ -3,10 +3,12 @@ package cn.lucifer.sdop.adt;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import cn.lucifer.sdop.Lcf;
 import cn.lucifer.sdop.R;
 import cn.lucifer.sdop.domain.SneakingPlatoon;
 
 import android.content.Context;
+import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,8 +42,8 @@ public class SneakingAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
-	public void refreshPlatoons(SneakingPlatoon[] platoons){
+
+	public void refreshPlatoons(SneakingPlatoon[] platoons) {
 		if (platoons == null) {
 			return;
 		}
@@ -64,12 +66,17 @@ public class SneakingAdapter extends BaseAdapter {
 
 		SneakingPlatoon platoon = platoons.get(position);
 		if (platoon != null) {
-			holder.id.setText(String.valueOf(position));
+			holder.id.setText(String.valueOf(platoon.platoonId));
 			holder.name.setText(platoon.platoonName);
 			holder.requiredTime.setText(DateUtils
 					.formatElapsedTime(platoon.requiredTime));
 			holder.report.setText(platoon.report);
-			holder.state.setText(platoon.state.value);
+			if (platoon.isSecret) {
+				holder.state.setText(Html.fromHtml(platoon.state.value + "　"
+						+ Lcf.getInstance().sdop.getRedBoldMsg("Secret")));
+			} else {
+				holder.state.setText(platoon.state.value);
+			}
 		}
 		return convertView;
 	}
