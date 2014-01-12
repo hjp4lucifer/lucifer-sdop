@@ -16,10 +16,12 @@ import cn.lucifer.sdop.dispatch.ex.GetDuelData;
 import cn.lucifer.sdop.dispatch.ex.GetEntryData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
+import cn.lucifer.sdop.dispatch.ex.GetResultData;
 import cn.lucifer.sdop.dispatch.ex.GetSneakingMissionTopData;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
+import cn.lucifer.sdop.dispatch.ex.SortieTroops;
 import cn.lucifer.sdop.dispatch.ex.StartAutoSuperRaidBoss;
 
 public final class DF {
@@ -51,7 +53,10 @@ public final class DF {
 		put(InitRaidBossOutlineList.procedure, new InitRaidBossOutlineList());
 		put(PostRaidBossBattleEntry.procedure, new PostRaidBossBattleEntry());
 
-		put(GetSneakingMissionTopData.procedure, new GetSneakingMissionTopData());
+		put(GetSneakingMissionTopData.procedure,
+				new GetSneakingMissionTopData());
+		put(GetResultData.procedure, new GetResultData());
+		put(SortieTroops.procedure, new SortieTroops());
 	}
 
 	private static void put(String procedure, BaseDispatch impl) {
