@@ -166,6 +166,8 @@ public class HttpService extends Service implements IGetLcf {
 
 		getResponse(conn, procedure, callback);
 	}
+	
+	private final int connect_timeout = 61000;
 
 	private void conn(HttpURLConnection conn) throws IOException {
 		conn.setRequestProperty("Cookie", lcf().sdop.getCookies());
@@ -176,6 +178,8 @@ public class HttpService extends Service implements IGetLcf {
 
 		conn.setRequestProperty("Referer", lcf().sdop.game_url);
 		conn.setRequestProperty("User-Agent", lcf().sdop.getUserAgent());
+		
+		conn.setConnectTimeout(connect_timeout);
 
 		conn.connect();
 	}

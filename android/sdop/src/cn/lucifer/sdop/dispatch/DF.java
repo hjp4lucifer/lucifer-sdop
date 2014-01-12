@@ -16,6 +16,7 @@ import cn.lucifer.sdop.dispatch.ex.GetDuelData;
 import cn.lucifer.sdop.dispatch.ex.GetEntryData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
+import cn.lucifer.sdop.dispatch.ex.GetSneakingMissionTopData;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
@@ -50,6 +51,7 @@ public final class DF {
 		put(InitRaidBossOutlineList.procedure, new InitRaidBossOutlineList());
 		put(PostRaidBossBattleEntry.procedure, new PostRaidBossBattleEntry());
 
+		put(GetSneakingMissionTopData.procedure, new GetSneakingMissionTopData());
 	}
 
 	private static void put(String procedure, BaseDispatch impl) {

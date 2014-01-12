@@ -6,4 +6,5 @@ public class Item {
 	public String name;
 	public int currentStock;
 	public int num;
+	public String description;
 }

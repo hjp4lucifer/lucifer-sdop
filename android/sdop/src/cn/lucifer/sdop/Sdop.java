@@ -54,7 +54,7 @@ public class Sdop extends LcfExtend {
 	private final DateFormat timeFormat = new SimpleDateFormat(
 			"M月d日 HH:mm:ss.SSS");
 
-	private Context context;
+	Context context;
 
 	public void setContext(Context context) {
 		this.context = context;
@@ -66,6 +66,7 @@ public class Sdop extends LcfExtend {
 	public Pilot pilot;
 	public Duel duel;
 	public Boss boss;
+	public Sneaking sneaking;
 
 	public void initAfterContext() {
 		if (auto == null) {
@@ -82,6 +83,9 @@ public class Sdop extends LcfExtend {
 		}
 		if (boss == null) {
 			boss = new Boss();
+		}
+		if (sneaking == null) {
+			sneaking = new Sneaking();
 		}
 	}
 

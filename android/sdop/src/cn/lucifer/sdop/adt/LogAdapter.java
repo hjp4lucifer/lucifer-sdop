@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -52,13 +53,24 @@ public class LogAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		TextView tv = new TextView(context);
+		String text = getItem(position);
+		TextView tv;
+		if (convertView != null && convertView instanceof TextView) {
+			tv = (TextView) convertView;
+			setStyle(tv, position, text);
+			return tv;
+		}
+		tv = new TextView(context);
 		tv.setPadding(padding, padding, padding, padding);
-		tv.setBackgroundColor(position % 2 == (oddCount ? 0 : 1) ? Color.LTGRAY
-				: Color.GRAY);
-		tv.setText(getText(getItem(position)));
+		setStyle(tv, position, text);
 		// return super.getView(position, convertView, parent);
 		return tv;
+	}
+	
+	protected void setStyle(TextView tv,int position, String text){
+		tv.setBackgroundColor(position % 2 == (oddCount ? 0 : 1) ? Color.LTGRAY
+				: Color.GRAY);
+		tv.setText(getText(text));
 	}
 
 	@Override

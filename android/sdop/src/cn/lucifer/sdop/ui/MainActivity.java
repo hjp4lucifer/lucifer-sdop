@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity {
 			// menu.findItem(R.id.action_test_hello).setEnabled(true);
 			menu.findItem(R.id.action_auto_GB).setEnabled(true);
 			menu.findItem(R.id.action_auto_boss).setEnabled(true);
+			menu.findItem(R.id.action_sneaking).setEnabled(true);
 			isDisabledLoginMenu = false;
 		}
 		return true;
@@ -111,6 +112,10 @@ public class MainActivity extends BaseActivity {
 			break;
 		case R.id.action_auto_boss_off:
 			lcf().sdop.boss.AI.cancelAutoSuperRaidBoss();
+			break;
+		case R.id.action_sneaking:
+			Intent intent = new Intent(this, SneakingActivity.class);
+			startActivity(intent);
 			break;
 		case R.id.action_exit:
 			exit();
