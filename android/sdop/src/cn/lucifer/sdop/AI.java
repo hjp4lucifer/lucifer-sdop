@@ -63,9 +63,9 @@ public class AI extends LcfExtend {
 					target = _currentBoss;
 				}
 			} else {
-				if (_currentBoss.level == 1) {
-					continue;
-				}
+				// if (_currentBoss.level == 1) {
+				// continue;
+				// }
 				target = _currentBoss;
 			}
 		}
