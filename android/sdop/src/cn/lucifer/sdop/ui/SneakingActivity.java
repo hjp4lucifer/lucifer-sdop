@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -53,15 +52,27 @@ public class SneakingActivity extends BaseActivity {
 		mPullRefreshListView.setRefreshing(false);
 	}
 
+	/**
+	 * true锁住点击事件
+	 */
+	private boolean isLockItemClick = false;
+
 	private OnItemClickListener onItemClickListener = new OnItemClickListener() {
 
 		@Override
 		public void onItemClick(AdapterView<?> adapterView, View view,
 				int position, long id) {
-			SneakingPlatoon platoon = sneakingAdapter.getItem(position - 1);
 			String txt;
+			if (isLockItemClick) {
+				txt = "正在执行任务代理...";
+				Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT)
+						.show();
+				return;
+			}
+			SneakingPlatoon platoon = sneakingAdapter.getItem(position - 1);
 			if ("RETURN".equals(platoon.state.value)) {
 				txt = "执行返回, 并重新潜入, " + platoon.platoonId;
+				isLockItemClick = true;
 				lcf().sdop.sneaking.proxyGetResultData(platoon);
 			} else {
 				txt = "platoonId : " + platoon.platoonId;
@@ -97,6 +108,7 @@ public class SneakingActivity extends BaseActivity {
 			}
 			// Call onRefreshComplete when the list has been refreshed.
 			mPullRefreshListView.onRefreshComplete();
+			isLockItemClick = false;
 		}
 	};
 
