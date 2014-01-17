@@ -738,6 +738,7 @@ lcf.sdop.boss = {
 	x6: 250046,
 	getTopLevel: function(list){
 		var target, _currentBoss;
+		var Least_Hp = 5000000;
 		for (var i in list) {
 			_currentBoss = list[i];
 			if (target) {
@@ -749,6 +750,9 @@ lcf.sdop.boss = {
 				//} else {//不推荐
 				//continue;
 				//}
+				if (_currentBoss.currentHp < Least_Hp) {//判断血量
+					continue;
+				}
 				if (target.level > _currentBoss.level) {//判断等级
 					continue;
 				} else if (target.level < _currentBoss.level) {
@@ -759,6 +763,9 @@ lcf.sdop.boss = {
 					target = _currentBoss;
 				}
 			} else {
+				if (_currentBoss.currentHp < Least_Hp) {
+					continue;
+				}
 				target = _currentBoss;
 			}
 		}
@@ -1005,6 +1012,12 @@ lcf.sdop.boss.getRaidBossOutlineList = function(callback, noListCallback){
 		}
 		
 		var target = lcf.sdop.boss.getTopLevel(list);
+		if(null == target){
+			if (noListCallback) {
+				setTimeout(noListCallback, 100);
+			}
+			return;
+		}
 		_sdop.log(lcf.sdop.boss.currentKind + "目标boss等级：<b class='c_red'>" + target.level + "</b>，残余血量：" + target.currentHp + "，【" + target.comment + "】");
 		if (callback) {
 			setTimeout(callback, 100, target);
