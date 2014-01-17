@@ -9,6 +9,7 @@
     <string name="action_auto_GB_FIGHT">对FIGHT自动</string>
     <string name="action_auto_GB_SPECIAL">对SPECIAL自动</string>
     <string name="action_auto_GB_SHOOT">对SHOOT自动</string>
+    <string name="action_auto_GB_record">开启记录模式</string>
     <string name="action_auto_off">停止自动</string>
     <string name="action_auto_boss">自动总力/超总</string>
     <string name="action_auto_super_boss_start">自动超总</string>
