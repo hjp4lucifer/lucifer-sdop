@@ -103,7 +103,8 @@ public class Sneaking extends LcfExtend {
 	 * AI方法
 	 */
 	public void sortieTroops() {
-		int[] itemIdList = { 20006, 20013, 20016 };
+		// [20012,20006,20013,20016]
+		int[] itemIdList = { 20006, 20013, 20012 };
 		int[] msCardIdList = proxyPlatoon.msCardIdList;
 		sortieTroops(proxyPlatoon.platoonId, destination.destinationId,
 				msCardIdList, itemIdList, SortieTroops.procedure);
