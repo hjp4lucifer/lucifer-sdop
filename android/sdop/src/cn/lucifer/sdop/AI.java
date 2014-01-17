@@ -35,6 +35,11 @@ public class AI extends LcfExtend {
 	}
 
 	/**
+	 * 最少血量
+	 */
+	protected final int Least_Hp = 5000000;
+
+	/**
 	 * 
 	 * @param bosses
 	 * @return 可为null
@@ -52,6 +57,9 @@ public class AI extends LcfExtend {
 				// } else {//不推荐
 				// continue;
 				// }
+				if (_currentBoss.currentHp < Least_Hp) {//判断血量
+					continue;
+				}
 				if (target.level > _currentBoss.level) {// 判断等级
 					continue;
 				}
@@ -66,6 +74,9 @@ public class AI extends LcfExtend {
 				// if (_currentBoss.level == 1) {
 				// continue;
 				// }
+				if (_currentBoss.currentHp < Least_Hp) {
+					continue;
+				}
 				target = _currentBoss;
 			}
 		}

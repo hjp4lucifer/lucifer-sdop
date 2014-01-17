@@ -66,10 +66,10 @@ public class LogAdapter extends BaseAdapter {
 		// return super.getView(position, convertView, parent);
 		return tv;
 	}
-	
-	protected void setStyle(TextView tv,int position, String text){
+
+	protected void setStyle(TextView tv, int position, String text) {
 		tv.setBackgroundColor(position % 2 == (oddCount ? 0 : 1) ? Color.LTGRAY
-				: Color.GRAY);
+				: 0xdddddddd);
 		tv.setText(getText(text));
 	}
 

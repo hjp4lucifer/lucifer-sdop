@@ -98,6 +98,10 @@ public class MainActivity extends BaseActivity {
 			lcf().sdop.duel.targetUnitAttribute = lcf().sdop.ms.unitAttribute[2];
 			lcf().sdop.duel.startAutoDuel();
 			break;
+		case R.id.action_auto_GB_record:
+			lcf().sdop.duel.startRecordMode();
+			item.setEnabled(false);// 不支持关闭
+			break;
 		case R.id.action_auto_GB_off:
 			lcf().sdop.duel.cancelAutoDuel();
 			break;

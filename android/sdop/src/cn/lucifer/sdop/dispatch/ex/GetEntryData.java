@@ -14,7 +14,7 @@ public class GetEntryData extends BaseDispatch {
 	public void process(byte[] response, String callback) throws JSONException {
 		JSONObject args = getArgs(response);
 		if (lcf().sdop.checkError(args, procedure)) {
-			//lcf().sdop.auto.setting.duel = false;
+			// lcf().sdop.auto.setting.duel = false;
 			return;
 		}
 
@@ -26,13 +26,11 @@ public class GetEntryData extends BaseDispatch {
 	@Override
 	public void callback(Object[] args) {
 		Player[] entryList = (Player[]) args;
-		int targetId = 0;
-		Player entry;
+		Player entry = null;
 		for (int i = 0; i < entryList.length; i++) {
 			entry = entryList[i];
 			if (entry.unitAttribute.value
 					.equals(lcf().sdop.duel.targetUnitAttribute)) {
-				targetId = entry.playerId;
 				lcf().sdop.log("准备对【" + entry.playerName + "】 发起挑战, 对方属性是【"
 						+ entry.unitAttribute.value + "】 " + entry.unitName
 						+ "!");
@@ -40,7 +38,7 @@ public class GetEntryData extends BaseDispatch {
 			}
 		}
 		entryList = null;
-		lcf().sdop.duel.executeDuelBattle(targetId);
+		lcf().sdop.duel.executeDuelBattle(entry);
 	}
 
 }
