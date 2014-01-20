@@ -101,7 +101,7 @@ public class Duel extends LcfExtend {
 		duelDB = SQLiteDatabase.openOrCreateDatabase(dir.getPath()
 				+ "/lucifer_sdop_duel.db", null);
 		// 检查表结构
-		duelDB.execSQL("create table if not exists duel_enemy (id int primary key, name varchar(50), win int , lost int, gap int, winTime timestamp, lostTime timestamp, unitAttribute varchar(10))");
+		duelDB.execSQL("create table if not exists duel_enemy (id int primary key, name varchar(50), win int , lost int, gap int, lastTime timestamp, winTime timestamp, lostTime timestamp, unitAttribute varchar(10))");
 
 		recordMode = true;
 		lcf().sdop.log("成功开启GB记录模式！");
@@ -162,11 +162,12 @@ public class Duel extends LcfExtend {
 		}
 		String sql;
 		if (isWin) {
-			sql = "update duel_enemy set win = win + 1, gap = gap + 1, winTime = ?, unitAttribute = ? where name = ?";
+			sql = "update duel_enemy set win = win + 1, gap = gap + 1, winTime = ?, lastTime = ?, unitAttribute = ? where name = ?";
 		} else {
-			sql = "update duel_enemy set lost = lost + 1, gap = gap - 1, lostTime = ?, unitAttribute = ? where name = ?";
+			sql = "update duel_enemy set lost = lost + 1, gap = gap - 1, lostTime = ?, lastTime = ?, unitAttribute = ? where name = ?";
 		}
-		duelDB.execSQL(sql, new Object[] { new Date(), unitAttribute, name });
+		Date now = new Date();
+		duelDB.execSQL(sql, new Object[] { now, now, unitAttribute, name });
 		sql = null;
 	}
 }
