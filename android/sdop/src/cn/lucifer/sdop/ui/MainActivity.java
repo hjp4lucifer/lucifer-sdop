@@ -133,7 +133,16 @@ public class MainActivity extends BaseActivity {
 		return true;
 	}
 
+	/**
+	 * true登录中, 不要再次发送登录请求
+	 */
+	private boolean isLogin;
+
 	private void autoLogin() {
+		if (isLogin) {
+			return;
+		}
+		isLogin = true;
 		Intent intent = new Intent(MainActivity.this, WebActivity.class);
 		intent.putExtra("url", lcf().sdop.login_url);
 		startActivityForResult(intent, R.id.action_login);
@@ -151,6 +160,7 @@ public class MainActivity extends BaseActivity {
 			lcf().sdop.login();
 			// addLog("获得ssid : " + Lcf.getInstance().getCookie(cookies,
 			// "ssid"));
+			isLogin = false;
 		}
 	}
 
