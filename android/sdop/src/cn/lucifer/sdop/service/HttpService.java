@@ -180,6 +180,7 @@ public class HttpService extends Service implements IGetLcf {
 		conn.setRequestProperty("User-Agent", lcf().sdop.getUserAgent());
 		
 		conn.setConnectTimeout(connect_timeout);
+		conn.setReadTimeout(connect_timeout);
 
 		conn.connect();
 	}

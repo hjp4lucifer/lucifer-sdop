@@ -1,8 +1,10 @@
 package cn.lucifer.sdop;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,11 +33,97 @@ public class Duel extends LcfExtend {
 		lcf().sdop.get(url, GetDuelData.procedure, callback);
 	}
 
-	public void executeDuelBattle(Player enemy) {
+	/**
+	 * 查找合适的敌人进行挑战
+	 * 
+	 * @param enemyList
+	 */
+	public void findEnemyAndBattle(Player[] enemyList) {
+		Player enemy;
+		if (recordMode) {
+			enemy = findByRecords(enemyList);
+		} else {
+			enemy = findBySimple(enemyList);
+		}
+
+		executeDuelBattle(enemy);
+	}
+
+	/**
+	 * 
+	 * @param enemy
+	 * @return true是选择的属性
+	 */
+	protected boolean checkUnitAttribute(Player enemy) {
+		return enemy.unitAttribute.value
+				.equals(lcf().sdop.duel.targetUnitAttribute);
+	}
+
+	/**
+	 * 普通查找
+	 * 
+	 * @param enemyList
+	 * @return
+	 */
+	protected Player findBySimple(Player[] enemyList) {
+		for (Player enemy : enemyList) {
+			if (checkUnitAttribute(enemy)) {
+				return enemy;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 优先从记录中查找, 若无法找到, 则从{@link #findBySimple(Player[])}中查找
+	 * 
+	 * @param enemyList
+	 * @return
+	 */
+	protected Player findByRecords(Player[] enemyList) {
+		try {
+			checkAndOpenDB();
+		} catch (CannotOpenDBException e) {
+			return findBySimple(enemyList);
+		}
+		// 这里有两种构想:
+		// 1. 先遍历所有的enemyList, 提取id后使用sql的in语法进行查找
+		// 2. 先sql找出符合条件的enemy id集合, 然后通过遍历enemyList找到第一个匹配的enemy
+		// 基于方法一永远是一样的查询数, 而方法二应该会在当天逐渐减少, 所以这里使用的是方法二
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.HOUR_OF_DAY, -24);
+		long beginTime = calendar.getTimeInMillis();
+		// 每天挑战一次就好了, 否则就作弊得太厉害了
+		String sql = "select id from duel_enemy where gap > 0 and lastTime < " + beginTime
+				+ " order by gap desc";
+		Cursor cursor = duelDB.rawQuery(sql, null);
+
+		// List<Integer> targetIds = new ArrayList<Integer>();
+		int id;
+		while (cursor.moveToNext()) {
+			id = cursor.getInt(0);
+			for (Player enemy : enemyList) {
+				if (id == enemy.playerId && checkUnitAttribute(enemy)) {// 防止对方更改属性
+					cursor.close();
+					return enemy;
+				}
+			}
+		}
+
+		cursor.close();
+
+		return findBySimple(enemyList);
+	}
+
+	protected void executeDuelBattle(Player enemy) {
 		if (enemy == null) {
 			Log.e("Lucifer", "executeDuelBattle targetId is null !");
 			return;
 		}
+
+		lcf().sdop.log("准备对【" + enemy.playerName + "】 发起挑战, 对方属性是【"
+				+ enemy.unitAttribute.value + "】 " + enemy.unitName + "!");
 
 		String url = lcf().sdop.httpUrlPrefix
 				+ "/PostForQuestBattle/executeDuelBattle?ssid="
@@ -111,7 +199,7 @@ public class Duel extends LcfExtend {
 
 		recordMode = true;
 		lcf().sdop.log("成功开启GB记录模式！");
-		//testDateQuery();
+		// testDateQuery();
 		return true;
 	}
 
@@ -180,9 +268,10 @@ public class Duel extends LcfExtend {
 
 	/**
 	 * 测试日期查询
+	 * 
 	 * @deprecated 一般不要进行调用
 	 */
-	public void testDateQuery() {
+	protected void testDateQuery() {
 		try {
 			checkAndOpenDB();
 			Calendar calendar = Calendar.getInstance();
@@ -194,7 +283,7 @@ public class Duel extends LcfExtend {
 					+ time.getTime();// 今天打了多少场
 			Cursor cursor = duelDB.rawQuery(sql, null);
 			while (cursor.moveToNext()) {
-				//为什么可以getLong出来呢？我明明声明的是Text类型
+				// 为什么可以getLong出来呢？我明明声明的是Text类型
 				Log.d("Lucifer", cursor.getInt(0) + " : " + cursor.getLong(1));
 			}
 			cursor.close();

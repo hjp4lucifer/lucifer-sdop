@@ -18,27 +18,15 @@ public class GetEntryData extends BaseDispatch {
 			return;
 		}
 
-		Player[] entryList = lcf().gson.fromJson(args.getString("list"),
+		Player[] enemyList = lcf().gson.fromJson(args.getString("list"),
 				Player[].class);
-		lcf().sdop.checkCallback(callback, entryList);
+		lcf().sdop.checkCallback(callback, enemyList);
 	}
 
 	@Override
 	public void callback(Object[] args) {
-		Player[] entryList = (Player[]) args;
-		Player entry = null;
-		for (int i = 0; i < entryList.length; i++) {
-			entry = entryList[i];
-			if (entry.unitAttribute.value
-					.equals(lcf().sdop.duel.targetUnitAttribute)) {
-				lcf().sdop.log("准备对【" + entry.playerName + "】 发起挑战, 对方属性是【"
-						+ entry.unitAttribute.value + "】 " + entry.unitName
-						+ "!");
-				break;
-			}
-		}
-		entryList = null;
-		lcf().sdop.duel.executeDuelBattle(entry);
+		Player[] enemyList = (Player[]) args;
+		lcf().sdop.duel.findEnemyAndBattle(enemyList);
 	}
 
 }
