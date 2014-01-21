@@ -51,7 +51,7 @@ public class Sdop extends LcfExtend {
 
 	private final String space = " ";
 
-	private final DateFormat timeFormat = new SimpleDateFormat(
+	public final DateFormat timeFormat = new SimpleDateFormat(
 			"M月d日 HH:mm:ss.SSS");
 
 	Context context;

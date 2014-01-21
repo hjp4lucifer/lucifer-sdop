@@ -7,6 +7,7 @@ import android.util.Log;
 
 import cn.lucifer.sdop.dispatch.BaseDispatch;
 import cn.lucifer.sdop.domain.Ms;
+import cn.lucifer.sdop.e.CannotOpenDBException;
 
 public class ExecuteDuelBattle extends BaseDispatch {
 	public static final String procedure = "executeDuelBattle";
@@ -46,7 +47,11 @@ public class ExecuteDuelBattle extends BaseDispatch {
 		lcf().sdop.log(logMsg.toString());
 
 		logMsg = null;
-		lcf().sdop.duel.updateDuelRecord(isWin, name, unitAttribute);
+		try {
+			lcf().sdop.duel.updateDuelRecord(isWin, name, unitAttribute);
+		} catch (CannotOpenDBException e) {
+			// 无需处理
+		}
 	}
 
 	@Override

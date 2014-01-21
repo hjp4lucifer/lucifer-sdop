@@ -153,13 +153,16 @@ public class MainActivity extends BaseActivity {
 		// super.onActivityResult(requestCode, resultCode, data);
 		Log.i("Lucifer", requestCode + " : " + R.id.action_login + " : "
 				+ resultCode);
-		if (requestCode == R.id.action_login && resultCode == RESULT_OK) {
-			String ssid = data.getStringExtra("ssid");
-			Toast.makeText(this, "ssid : " + ssid, Toast.LENGTH_SHORT).show();
+		if (requestCode == R.id.action_login) {
+			if (resultCode == RESULT_OK) {
+				String ssid = data.getStringExtra("ssid");
+				Toast.makeText(this, "ssid : " + ssid, Toast.LENGTH_SHORT)
+						.show();
 
-			lcf().sdop.login();
-			// addLog("获得ssid : " + Lcf.getInstance().getCookie(cookies,
-			// "ssid"));
+				lcf().sdop.login();
+				// addLog("获得ssid : " + Lcf.getInstance().getCookie(cookies,
+				// "ssid"));
+			}
 			isLogin = false;
 		}
 	}
