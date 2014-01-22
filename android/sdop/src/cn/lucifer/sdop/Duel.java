@@ -93,8 +93,8 @@ public class Duel extends LcfExtend {
 		calendar.add(Calendar.HOUR_OF_DAY, -24);
 		long beginTime = calendar.getTimeInMillis();
 		// 每天挑战一次就好了, 否则就作弊得太厉害了
-		String sql = "select id from duel_enemy where gap > 0 and lastTime < " + beginTime
-				+ " order by gap desc";
+		String sql = "select id from duel_enemy where gap > 0 and lastTime < "
+				+ beginTime + " order by gap desc";
 		Cursor cursor = duelDB.rawQuery(sql, null);
 
 		// List<Integer> targetIds = new ArrayList<Integer>();
@@ -193,7 +193,7 @@ public class Duel extends LcfExtend {
 		duelDB = SQLiteDatabase.openOrCreateDatabase(dir.getPath()
 				+ "/lucifer_sdop_duel.db", null);
 		// 检查表结构
-		duelDB.execSQL("create table if not exists duel_enemy (id INTEGER primary key, name TEXT, win INTEGER , lost INTEGER, gap INTEGER, lastTime TEXT, winTime TEXT, lostTime TEXT, unitAttribute TEXT)");
+		duelDB.execSQL("create table if not exists duel_enemy (id INTEGER primary key, name TEXT, win INTEGER , lost INTEGER, gap INTEGER, lastTime TEXT, winTime TEXT, lostTime TEXT, unitAttribute TEXT, rankName TEXT)");
 
 		recordMode = true;
 		lcf().sdop.log("成功开启GB记录模式！");
@@ -238,7 +238,6 @@ public class Duel extends LcfExtend {
 					new Object[] { enemy.playerId, enemy.playerName });
 		}
 		cursor.close();
-		sql = null;
 	}
 
 	/**
@@ -248,20 +247,22 @@ public class Duel extends LcfExtend {
 	 *            挑战的name, 因为返回结果那里, 并没有id, 所以只能通过name进行匹配
 	 * @param unitAttribute
 	 *            对方的属性
+	 * @param rankName
+	 *            对方级别
 	 * @throws CannotOpenDBException
 	 */
 	public void updateDuelRecord(boolean isWin, String name,
-			String unitAttribute) throws CannotOpenDBException {
+			String unitAttribute, String rankName) throws CannotOpenDBException {
 		checkAndOpenDB();
 		String sql;
 		if (isWin) {
-			sql = "update duel_enemy set win = win + 1, gap = gap + 1, winTime = ?, lastTime = ?, unitAttribute = ? where name = ?";
+			sql = "update duel_enemy set win = win + 1, gap = gap + 1, winTime = ?, lastTime = ?, unitAttribute = ?, rankName = ? where name = ?";
 		} else {
-			sql = "update duel_enemy set lost = lost + 1, gap = gap - 1, lostTime = ?, lastTime = ?, unitAttribute = ? where name = ?";
+			sql = "update duel_enemy set lost = lost + 1, gap = gap - 1, lostTime = ?, lastTime = ?, unitAttribute = ?, rankName = ? where name = ?";
 		}
 		long now = System.currentTimeMillis();
-		duelDB.execSQL(sql, new Object[] { now, now, unitAttribute, name });
-		sql = null;
+		duelDB.execSQL(sql, new Object[] { now, now, unitAttribute, rankName,
+				name });
 	}
 
 	/**
