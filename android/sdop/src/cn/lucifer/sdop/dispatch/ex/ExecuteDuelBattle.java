@@ -30,12 +30,13 @@ public class ExecuteDuelBattle extends BaseDispatch {
 		}
 		StringBuffer logMsg = new StringBuffer();
 
-		Log.i("Lucifer", data.getJSONObject("enemyData").toString());
+		//Log.i("Lucifer", data.getJSONObject("enemyData").toString());
 		JSONObject enemyData = data.getJSONObject("enemyData");
 		String name = enemyData.getString("name");
 		String unitAttribute = enemyData.getJSONObject("unitAttribute")
 				.getString("value");
-		logMsg.append("挑战【").append(name).append("】 ");
+		logMsg.append("挑战").append(enemyData.getString("rankName")).append("【")
+				.append(name).append("】 ");
 		logMsg.append(result);
 		logMsg.append("! 对方MS阵容：");
 
