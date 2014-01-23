@@ -11,6 +11,10 @@ public class ExecuteActionCommandArgs {
 	public int playerId;
 	public boolean isAutoBattle;
 	public int actionId;
+	/**
+	 * @time 2014/1/23更新后新增
+	 */
+	public boolean isRaidBossChargeAttack;
 
 	public ExecuteActionCommandArgs(int battleId, String actionTypeValue,
 			String modeValue, int targetId, int playerId, int actionId) {
