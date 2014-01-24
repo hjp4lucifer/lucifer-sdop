@@ -70,7 +70,7 @@ public class WebActivity extends BaseActivity {
 
 			@Override
 			public void onPageFinished(WebView view, String url) {
-				Log.i("Lucifer", "page finished : " + url);
+				Log.i(lcf().LOG_TAG, "page finished : " + url);
 				if (url.equals(mobile_index_url)) {
 					loadurl(view, game_url);
 					return;
@@ -99,7 +99,7 @@ public class WebActivity extends BaseActivity {
 			public void onReceivedError(WebView view, int errorCode,
 					String description, String failingUrl) {
 				// TODO Auto-generated method stub
-				Log.i("Lucifer", "errorCode : " + errorCode);
+				Log.i(lcf().LOG_TAG, "errorCode : " + errorCode);
 				super.onReceivedError(view, errorCode, description, failingUrl);
 				if (errorListener != null) {
 					errorListener.onReceivedError(errorCode);

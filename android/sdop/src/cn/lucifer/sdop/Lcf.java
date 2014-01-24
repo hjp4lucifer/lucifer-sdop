@@ -9,7 +9,8 @@ import android.os.Environment;
 import com.google.gson.Gson;
 
 public final class Lcf {
-
+	public final String LOG_TAG = "Lucifer";
+	
 	private static Lcf _instance;
 
 	public Sdop sdop = new Sdop();

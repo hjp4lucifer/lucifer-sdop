@@ -151,7 +151,7 @@ public class MainActivity extends BaseActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// super.onActivityResult(requestCode, resultCode, data);
-		Log.i("Lucifer", requestCode + " : " + R.id.action_login + " : "
+		Log.i(lcf().LOG_TAG, requestCode + " : " + R.id.action_login + " : "
 				+ resultCode);
 		if (requestCode == R.id.action_login) {
 			if (resultCode == RESULT_OK) {

@@ -3,8 +3,6 @@ package cn.lucifer.sdop.dispatch.ex;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 import cn.lucifer.sdop.dispatch.BaseDispatch;
 import cn.lucifer.sdop.domain.Ms;
 import cn.lucifer.sdop.e.CannotOpenDBException;
@@ -36,7 +34,7 @@ public class ExecuteDuelBattle extends BaseDispatch {
 		String unitAttribute = enemyData.getJSONObject("unitAttribute")
 				.getString("value");
 		String rankName = enemyData.getString("rankName");
-		logMsg.append("挑战").append(rankName).append("【").append(name)
+		logMsg.append("挑战").append(rankName).append(" 【").append(name)
 				.append("】 ");
 		logMsg.append(result);
 		logMsg.append("! 对方MS阵容：");
@@ -50,7 +48,8 @@ public class ExecuteDuelBattle extends BaseDispatch {
 
 		logMsg = null;
 		try {
-			lcf().sdop.duel.updateDuelRecord(isWin, name, unitAttribute, rankName);
+			lcf().sdop.duel.updateDuelRecord(isWin, name, unitAttribute,
+					rankName);
 		} catch (CannotOpenDBException e) {
 			// 无需处理
 		}

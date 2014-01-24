@@ -433,7 +433,7 @@ public class AI extends LcfExtend {
 				ActionOrder.class);
 		// 仅针对超总的判断, 或者可根据data.resultDate是否为空来判断
 		if (!battleArgs.isNull("resultData")) {
-			Log.i("Lucifer", battleArgs.toString());
+			Log.i(lcf().LOG_TAG, battleArgs.toString());
 			lcf().sdop.log("Boss战结束！");
 			return;
 		}

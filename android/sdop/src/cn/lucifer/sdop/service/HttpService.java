@@ -32,7 +32,6 @@ public class HttpService extends Service implements IGetLcf {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -43,7 +42,7 @@ public class HttpService extends Service implements IGetLcf {
 		filter.addAction(POST_ACTION);
 		registerReceiver(httpReceiver, filter);
 
-		Log.i("Lucifer", "--------- HttpService onCreate ! ");
+		Log.i(lcf().LOG_TAG, "--------- HttpService onCreate ! ");
 		DF.init();
 
 		acquireWakeLock();
@@ -54,7 +53,7 @@ public class HttpService extends Service implements IGetLcf {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			Log.i("Lucifer", "--------- action : " + action);
+			Log.i(lcf().LOG_TAG, "--------- action : " + action);
 			Bundle bundle = intent.getExtras();
 			String url = bundle.getString("url");
 			String payload = bundle.getString("payload");
@@ -84,9 +83,7 @@ public class HttpService extends Service implements IGetLcf {
 				try {
 					get(url, procedure, callback);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					Log.e("Lucifer", "GET IOException", e);
-					e.printStackTrace();
+					Log.e(lcf().LOG_TAG, "GET IOException", e);
 					reTry();
 				}
 				return;
@@ -96,9 +93,7 @@ public class HttpService extends Service implements IGetLcf {
 				try {
 					post(url, payload, procedure, callback);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					Log.e("Lucifer", "POST IOException", e);
-					e.printStackTrace();
+					Log.e(lcf().LOG_TAG, "POST IOException", e);
 					reTry();
 				}
 				return;
@@ -111,12 +106,11 @@ public class HttpService extends Service implements IGetLcf {
 			if (tryCount < 5) {
 				tryCount++;
 				try {
-					Log.w("Lucifer", "retry connection ---> " + tryCount);
+					Log.w(lcf().LOG_TAG, "retry connection ---> " + tryCount);
 					lcf().sdop.log("请求失败！尝试重连  ---> " + tryCount);
 					sleep(tryCount * 2000);
 					run();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -136,7 +130,7 @@ public class HttpService extends Service implements IGetLcf {
 		if (payload == null) {
 			return;
 		}
-		Log.i("Lucifer", "payload : " + payload);
+		Log.i(lcf().LOG_TAG, "payload : " + payload);
 
 		conn.setRequestMethod(POST);
 		conn.setRequestProperty("Content-Length",
@@ -221,7 +215,7 @@ public class HttpService extends Service implements IGetLcf {
 			if (null != mWakeLock) {
 				try {
 					mWakeLock.acquire();
-					Log.i("Lucifer", "mWakeLock acquire! =================");
+					Log.i(lcf().LOG_TAG, "mWakeLock acquire! =================");
 				} catch (SecurityException e) {
 					mWakeLock = null;
 				}
@@ -235,7 +229,7 @@ public class HttpService extends Service implements IGetLcf {
 	private void releaseWakeLock() {
 		if (null != mWakeLock) {
 			mWakeLock.release();
-			Log.i("Lucifer", "mWakeLock release! =================");
+			Log.i(lcf().LOG_TAG, "mWakeLock release! =================");
 		}
 		mWakeLock = null;
 	}

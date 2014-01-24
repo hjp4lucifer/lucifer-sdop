@@ -99,16 +99,19 @@ public class Duel extends LcfExtend {
 
 		// List<Integer> targetIds = new ArrayList<Integer>();
 		int id;
+		int findCount = 0;
 		while (cursor.moveToNext()) {
 			id = cursor.getInt(0);
 			for (Player enemy : enemyList) {
+				findCount++;
 				if (id == enemy.playerId && checkUnitAttribute(enemy)) {// 防止对方更改属性
+					lcf().sdop.log("Get recommend! Record mode, find count : " + findCount);
 					cursor.close();
 					return enemy;
 				}
 			}
 		}
-
+		lcf().sdop.log("No recommend! Record mode, find count : " + findCount);
 		cursor.close();
 
 		return findBySimple(enemyList);
@@ -116,7 +119,8 @@ public class Duel extends LcfExtend {
 
 	protected void executeDuelBattle(Player enemy) {
 		if (enemy == null) {
-			Log.e("Lucifer", "executeDuelBattle targetId is null !");
+			lcf().sdop.log("executeDuelBattle targetId is null ! try again !");
+			checkAndExecute();
 			return;
 		}
 
@@ -140,7 +144,6 @@ public class Duel extends LcfExtend {
 			lcf().sdop.post(url, payload.toString(),
 					ExecuteDuelBattle.procedure, null);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -283,11 +286,10 @@ public class Duel extends LcfExtend {
 			Cursor cursor = duelDB.rawQuery(sql, null);
 			while (cursor.moveToNext()) {
 				// 为什么可以getLong出来呢？我明明声明的是Text类型
-				Log.d("Lucifer", cursor.getInt(0) + " : " + cursor.getLong(1));
+				Log.d(lcf().LOG_TAG, cursor.getInt(0) + " : " + cursor.getLong(1));
 			}
 			cursor.close();
 		} catch (CannotOpenDBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

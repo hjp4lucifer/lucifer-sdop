@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;

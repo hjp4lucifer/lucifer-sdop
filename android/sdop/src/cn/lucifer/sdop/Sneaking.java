@@ -1,13 +1,11 @@
 package cn.lucifer.sdop;
 
-import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
-import cn.lucifer.sdop.dispatch.ex.ExecuteDuelBattle;
 import cn.lucifer.sdop.dispatch.ex.GetSneakingMissionTopData;
 import cn.lucifer.sdop.dispatch.ex.GetResultData;
 import cn.lucifer.sdop.dispatch.ex.SortieTroops;

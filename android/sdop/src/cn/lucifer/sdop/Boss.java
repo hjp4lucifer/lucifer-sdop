@@ -62,10 +62,8 @@ public class Boss extends LcfExtend {
 				return _super;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -78,7 +76,6 @@ public class Boss extends LcfExtend {
 			try {
 				currentMode = new JSONObject(lcf().gson.toJson(mode));
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -127,10 +124,8 @@ public class Boss extends LcfExtend {
 				initRaidBossOutlineList_args = lcf().sdop
 						.loadJsonObject("initRaidBossOutlineList_args.json");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -150,7 +145,6 @@ public class Boss extends LcfExtend {
 			lcf().sdop.post(url, payload.toString(),
 					InitRaidBossOutlineList.procedure, callback);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -195,14 +189,13 @@ public class Boss extends LcfExtend {
 					ExecuteBattleStart.procedure, callback);
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public void getRaidBossBattleData(String callback) {
 		if (targetBossId == null) {
-			Log.e("Lucifer", "targetBossId is null ! " + targetBossId);
+			Log.e(lcf().LOG_TAG, "targetBossId is null ! " + targetBossId);
 			return;
 		}
 		String url = lcf().sdop.httpUrlPrefix
@@ -223,7 +216,6 @@ public class Boss extends LcfExtend {
 					PostRaidBossBattleEntry.procedure, callback);
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -237,7 +229,6 @@ public class Boss extends LcfExtend {
 			lcf().sdop.post(url, payload.toString(),
 					GetRaidBossOutlineList.procedure, callback);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -247,7 +238,7 @@ public class Boss extends LcfExtend {
 	 */
 	public void autoSuperRaidBoss() {
 		if (!lcf().sdop.auto.setting.boss) {
-			Log.i("Lucifer", "auto.setting.boss : "
+			Log.i(lcf().LOG_TAG, "auto.setting.boss : "
 					+ lcf().sdop.auto.setting.boss);
 			return;
 		}
@@ -288,7 +279,6 @@ public class Boss extends LcfExtend {
 			lcf().sdop.post(url, payload.toString(),
 					ExecuteActionCommand.procedure, callback);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

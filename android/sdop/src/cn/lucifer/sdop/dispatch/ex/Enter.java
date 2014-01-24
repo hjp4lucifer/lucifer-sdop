@@ -19,7 +19,7 @@ public class Enter extends BaseDispatch {
 		lcf().sdop.setTokenId(tokenId);
 		
 		if (lcf().sdop.auto.setting.boss) {
-			Log.i("Lucifer", "auto boss");
+			Log.i(lcf().LOG_TAG, "auto boss");
 			switch (lcf().sdop.boss.currentType) {
 			case 0:
 				lcf().sdop.boss.AI.startAutoNormalRaidBoss();
@@ -30,13 +30,13 @@ public class Enter extends BaseDispatch {
 			}
 			return;
 		}
-		Log.i("Lucifer", "no auto boss");
+		Log.i(lcf().LOG_TAG, "no auto boss");
 		if (lcf().sdop.auto.setting.duel) {
-			Log.i("Lucifer", "auto duel");
+			Log.i(lcf().LOG_TAG, "auto duel");
 			lcf().sdop.duel.startAutoDuel();
 			return;
 		}
-		Log.i("Lucifer", "no auto duel");
+		Log.i(lcf().LOG_TAG, "no auto duel");
 	}
 
 	@Override
