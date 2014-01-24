@@ -3,6 +3,8 @@ package cn.lucifer.sdop.dispatch.ex;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import cn.lucifer.sdop.dispatch.BaseDispatch;
 import cn.lucifer.sdop.domain.HeaderDetail;
 
@@ -32,8 +34,8 @@ public class GetDuelData extends BaseDispatch {
 	@Override
 	public void callback(Object[] args) {
 		if (lcf().sdop.bp < 5) {
-			lcf().sdop.log(String.format("当前bp为%d (ep: %d), 等待下次检查！"
-					+ lcf().sdop.bp, lcf().sdop.ep));
+			lcf().sdop.log(String.format("当前bp为%d (ep: %d), 等待下次检查！",
+					lcf().sdop.bp, lcf().sdop.ep));
 			return;
 		}
 		lcf().sdop.duel.getEntryData(GetEntryData.procedure);
