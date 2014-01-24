@@ -105,13 +105,18 @@ public class Duel extends LcfExtend {
 			for (Player enemy : enemyList) {
 				findCount++;
 				if (id == enemy.playerId && checkUnitAttribute(enemy)) {// 防止对方更改属性
-					lcf().sdop.log("Get recommend! Record mode, find count : " + findCount);
+					String msg = "Get recommend: 【" + enemy.playerName
+							+ "】! Record mode, find count : " + findCount;
+					Log.i(lcf().LOG_TAG, msg);
+					lcf().sdop.log(msg);
 					cursor.close();
 					return enemy;
 				}
 			}
 		}
-		lcf().sdop.log("No recommend! Record mode, find count : " + findCount);
+		String msg = "No recommend! Record mode, find count : " + findCount;
+		Log.i(lcf().LOG_TAG, msg);
+		lcf().sdop.log(msg);
 		cursor.close();
 
 		return findBySimple(enemyList);
@@ -286,7 +291,8 @@ public class Duel extends LcfExtend {
 			Cursor cursor = duelDB.rawQuery(sql, null);
 			while (cursor.moveToNext()) {
 				// 为什么可以getLong出来呢？我明明声明的是Text类型
-				Log.d(lcf().LOG_TAG, cursor.getInt(0) + " : " + cursor.getLong(1));
+				Log.d(lcf().LOG_TAG,
+						cursor.getInt(0) + " : " + cursor.getLong(1));
 			}
 			cursor.close();
 		} catch (CannotOpenDBException e) {
