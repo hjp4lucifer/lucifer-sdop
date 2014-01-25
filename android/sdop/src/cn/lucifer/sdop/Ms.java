@@ -6,7 +6,29 @@ import cn.lucifer.sdop.domain.Pilot;
 public class Ms extends LcfExtend {
 
 	public final String[] unitAttribute = { "FIGHT", "SPECIAL", "SHOOT" };
-	
+
+	/**
+	 * 获取被克制的属性
+	 * 
+	 * @param unitAttr
+	 *            当前选择属性
+	 * @return
+	 */
+	String getReverseUnitAttribute(String unitAttr) {
+		int unitAttributeIndex = 0;
+		for (int i = 0, len = unitAttribute.length; i < len; i++) {
+			if (unitAttribute[i].equals(unitAttr)) {
+				unitAttributeIndex = i;
+				break;
+			}
+		}
+		unitAttributeIndex--;// 按照属性定义, 被克制的排列
+		if (unitAttributeIndex < 0) {// 就是第一个
+			unitAttributeIndex = unitAttribute.length - 1;// 那应该就是最后一个
+		}
+		return unitAttribute[unitAttributeIndex];
+	}
+
 	public int max;
 	public int current;
 

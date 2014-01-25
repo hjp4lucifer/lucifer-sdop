@@ -32,11 +32,17 @@ public class Duel extends LcfExtend {
 	}
 
 	/**
+	 * 请求决斗数据的次数, 基于始终无法找到对手, 而设置的数量控制
+	 */
+	private int requestEneryDataCount = 0;
+
+	/**
 	 * 查找合适的敌人进行挑战
 	 * 
 	 * @param enemyList
 	 */
 	public void findEnemyAndBattle(Player[] enemyList) {
+		requestEneryDataCount++;
 		Player enemy;
 		if (recordMode) {
 			enemy = findByRecords(enemyList);
@@ -69,7 +75,22 @@ public class Duel extends LcfExtend {
 				return enemy;
 			}
 		}
-		return null;
+		Player player = null;
+		if (requestEneryDataCount > 3) {
+			String tmpUnitAttr = lcf().sdop.ms
+					.getReverseUnitAttribute(targetUnitAttribute);
+			lcf().sdop.log("3次都无法找到目标, 更改目标为：" + tmpUnitAttr);
+			for (Player enemy : enemyList) {
+				if (player == null) {
+					player = enemy;
+				}
+				if (enemy.unitRarity > 2
+						&& enemy.unitAttribute.value.equals(tmpUnitAttr)) {
+					return enemy;
+				}
+			}
+		}
+		return player;
 	}
 
 	/**
@@ -89,11 +110,11 @@ public class Duel extends LcfExtend {
 		// 2. 先sql找出符合条件的enemy id集合, 然后通过遍历enemyList找到第一个匹配的enemy
 		// 基于方法一永远是一样的查询数, 而方法二应该会在当天逐渐减少, 所以这里使用的是方法二
 
+		// 每天挑战2次就好了, 否则就作弊得太厉害了
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.HOUR_OF_DAY, -24);
+		calendar.add(Calendar.HOUR_OF_DAY, -12);
 		long beginTime = calendar.getTimeInMillis();
-		// 每天挑战一次就好了, 否则就作弊得太厉害了
-		String sql = "select id from duel_enemy where gap > 0 and lastTime < "
+		String sql = "select id, win, lost from duel_enemy where gap > 0 and lastTime < "
 				+ beginTime + " order by gap desc";
 		Cursor cursor = duelDB.rawQuery(sql, null);
 
@@ -105,8 +126,10 @@ public class Duel extends LcfExtend {
 			for (Player enemy : enemyList) {
 				findCount++;
 				if (id == enemy.playerId && checkUnitAttribute(enemy)) {// 防止对方更改属性
-					String msg = "Get recommend: 【" + enemy.playerName
-							+ "】! Record mode, find count : " + findCount;
+					String msg = String
+							.format("Record mode: Get recommend: 【%s】（win: %d, lost: %d）! Find count : %d",
+									enemy.playerName, cursor.getInt(1),
+									cursor.getInt(2), findCount);
 					Log.i(lcf().LOG_TAG, msg);
 					lcf().sdop.log(msg);
 					cursor.close();
@@ -114,7 +137,7 @@ public class Duel extends LcfExtend {
 				}
 			}
 		}
-		String msg = "No recommend! Record mode, find count : " + findCount;
+		String msg = "Record mode: No recommend! Find count : " + findCount;
 		Log.i(lcf().LOG_TAG, msg);
 		lcf().sdop.log(msg);
 		cursor.close();
@@ -124,11 +147,13 @@ public class Duel extends LcfExtend {
 
 	protected void executeDuelBattle(Player enemy) {
 		if (enemy == null) {
-			lcf().sdop.log("executeDuelBattle targetId is null ! try again !");
+			lcf().sdop
+					.log("executeDuelBattle targetId is null ! try again ! -->"
+							+ requestEneryDataCount);
 			checkAndExecute();
 			return;
 		}
-
+		requestEneryDataCount = 0;
 		lcf().sdop.log("准备对【" + enemy.playerName + "】 发起挑战, 对方属性是【"
 				+ enemy.unitAttribute.value + "】 " + enemy.unitName + "!");
 
@@ -155,6 +180,7 @@ public class Duel extends LcfExtend {
 
 	public void checkAndExecute() {
 		if (!lcf().sdop.auto.setting.duel) {
+			requestEneryDataCount = 0;
 			return;
 		}
 		getDuelData(GetDuelData.procedure);
