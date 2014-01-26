@@ -59,21 +59,23 @@ public class Ms extends LcfExtend {
 			}
 
 			pilot = card.pilot;
-			logMsg.append("<br>　pilot：").append(pilot.rarity).append('c')
-					.append(pilot.cost).append('【').append(pilot.type.name)
-					.append("】, level：").append(pilot.level);
+			if (pilot != null) {
+				logMsg.append("<br>　pilot：").append(pilot.rarity).append('c')
+						.append(pilot.cost).append('【').append(pilot.type.name)
+						.append("】, level：").append(pilot.level);
 
-			if (pilot.activeSkillList != null) {
-				for (int j = 0; j < pilot.activeSkillList.length; j++) {
-					logMsg.append("<br>　　主动技能：").append(
-							pilot.activeSkillList[j].description);
+				if (pilot.activeSkillList != null) {
+					for (int j = 0; j < pilot.activeSkillList.length; j++) {
+						logMsg.append("<br>　　主动技能：").append(
+								pilot.activeSkillList[j].description);
+					}
 				}
-			}
 
-			if (pilot.passiveSkillList != null) {
-				for (int j = 0; j < pilot.passiveSkillList.length; j++) {
-					logMsg.append("<br>　　被动技能：").append(
-							pilot.passiveSkillList[j].description);
+				if (pilot.passiveSkillList != null) {
+					for (int j = 0; j < pilot.passiveSkillList.length; j++) {
+						logMsg.append("<br>　　被动技能：").append(
+								pilot.passiveSkillList[j].description);
+					}
 				}
 			}
 		}
