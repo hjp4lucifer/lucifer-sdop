@@ -24,4 +24,5 @@
 			<li>进行登录后，禁用部分的功能会开放出来</li>
 		</ol>
 	</li>
+	<li><b>代码引入项目：</b><a href="https://github.com/chrisbanes/Android-PullToRefresh">Android-PullToRefresh</a></li>
 </ul>
