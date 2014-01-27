@@ -112,7 +112,7 @@ public class Duel extends LcfExtend {
 
 		// 每天挑战2次就好了, 否则就作弊得太厉害了
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.HOUR_OF_DAY, -12);
+		calendar.add(Calendar.HOUR_OF_DAY, -1);
 		long beginTime = calendar.getTimeInMillis();
 		String sql = "select id, win, lost from duel_enemy where gap > 0 and lastTime < "
 				+ beginTime + " order by gap desc";
@@ -125,7 +125,9 @@ public class Duel extends LcfExtend {
 			id = cursor.getInt(0);
 			for (Player enemy : enemyList) {
 				findCount++;
-				if (id == enemy.playerId && checkUnitAttribute(enemy)) {// 防止对方更改属性
+				if (id == enemy.playerId
+				// && checkUnitAttribute(enemy)
+				) {// 防止对方更改属性
 					String msg = String
 							.format("Record mode: Get recommend: 【%s】（win: %d, lost: %d）! Find count : %d",
 									enemy.playerName, cursor.getInt(1),
@@ -141,6 +143,45 @@ public class Duel extends LcfExtend {
 		Log.i(lcf().LOG_TAG, msg);
 		lcf().sdop.log(msg);
 		cursor.close();
+
+		if (requestEneryDataCount < 5) {
+			return null;
+		}
+
+		// 排除操作
+		findCount = 0;
+		sql = "select id from duel_enemy where gap < -1";
+		cursor = duelDB.rawQuery(sql, null);
+		Player enemyBackup = null;
+		String tmpUnitAttr = lcf().sdop.ms
+				.getReverseUnitAttribute(targetUnitAttribute);
+		while (cursor.moveToNext()) {
+			id = cursor.getInt(0);
+			for (Player enemy : enemyList) {
+				findCount++;
+				if (id == enemy.playerId) {
+					continue;
+				}
+				if (checkUnitAttribute(enemy)) {
+					msg = "Record mode: Exclude Mode! Find count : " + findCount;
+					Log.i(lcf().LOG_TAG, msg);
+					lcf().sdop.log(msg);
+					cursor.close();
+					return enemy;
+				} else if (enemy.unitRarity > 2
+						&& enemy.unitAttribute.value.equals(tmpUnitAttr)) {
+					enemyBackup = enemy;
+				}
+			}
+		}
+		msg = "Record mode: Exclude Mode! Find count : " + findCount;
+		Log.i(lcf().LOG_TAG, msg);
+		lcf().sdop.log(msg);
+		cursor.close();
+		if (enemyBackup != null) {
+			lcf().sdop.log("3次以上都无法找到目标, 更改目标为：" + tmpUnitAttr);
+			return enemyBackup;
+		}
 
 		return findBySimple(enemyList);
 	}

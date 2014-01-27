@@ -15,10 +15,8 @@ import cn.lucifer.sdop.IGetLcf;
 import cn.lucifer.sdop.Lcf;
 import cn.lucifer.sdop.dispatch.DF;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -27,8 +25,7 @@ import android.util.Log;
 
 public class HttpService extends Service implements IGetLcf {
 
-	public final static String GET_ACTION = "cn.lucifer.sdop.service.GET";
-	public final static String POST_ACTION = "cn.lucifer.sdop.service.POST";
+	public static final String GET = "GET", POST = "POST";
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -38,39 +35,41 @@ public class HttpService extends Service implements IGetLcf {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		IntentFilter filter = new IntentFilter(GET_ACTION);
-		filter.addAction(POST_ACTION);
-		registerReceiver(httpReceiver, filter);
-
 		Log.i(lcf().LOG_TAG, "--------- HttpService onCreate ! ");
 		DF.init();
 
 		acquireWakeLock();
 	}
 
-	private BroadcastReceiver httpReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			Log.i(lcf().LOG_TAG, "--------- action : " + action);
-			Bundle bundle = intent.getExtras();
-			String url = bundle.getString("url");
-			String payload = bundle.getString("payload");
-			String procedure = bundle.getString("procedure");
-			String callback = bundle.getString("callback");
-			new HttpThread(action, url, payload, procedure, callback).start();
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		if (intent == null) {
+			return super.onStartCommand(intent, flags, startId);
 		}
-
-	};
+		Bundle bundle = intent.getExtras();
+		if (bundle == null) {
+			return super.onStartCommand(intent, flags, startId);
+		}
+		String method = bundle.getString("method");
+		String url = bundle.getString("url");
+		if (url == null) {
+			return super.onStartCommand(intent, flags, startId);
+		}
+		
+		String payload = bundle.getString("payload");
+		String procedure = bundle.getString("procedure");
+		String callback = bundle.getString("callback");
+		new HttpThread(method, url, payload, procedure, callback).start();
+		return super.onStartCommand(intent, flags, startId);
+	}
 
 	private class HttpThread extends Thread {
-		private String action, url, payload, procedure, callback;
+		private String method, url, payload, procedure, callback;
 
-		public HttpThread(String action, String url, String payload,
+		public HttpThread(String method, String url, String payload,
 				String procedure, String callback) {
 			super();
-			this.action = action;
+			this.method = method;
 			this.url = url;
 			this.payload = payload;
 			this.procedure = procedure;
@@ -79,7 +78,7 @@ public class HttpService extends Service implements IGetLcf {
 
 		@Override
 		public void run() {
-			if (action.equals(GET_ACTION)) {
+			if (method.equals(GET)) {
 				try {
 					get(url, procedure, callback);
 				} catch (IOException e) {
@@ -89,7 +88,7 @@ public class HttpService extends Service implements IGetLcf {
 				return;
 			}
 
-			if (action.equals(POST_ACTION)) {
+			if (method.equals(POST)) {
 				try {
 					post(url, payload, procedure, callback);
 				} catch (IOException e) {
@@ -116,8 +115,6 @@ public class HttpService extends Service implements IGetLcf {
 			}
 		}
 	}
-
-	private final String GET = "GET", POST = "POST";
 
 	protected void post(String urlStr, String payload, String procedure,
 			String callback) throws IOException {
@@ -160,7 +157,7 @@ public class HttpService extends Service implements IGetLcf {
 
 		getResponse(conn, procedure, callback);
 	}
-	
+
 	private final int connect_timeout = 61000;
 
 	private void conn(HttpURLConnection conn) throws IOException {
@@ -172,7 +169,7 @@ public class HttpService extends Service implements IGetLcf {
 
 		conn.setRequestProperty("Referer", lcf().sdop.game_url);
 		conn.setRequestProperty("User-Agent", lcf().sdop.getUserAgent());
-		
+
 		conn.setConnectTimeout(connect_timeout);
 		conn.setReadTimeout(connect_timeout);
 

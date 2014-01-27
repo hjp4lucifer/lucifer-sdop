@@ -2,7 +2,6 @@ package cn.lucifer.sdop.ui;
 
 import cn.lucifer.sdop.R;
 import cn.lucifer.sdop.adt.LogAdapter;
-import cn.lucifer.sdop.service.HttpService;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,9 +31,6 @@ public class MainActivity extends BaseActivity {
 		registerReceiver(autologinReceiver, filter);
 
 		lcf().sdop.setContext(getApplicationContext());
-
-		Intent httpService = new Intent(this, HttpService.class);
-		startService(httpService);
 
 		viewInit();
 	}

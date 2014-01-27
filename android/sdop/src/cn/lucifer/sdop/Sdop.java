@@ -47,7 +47,7 @@ public class Sdop extends LcfExtend {
 	public final String custom_login_url = "http://sdop.bandainamco-ol.jp/";
 	public final String game_url = "http://sdop-g.bandainamco-ol.jp/game/top";
 	public final String login_url = "http://sdop.bandainamco-ol.jp/api/sdop-g/login.php";
-	public final String mobile_index_url ="http://sdop-g.bandainamco-ol.jp/mobile/top";
+	public final String mobile_index_url = "http://sdop-g.bandainamco-ol.jp/mobile/top";
 
 	private final String space = " ";
 
@@ -122,11 +122,12 @@ public class Sdop extends LcfExtend {
 			return;
 		}
 		Log.i("Lucifer", "get : " + url);
-		Intent intent = new Intent(HttpService.GET_ACTION);
+		Intent intent = new Intent(context, HttpService.class);
+		intent.putExtra("method", HttpService.GET);
 		intent.putExtra("url", url);
 		intent.putExtra("procedure", procedure);
 		intent.putExtra("callback", callback);
-		context.sendBroadcast(intent);
+		context.startService(intent);
 	}
 
 	public void post(String url, String payload, String procedure,
@@ -136,12 +137,13 @@ public class Sdop extends LcfExtend {
 			return;
 		}
 		Log.i("Lucifer", "post : " + url);
-		Intent intent = new Intent(HttpService.POST_ACTION);
+		Intent intent = new Intent(context, HttpService.class);
+		intent.putExtra("method", HttpService.POST);
 		intent.putExtra("url", url);
 		intent.putExtra("payload", payload);
 		intent.putExtra("procedure", procedure);
 		intent.putExtra("callback", callback);
-		context.sendBroadcast(intent);
+		context.startService(intent);
 	}
 
 	public boolean checkError(JSONObject dataArgs, String msg)
