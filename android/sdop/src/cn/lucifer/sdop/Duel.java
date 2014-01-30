@@ -112,7 +112,7 @@ public class Duel extends LcfExtend {
 
 		// 每天挑战2次就好了, 否则就作弊得太厉害了
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.HOUR_OF_DAY, -1);
+		calendar.add(Calendar.HOUR_OF_DAY, -12);
 		long beginTime = calendar.getTimeInMillis();
 		String sql = "select id, win, lost from duel_enemy where gap > 0 and lastTime < "
 				+ beginTime + " order by gap desc";
@@ -144,14 +144,28 @@ public class Duel extends LcfExtend {
 		lcf().sdop.log(msg);
 		cursor.close();
 
+		// return enhancedRecordMode(enemyList);
+		return findBySimple(enemyList);
+	}
+
+	/**
+	 * 增强型的记录模式
+	 * 
+	 * @param enemyList
+	 * @return
+	 * @deprecated Ace S以下一般不要使用该模式
+	 */
+	protected Player enhancedRecordMode(Player[] enemyList) {
 		if (requestEneryDataCount < 5) {
 			return null;
 		}
 
 		// 排除操作
-		findCount = 0;
-		sql = "select id from duel_enemy where gap < -1";
-		cursor = duelDB.rawQuery(sql, null);
+		int id;
+		int findCount = 0;
+		String sql = "select id from duel_enemy where gap < -1";
+		Cursor cursor = duelDB.rawQuery(sql, null);
+		String msg;
 		Player enemyBackup = null;
 		String tmpUnitAttr = lcf().sdop.ms
 				.getReverseUnitAttribute(targetUnitAttribute);
@@ -163,7 +177,8 @@ public class Duel extends LcfExtend {
 					continue;
 				}
 				if (checkUnitAttribute(enemy)) {
-					msg = "Record mode: Exclude Mode! Find count : " + findCount;
+					msg = "Record mode: Exclude Mode! Find count : "
+							+ findCount;
 					Log.i(lcf().LOG_TAG, msg);
 					lcf().sdop.log(msg);
 					cursor.close();
