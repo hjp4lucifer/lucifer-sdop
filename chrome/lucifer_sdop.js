@@ -1428,7 +1428,8 @@ lcf.sdop.boss.executeActionCommand = function(battleId, actionTypeValue, targetI
 		"targetId": targetId,
 		"playerId": playerId,
 		"isAutoBattle": false,
-		"actionId": actionId
+		"actionId": actionId,
+		"isRaidBossChargeAttack": false
 	});
 	_sdop.post(url, payload, function(data){
 		//console.info(data);
