@@ -3,6 +3,11 @@
 	"version": "0.9.7",
 	"manifest_version": 2,
 	"description": "Lucifer procedure",
+	"icons": {
+		"16": "icon16.png",
+		"48": "icon48.png",
+		"128": "icon128.png"
+	},
 	"content_scripts": [{
 		"matches": ["http://sdop-g.bandainamco-ol.jp/", "http://sdop-g.bandainamco-ol.jp/game/top"],
 		"js": ["jquery.min.js", "lucifer_sdop.js"],
