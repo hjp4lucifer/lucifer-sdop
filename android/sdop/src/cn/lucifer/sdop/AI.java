@@ -57,7 +57,7 @@ public class AI extends LcfExtend {
 				// } else {//不推荐
 				// continue;
 				// }
-				if (_currentBoss.currentHp < Least_Hp) {//判断血量
+				if (_currentBoss.currentHp < Least_Hp) {// 判断血量
 					continue;
 				}
 				if (target.level > _currentBoss.level) {// 判断等级
@@ -202,7 +202,7 @@ public class AI extends LcfExtend {
 	public CardWithoutWeapon getFixHelpMember(CardWithoutWeapon[] members,
 			CardWithoutWeapon attackMember) {
 		if (attackMember == null) {
-			Log.e("Lucifer", "attackMember is null !");
+			Log.e(lcf().LOG_TAG, "attackMember is null !");
 			printStackTrace();
 			return null;
 		}
