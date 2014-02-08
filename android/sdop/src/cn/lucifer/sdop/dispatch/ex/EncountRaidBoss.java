@@ -22,15 +22,19 @@ public class EncountRaidBoss extends BaseDispatch {
 		JSONObject battleArgs = (JSONObject) args[0];
 		Log.i("Lucifer", "EncountRaidBoss callback start ! encountType : "
 				+ lcf().sdop.boss.encountType);
-		System.out.println(battleArgs.toString());
 		try {
 			switch (lcf().sdop.boss.encountType) {
 			case 0:// 总力
 				CardWithoutWeapon[] members = lcf().sdop.boss.AI.setFixMember(
 						battleArgs, false);
+
 				lcf().sdop.boss.executeBattleStart(members,
 						lcf().sdop.boss.battleId,
 						lcf().sdop.boss.getCurrentMode(), true, null);
+				// 这里进行并发请求
+				int raidBossId = battleArgs.getJSONObject("raidBossData")
+						.getInt("id");
+				lcf().sdop.boss.sendRescueSignal(raidBossId, null);
 				return;
 			case 2:// 普通战斗, 不使用member了, 避免全部进入coolTime
 				lcf().sdop.myUserId = battleArgs.getInt("leaderCardId");
