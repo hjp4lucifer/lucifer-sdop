@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import cn.lucifer.sdop.dispatch.BaseDispatch;
+import cn.lucifer.sdop.domain.CardWithoutWeapon;
 
 public class GetRaidBossBattleData extends BaseDispatch {
 	public static final String procedure = "getRaidBossBattleData";
@@ -29,10 +30,13 @@ public class GetRaidBossBattleData extends BaseDispatch {
 		JSONObject battleArgs = (JSONObject) args[0];
 		Log.i("Lucifer", "GetRaidBossBattleData callback start ! ");
 		try {
-			lcf().sdop.boss.AI.setFixMember(battleArgs);
+			CardWithoutWeapon[] members = lcf().sdop.boss.AI.setFixMember(
+					battleArgs, true);
 			switch (lcf().sdop.boss.currentType) {
 			case 0:
-				lcf().sdop.boss.executeBattleStart(null);
+				lcf().sdop.boss.executeBattleStart(members,
+						lcf().sdop.boss.battleId,
+						lcf().sdop.boss.getCurrentMode(), true, null);
 				return;
 
 			default:

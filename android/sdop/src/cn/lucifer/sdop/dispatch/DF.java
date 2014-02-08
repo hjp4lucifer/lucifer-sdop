@@ -7,13 +7,17 @@ import org.json.JSONException;
 
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
 import cn.lucifer.sdop.dispatch.ex.AutoSuperRaidBoss;
+import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.Enter;
 import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.ExecuteBattleStart;
 import cn.lucifer.sdop.dispatch.ex.ExecuteDuelBattle;
+import cn.lucifer.sdop.dispatch.ex.ExecuteQuest;
+import cn.lucifer.sdop.dispatch.ex.GetBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetDuelData;
 import cn.lucifer.sdop.dispatch.ex.GetEntryData;
+import cn.lucifer.sdop.dispatch.ex.GetForQuestMap;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.GetResultData;
@@ -21,6 +25,7 @@ import cn.lucifer.sdop.dispatch.ex.GetSneakingMissionTopData;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
+import cn.lucifer.sdop.dispatch.ex.SendRescueSignal;
 import cn.lucifer.sdop.dispatch.ex.SortieTroops;
 import cn.lucifer.sdop.dispatch.ex.StartAutoSuperRaidBoss;
 
@@ -53,10 +58,18 @@ public final class DF {
 		put(InitRaidBossOutlineList.procedure, new InitRaidBossOutlineList());
 		put(PostRaidBossBattleEntry.procedure, new PostRaidBossBattleEntry());
 
+		put(SendRescueSignal.procedure, new SendRescueSignal());
+		put(GetBattleData.procedure, new GetBattleData());
+
 		put(GetSneakingMissionTopData.procedure,
 				new GetSneakingMissionTopData());
 		put(GetResultData.procedure, new GetResultData());
 		put(SortieTroops.procedure, new SortieTroops());
+
+		put(GetForQuestMap.procedure, new GetForQuestMap());
+		put(ExecuteQuest.procedure, new ExecuteQuest());
+
+		put(EncountRaidBoss.procedure, new EncountRaidBoss());
 	}
 
 	private static void put(String procedure, BaseDispatch impl) {

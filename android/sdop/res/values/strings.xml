@@ -4,7 +4,7 @@
     <string name="app_name">sdop</string>
     <string name="action_login">登录</string>
     <string name="action_auto_login">自动登录</string>
-    <string name="action_test_hello">对ads测试hello</string>
+    <string name="action_test">测试</string>
     <string name="action_auto_GB">自动GB</string>
     <string name="action_auto_GB_FIGHT">对FIGHT自动</string>
     <string name="action_auto_GB_SPECIAL">对SPECIAL自动</string>

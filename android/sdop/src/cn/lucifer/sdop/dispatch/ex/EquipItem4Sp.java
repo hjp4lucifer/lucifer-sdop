@@ -33,7 +33,9 @@ public class EquipItem4Sp extends BaseDispatch {
 
 	@Override
 	public void callback(Object[] args) {
-		lcf().sdop.boss.executeBattleStart(ExecuteBattleStart.procedure);
+		lcf().sdop.boss.executeBattleStart(lcf().sdop.boss.AI.getCurrentMembers(), lcf().sdop.boss.battleId,
+				lcf().sdop.boss.getCurrentMode(), false,
+				ExecuteBattleStart.procedure);
 	}
 
 }

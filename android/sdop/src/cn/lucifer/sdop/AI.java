@@ -35,6 +35,15 @@ public class AI extends LcfExtend {
 	}
 
 	/**
+	 * 获取当前AI中使用的member
+	 * 
+	 * @return
+	 */
+	public CardWithoutWeapon[] getCurrentMembers() {
+		return new CardWithoutWeapon[] { attackMember, helpMember };
+	}
+
+	/**
 	 * 最少血量
 	 */
 	protected final int Least_Hp = 5000000;
@@ -271,9 +280,13 @@ public class AI extends LcfExtend {
 	 * 分析最适合的超总人选, 进入前, 请先确保myUserId是有值
 	 * 
 	 * @param battleArgs
+	 * @param setAi
+	 *            true表示设置进AI里, 作为AI自动打参数
+	 * @return array index 0表示attackMember, 1表示helpMember
 	 * @throws JSONException
 	 */
-	public void setFixMember(JSONObject battleArgs) throws JSONException {
+	public CardWithoutWeapon[] setFixMember(JSONObject battleArgs, boolean setAi)
+			throws JSONException {
 		lcf().sdop.myUserId = battleArgs.getInt("leaderCardId");
 
 		Ms[] playerMsList = lcf().gson.fromJson(
@@ -294,6 +307,7 @@ public class AI extends LcfExtend {
 				battleArgs.getString("memberCardList"),
 				CardWithoutWeapon[].class);
 
+		CardWithoutWeapon attackMember, helpMember;
 		switch (lcf().sdop.boss.currentType) {
 		case 0:
 			lcf().sdop.boss.isAutoBattle = true;
@@ -307,6 +321,12 @@ public class AI extends LcfExtend {
 			helpMember = getFixHelpMember(members, attackMember);
 			break;
 		}
+
+		if (setAi) {
+			this.attackMember = attackMember;
+			this.helpMember = helpMember;
+		}
+		return new CardWithoutWeapon[] { attackMember, helpMember };
 	}
 
 	/**

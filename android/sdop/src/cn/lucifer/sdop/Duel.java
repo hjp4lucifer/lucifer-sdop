@@ -210,22 +210,33 @@ public class Duel extends LcfExtend {
 			return;
 		}
 		requestEneryDataCount = 0;
-		lcf().sdop.log("准备对【" + enemy.playerName + "】 发起挑战, 对方属性是【"
-				+ enemy.unitAttribute.value + "】 " + enemy.unitName + "!");
-
-		String url = lcf().sdop.httpUrlPrefix
-				+ "/PostForQuestBattle/executeDuelBattle?ssid="
-				+ lcf().sdop.ssid;
 
 		try {
 			checkEnemy(enemy);
 		} catch (CannotOpenDBException e) {
 			// 不需要处理
 		}
+
+		executeDuelBattle(enemy, false);
+	}
+
+	/**
+	 * 
+	 * @param enemy
+	 * @param isEncount
+	 *            true遭遇战
+	 */
+	public void executeDuelBattle(Player enemy, boolean isEncount) {
+		lcf().sdop.log(String.format("准备对【%s】 发起挑战, 对方属性是【%s】 %s!",
+				enemy.playerName, enemy.unitAttribute.value, enemy.unitName));
+
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForQuestBattle/executeDuelBattle?ssid="
+				+ lcf().sdop.ssid;
 		try {
 			JSONObject payload = lcf().sdop.createBasePayload(
 					ExecuteDuelBattle.procedure,
-					new JSONObject().put("isEncount", false).put("id",
+					new JSONObject().put("isEncount", isEncount).put("id",
 							enemy.playerId));
 			lcf().sdop.post(url, payload.toString(),
 					ExecuteDuelBattle.procedure, null);

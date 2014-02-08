@@ -1,6 +1,7 @@
 package cn.lucifer.sdop;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,6 +11,7 @@ import android.util.Log;
 
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.ExecuteBattleStart;
+import cn.lucifer.sdop.dispatch.ex.GetBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
@@ -27,6 +29,10 @@ public class Boss extends LcfExtend {
 	 * 0表示总力, 1表示超总
 	 */
 	public int currentType = 1;
+	/**
+	 * 0表示总力, 1表示超总, 2表示普通遭遇战
+	 */
+	public Integer encountType;
 	private final String currentModeValue = "RAID_BOSS";
 	private JSONObject currentMode;
 	public final int x3 = 250047;
@@ -36,8 +42,8 @@ public class Boss extends LcfExtend {
 
 	public Integer targetBossId;
 	public Integer battleId;
-	
-	public String getCurrentTypeName(){
+
+	public String getCurrentTypeName() {
 		switch (currentType) {
 		case 0:
 			return "总力";
@@ -157,25 +163,42 @@ public class Boss extends LcfExtend {
 	/**
 	 * 选好人, 并开始boss战斗
 	 * 
+	 * @param members
+	 *            参阅{@link AI#setFixMember(JSONObject, boolean)}
+	 * @param battleId
+	 * @param isAutoBattle
 	 * @param callback
 	 */
-	public void executeBattleStart(String callback) {
+	public void executeBattleStart(CardWithoutWeapon[] members, int battleId,
+			JSONObject mode, boolean isAutoBattle, String callback) {
 		String url = lcf().sdop.httpUrlPrefix
 				+ "/PostForQuestBattle/executeBattleStart";
+		this.isAutoBattle = isAutoBattle;
+		Log.d(lcf().LOG_TAG, "executeBattleStart isAutoBattle: " + isAutoBattle
+				+ ", mode : " + mode.toString());
 		try {
-			Unit[] unitList = new Unit[3];
-			unitList[0] = new Unit();
-			unitList[0].id = lcf().sdop.myUserId;
-			unitList[0].setArrangementValue(0);
-			unitList[0].isLeader = true;
+			ArrayList<Unit> unitList = new ArrayList<Unit>(3);
+			Unit unit = new Unit();
+			unit.id = lcf().sdop.myUserId;
+			unit.setArrangementValue(0);
+			unit.isLeader = true;
+			unitList.add(unit);
 
-			unitList[1] = new Unit();
-			unitList[1].id = AI.attackMember.id;
-			unitList[1].setArrangementValue(1);
+			if (members != null) {
+				if (members[0] != null) {
+					unit = new Unit();
+					unit.id = members[0].id;
+					unit.setArrangementValue(1);
+					unitList.add(unit);
 
-			unitList[2] = new Unit();
-			unitList[2].id = AI.helpMember.id;
-			unitList[2].setArrangementValue(2);
+					if (members[1] != null) {
+						unit = new Unit();
+						unit.id = members[1].id;
+						unit.setArrangementValue(2);
+						unitList.add(unit);
+					}
+				}
+			}
 
 			JSONObject payload = lcf().sdop.createBasePayload(
 					"executeBattleStart",
@@ -184,7 +207,7 @@ public class Boss extends LcfExtend {
 							.put("unitList",
 									new JSONArray(lcf().gson.toJson(unitList)))
 							.put("isAutoBattle", isAutoBattle)
-							.put("mode", getCurrentMode()));
+							.put("mode", mode));
 			lcf().sdop.post(url, payload.toString(),
 					ExecuteBattleStart.procedure, callback);
 
@@ -193,7 +216,12 @@ public class Boss extends LcfExtend {
 		}
 	}
 
-	public void getRaidBossBattleData(String callback) {
+	/**
+	 * @param targetBossId
+	 *            0时, 表示遭遇战
+	 * @param callback
+	 */
+	public void getRaidBossBattleData(Integer targetBossId, String callback) {
 		if (targetBossId == null) {
 			Log.e(lcf().LOG_TAG, "targetBossId is null ! " + targetBossId);
 			return;
@@ -276,6 +304,40 @@ public class Boss extends LcfExtend {
 							playerId, actionId)));
 			JSONObject payload = lcf().sdop.createBasePayload(
 					"executeActionCommand", args);
+			lcf().sdop.post(url, payload.toString(),
+					ExecuteActionCommand.procedure, callback);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 断网后，重新获取boss战斗数据的方法, 注意: 该方法好像有好多限制, 暂证明能使用在普通遭遇战斗
+	 * 
+	 * @param callback
+	 */
+	public void getBattleData(String callback) {
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/GetForQuestBattle/getBattleData?"
+				+ lcf().sdop.createGetParams();
+		lcf().sdop.get(url, GetBattleData.procedure, callback);
+	}
+
+	/**
+	 * 发送求助信息
+	 * 
+	 * @param raidBossId
+	 */
+	public void sendRescueSignal(int raidBossId, String callback) {
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForRaidBoss/sendRescueSignal";
+
+		try {
+			JSONObject payload = lcf().sdop.createBasePayload(
+					"sendRescueSignal",
+					new JSONObject().put("isForAllPlayer", true)
+							.put("comment", "help~~~!!!")
+							.put("raidBossId", raidBossId));
 			lcf().sdop.post(url, payload.toString(),
 					ExecuteActionCommand.procedure, callback);
 		} catch (JSONException e) {

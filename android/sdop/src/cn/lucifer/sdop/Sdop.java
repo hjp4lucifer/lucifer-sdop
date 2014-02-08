@@ -67,6 +67,7 @@ public class Sdop extends LcfExtend {
 	public Duel duel;
 	public Boss boss;
 	public Sneaking sneaking;
+	public Map map;
 
 	public void initAfterContext() {
 		if (auto == null) {
@@ -86,6 +87,9 @@ public class Sdop extends LcfExtend {
 		}
 		if (sneaking == null) {
 			sneaking = new Sneaking();
+		}
+		if (map == null) {
+			map = new Map();
 		}
 	}
 
