@@ -64,6 +64,7 @@ public class MainActivity extends BaseActivity {
 			menu.findItem(R.id.action_auto_GB).setEnabled(true);
 			menu.findItem(R.id.action_auto_boss).setEnabled(true);
 			menu.findItem(R.id.action_sneaking).setEnabled(true);
+			menu.findItem(R.id.action_test).setEnabled(true);
 			isDisabledLoginMenu = false;
 		}
 		return true;

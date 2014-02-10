@@ -36,6 +36,11 @@ public class GetDuelData extends BaseDispatch {
 		if (lcf().sdop.bp < 5) {
 			lcf().sdop.log(String.format("当前bp为%d (ep: %d), 等待下次检查！",
 					lcf().sdop.bp, lcf().sdop.ep));
+
+			// 暂时把开启记录模式的, 且开启自动GB的, 作为默认调用探索的条件
+			if (lcf().sdop.duel.recordMode && lcf().sdop.ep > 0) {
+				lcf().sdop.map.getQuestData();
+			}
 			return;
 		}
 		lcf().sdop.duel.getEntryData(GetEntryData.procedure);

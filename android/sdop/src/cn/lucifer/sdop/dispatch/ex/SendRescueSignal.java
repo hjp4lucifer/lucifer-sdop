@@ -16,6 +16,7 @@ public class SendRescueSignal extends BaseDispatch {
 		}
 
 		lcf().sdop.checkCallback(callback);
+		lcf().sdop.log("成功发送Help信息!");
 	}
 
 	@Override

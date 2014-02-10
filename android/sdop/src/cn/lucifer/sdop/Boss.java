@@ -16,6 +16,7 @@ import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
+import cn.lucifer.sdop.dispatch.ex.SendRescueSignal;
 import cn.lucifer.sdop.domain.CardWithoutWeapon;
 import cn.lucifer.sdop.domain.Unit;
 import cn.lucifer.sdop.domain.Value;
@@ -339,7 +340,7 @@ public class Boss extends LcfExtend {
 							.put("comment", "help~~~!!!")
 							.put("raidBossId", raidBossId));
 			lcf().sdop.post(url, payload.toString(),
-					ExecuteActionCommand.procedure, callback);
+					SendRescueSignal.procedure, callback);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
