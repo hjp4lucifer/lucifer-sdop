@@ -95,5 +95,8 @@ public class Map extends LcfExtend {
 		}
 		lcf().sdop.log("普通探索: " + renderingType + ", 剩余ep: " + lcf().sdop.ep
 				+ ", 剩余bp: " + lcf().sdop.bp);
+		if (lcf().sdop.ep > 7) {
+			getQuestData();
+		}
 	}
 }
