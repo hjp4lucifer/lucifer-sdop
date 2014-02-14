@@ -20,11 +20,11 @@ public class EncountRaidBoss extends BaseDispatch {
 	@Override
 	public void callback(Object[] args) {
 		JSONObject battleArgs = (JSONObject) args[0];
-		Log.i("Lucifer", "EncountRaidBoss callback start ! encountType : "
+		Log.i(lcf().LOG_TAG, "EncountRaidBoss callback start ! encountType : "
 				+ lcf().sdop.boss.encountType);
 		try {
 			switch (lcf().sdop.boss.encountType) {
-			case 0:// 总力
+			case 0:// 总力 or 超总
 				CardWithoutWeapon[] members = lcf().sdop.boss.AI.setFixMember(
 						battleArgs, false);
 
@@ -34,7 +34,9 @@ public class EncountRaidBoss extends BaseDispatch {
 				// 这里进行并发请求
 				int raidBossId = battleArgs.getJSONObject("raidBossData")
 						.getInt("id");
-				lcf().sdop.boss.sendRescueSignal(raidBossId, null);
+				lcf().sdop.checkCallback(SendRescueSignal.procedure, 2000,
+						new Object[] { raidBossId });
+				// lcf().sdop.boss.sendRescueSignal(raidBossId, null);
 				return;
 			case 2:// 普通战斗, 不使用member了, 避免全部进入coolTime
 				lcf().sdop.myUserId = battleArgs.getInt("leaderCardId");

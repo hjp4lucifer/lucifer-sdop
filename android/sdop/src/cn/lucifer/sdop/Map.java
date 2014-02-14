@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.ExecuteQuest;
 import cn.lucifer.sdop.dispatch.ex.GetForQuestMap;
@@ -64,6 +66,10 @@ public class Map extends LcfExtend {
 			rendering = renderingList.getJSONObject(i);
 			renderingType = rendering.getJSONObject("renderingType").getString(
 					"value");
+			if (renderingType.indexOf("EFFECT") > -1) {
+				Log.d(lcf().LOG_TAG, args.toString());
+			}
+			Log.i(lcf().LOG_TAG, "renderingType : " + renderingType);
 			if (renderingTypes[0].equals(renderingType)) {// DUEL_EFFECT
 				lcf().sdop.log("GB遭遇战！");
 				JSONObject duelEncountDetail = rendering

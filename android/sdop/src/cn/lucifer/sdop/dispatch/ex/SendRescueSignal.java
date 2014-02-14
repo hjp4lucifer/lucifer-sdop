@@ -19,10 +19,13 @@ public class SendRescueSignal extends BaseDispatch {
 		lcf().sdop.log("成功发送Help信息!");
 	}
 
+	/**
+	 * 延迟执行：发送help信息
+	 */
 	@Override
 	public void callback(Object[] args) {
-		// TODO Auto-generated method stub
-
+		int raidBossId = (Integer) args[0];
+		lcf().sdop.boss.sendRescueSignal(raidBossId, null);
 	}
 
 }

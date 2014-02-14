@@ -287,6 +287,7 @@ public class AI extends LcfExtend {
 	 */
 	public CardWithoutWeapon[] setFixMember(JSONObject battleArgs, boolean setAi)
 			throws JSONException {
+		Log.i(lcf().LOG_TAG, "battleArgs : " + battleArgs.toString());
 		lcf().sdop.myUserId = battleArgs.getInt("leaderCardId");
 
 		Ms[] playerMsList = lcf().gson.fromJson(
