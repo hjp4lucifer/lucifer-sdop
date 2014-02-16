@@ -25,6 +25,23 @@ public class EncountRaidBoss extends BaseDispatch {
 		try {
 			switch (lcf().sdop.boss.encountType) {
 			case 0:// 总力 or 超总
+				JSONObject raidBossData = battleArgs
+						.getJSONObject("raidBossData");
+				int raidBossId = raidBossData.getInt("id");
+				String raidBossDataKind = raidBossData.getJSONObject("kind")
+						.getString("value");
+				int raidBossLv = raidBossData.getInt("level");
+				if (!"NORMAL".equals(raidBossDataKind)) {// 超总
+					lcf().sdop.log("遭遇变更! 超总遭遇(" + raidBossDataKind + "), Lv :"
+							+ raidBossLv);
+					lcf().sdop.boss.targetBossId = raidBossId;
+					lcf().sdop.boss.encountType = 1;
+					lcf().sdop.boss.AI.setFixMember(battleArgs, true);
+					lcf().sdop.item.equipItem4Sp(EquipItem4Sp.procedure);
+					return;
+				}
+				lcf().sdop.log("总力遭遇(" + raidBossDataKind + "), Lv :"
+						+ raidBossLv);
 				CardWithoutWeapon[] members = lcf().sdop.boss.AI.setFixMember(
 						battleArgs, false);
 
@@ -32,8 +49,6 @@ public class EncountRaidBoss extends BaseDispatch {
 						lcf().sdop.boss.battleId,
 						lcf().sdop.boss.getCurrentMode(), true, null);
 				// 这里进行并发请求
-				int raidBossId = battleArgs.getJSONObject("raidBossData")
-						.getInt("id");
 				lcf().sdop.checkCallback(SendRescueSignal.procedure, 2000,
 						new Object[] { raidBossId });
 				// lcf().sdop.boss.sendRescueSignal(raidBossId, null);
@@ -44,12 +59,10 @@ public class EncountRaidBoss extends BaseDispatch {
 						battleArgs.getInt("battleId"),
 						battleArgs.getJSONObject("mode"), true, null);
 				return;
-			default:// 超总
-				lcf().sdop.boss.AI.setFixMember(battleArgs, true);
+			default:
 				break;
 			}
 
-			lcf().sdop.equipItem4Sp(EquipItem4Sp.procedure);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

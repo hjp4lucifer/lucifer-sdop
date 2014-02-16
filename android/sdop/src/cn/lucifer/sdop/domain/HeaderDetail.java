@@ -6,6 +6,8 @@ public class HeaderDetail {
 	
 	public EnergyDetail energyDetail;
 
+	public int gold;
+	
 	public int ms;
 	public int msMax;
 	public int pilot;

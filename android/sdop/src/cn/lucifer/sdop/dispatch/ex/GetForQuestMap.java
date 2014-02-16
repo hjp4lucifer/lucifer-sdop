@@ -22,9 +22,13 @@ public class GetForQuestMap extends BaseDispatch {
 		lcf().sdop.map.executeQuest(playerExist);
 	}
 
+	/**
+	 * 延迟调度方法
+	 */
 	@Override
 	public void callback(Object[] args) {
-		
+		Log.d(lcf().LOG_TAG, "call GetForQuestMap#callback !");
+		lcf().sdop.map.getQuestData();
 	}
 
 }

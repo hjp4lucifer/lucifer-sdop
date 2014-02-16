@@ -10,13 +10,11 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.lucifer.sdop.dispatch.CallbackThread;
 import cn.lucifer.sdop.dispatch.ex.Enter;
-import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.service.HttpService;
 
@@ -62,6 +60,7 @@ public class Sdop extends LcfExtend {
 	}
 
 	public Auto auto;
+	public Item item;
 	public Ms ms;
 	public Pilot pilot;
 	public Duel duel;
@@ -72,6 +71,9 @@ public class Sdop extends LcfExtend {
 	public void initAfterContext() {
 		if (auto == null) {
 			auto = new Auto();
+		}
+		if (item == null) {
+			item = new Item();
 		}
 		if (ms == null) {
 			ms = new Ms();
@@ -244,23 +246,6 @@ public class Sdop extends LcfExtend {
 					new JSONObject().put("comment", "hello").put(
 							"greetingUserId", 339947));
 			post(url, payload.toString(), PostGreeting.procedure, null);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	// private final int[] itemIdList = new int[] { 20006, 20011, 20013 };
-	private final String itemIdList_json = "[ 20006, 20011, 20013 ]";
-
-	public void equipItem4Sp(String callback) {
-		String url = httpUrlPrefix + "/PostForCardPlatoon/equipItem?ssid="
-				+ ssid;
-		try {
-			JSONObject payload = createBasePayload(EquipItem4Sp.procedure,
-					new JSONObject().put("itemIdList", new JSONArray(
-							itemIdList_json)));
-			post(url, payload.toString(), EquipItem4Sp.procedure, callback);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

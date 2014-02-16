@@ -12,6 +12,7 @@ import android.util.Log;
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
+import cn.lucifer.sdop.dispatch.ex.SendRescueSignal;
 import cn.lucifer.sdop.domain.ActionOrder;
 import cn.lucifer.sdop.domain.ActiveSkill;
 import cn.lucifer.sdop.domain.Card;
@@ -456,6 +457,14 @@ public class AI extends LcfExtend {
 		if (!battleArgs.isNull("resultData")) {
 			Log.i(lcf().LOG_TAG, battleArgs.toString());
 			lcf().sdop.log("Boss战结束！");
+
+			if (lcf().sdop.boss.targetBossId != null
+					&& lcf().sdop.boss.encountType == 1) {// 遭遇发送help信息
+				lcf().sdop.checkCallback(SendRescueSignal.procedure, 2000,
+						new Object[] { lcf().sdop.boss.targetBossId });
+				lcf().sdop.boss.targetBossId = null;
+				lcf().sdop.boss.encountType = null;
+			}
 			return;
 		}
 

@@ -1,10 +1,7 @@
 package cn.lucifer.sdop.domain;
 
-public class Item {
-	public int id;
+public class Item extends ItemBase {
 	public boolean isEquiped;
-	public String name;
 	public int currentStock;
 	public int num;
-	public String description;
 }

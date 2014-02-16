@@ -7,6 +7,7 @@ import org.json.JSONException;
 
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
 import cn.lucifer.sdop.dispatch.ex.AutoSuperRaidBoss;
+import cn.lucifer.sdop.dispatch.ex.BoughtItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.Enter;
 import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
@@ -46,8 +47,9 @@ public final class DF {
 		put(GetDuelData.procedure, new GetDuelData());
 		put(ExecuteDuelBattle.procedure, new ExecuteDuelBattle());
 
+		put(BoughtItem4Sp.procedure, new BoughtItem4Sp());
 		put(EquipItem4Sp.procedure, new EquipItem4Sp());
-
+		
 		put(StartAutoSuperRaidBoss.procedure, new StartAutoSuperRaidBoss());
 		put(AutoBattle.procedure, new AutoBattle());
 		put(AutoSuperRaidBoss.procedure, new AutoSuperRaidBoss());

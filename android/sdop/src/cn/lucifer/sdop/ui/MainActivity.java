@@ -103,6 +103,7 @@ public class MainActivity extends BaseActivity {
 			lcf().sdop.duel.cancelAutoDuel();
 			break;
 		case R.id.action_test:
+			lcf().sdop.auto.setting.ep = true;
 			lcf().sdop.map.getQuestData();
 			break;
 		case R.id.action_auto_super_boss_start:
@@ -111,8 +112,19 @@ public class MainActivity extends BaseActivity {
 		case R.id.action_auto_normal_boss_start:
 			lcf().sdop.boss.AI.startAutoNormalRaidBoss();
 			break;
+		case R.id.action_bought_item_4_sp:
+			if (lcf().sdop.item.onBoughtItem4Sp) {
+				Toast.makeText(
+						getApplication(),
+						getResources().getString(
+								R.string.action_bought_item_4_sp)
+								+ "进行中...", Toast.LENGTH_SHORT).show();
+			} else {
+				lcf().sdop.item.boughtItem4SpAI();
+			}
+			break;
 		case R.id.action_equip_item_4_sp:
-			lcf().sdop.equipItem4Sp(null);
+			lcf().sdop.item.equipItem4Sp(null);
 			break;
 		case R.id.action_auto_boss_off:
 			lcf().sdop.boss.AI.cancelAutoSuperRaidBoss();

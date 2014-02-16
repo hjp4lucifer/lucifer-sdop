@@ -7,6 +7,7 @@ public class Auto {
 	public class Setting {
 		public boolean duel;
 		public boolean boss;
+		public boolean ep;
 	}
 
 }

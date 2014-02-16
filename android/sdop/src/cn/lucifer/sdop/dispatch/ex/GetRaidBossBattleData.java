@@ -43,7 +43,7 @@ public class GetRaidBossBattleData extends BaseDispatch {
 				break;
 			}
 
-			lcf().sdop.equipItem4Sp(EquipItem4Sp.procedure);
+			lcf().sdop.item.equipItem4Sp(EquipItem4Sp.procedure);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

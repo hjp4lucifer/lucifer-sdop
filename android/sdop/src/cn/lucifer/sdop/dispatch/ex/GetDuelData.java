@@ -3,8 +3,6 @@ package cn.lucifer.sdop.dispatch.ex;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 import cn.lucifer.sdop.dispatch.BaseDispatch;
 import cn.lucifer.sdop.domain.HeaderDetail;
 
@@ -38,7 +36,7 @@ public class GetDuelData extends BaseDispatch {
 					lcf().sdop.bp, lcf().sdop.ep));
 
 			// 暂时把开启记录模式的, 且开启自动GB的, 作为默认调用探索的条件
-			if (lcf().sdop.duel.recordMode && lcf().sdop.ep > 0) {
+			if (lcf().sdop.auto.setting.ep && lcf().sdop.ep > 0) {
 				lcf().sdop.map.getQuestData();
 			}
 			return;

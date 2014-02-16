@@ -102,7 +102,12 @@ public class Map extends LcfExtend {
 		lcf().sdop.log("普通探索: " + renderingType + ", 剩余ep: " + lcf().sdop.ep
 				+ ", 剩余bp: " + lcf().sdop.bp);
 		if (lcf().sdop.ep > 7) {
-			getQuestData();
+			lcf().sdop.checkCallback(GetForQuestMap.procedure, 2000, null);
+			return;
+		}
+		if (lcf().sdop.auto.setting.boss && lcf().sdop.ep > 2) {
+			lcf().sdop.checkCallback(GetForQuestMap.procedure, 2000, null);
+			return;
 		}
 	}
 }

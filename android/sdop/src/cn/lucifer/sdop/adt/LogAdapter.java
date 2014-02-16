@@ -68,7 +68,7 @@ public class LogAdapter extends BaseAdapter {
 
 	protected void setStyle(TextView tv, int position, String text) {
 		tv.setBackgroundColor(position % 2 == (oddCount ? 0 : 1) ? Color.LTGRAY
-				: 0xdddddddd);
+				: Color.TRANSPARENT);
 		tv.setText(getText(text));
 	}
 

@@ -28,14 +28,15 @@ public class EquipItem4Sp extends BaseDispatch {
 			}
 		}
 		lcf().sdop.log(logMsg.toString());
-		lcf().sdop.checkCallback(callback);
+		lcf().sdop.checkCallback(callback, new Object[] { itemList });
 	}
 
 	@Override
 	public void callback(Object[] args) {
-		lcf().sdop.boss.executeBattleStart(lcf().sdop.boss.AI.getCurrentMembers(), lcf().sdop.boss.battleId,
-				lcf().sdop.boss.getCurrentMode(), false,
-				ExecuteBattleStart.procedure);
+		lcf().sdop.boss.executeBattleStart(
+				lcf().sdop.boss.AI.getCurrentMembers(),
+				lcf().sdop.boss.battleId, lcf().sdop.boss.getCurrentMode(),
+				false, ExecuteBattleStart.procedure);
 	}
 
 }
