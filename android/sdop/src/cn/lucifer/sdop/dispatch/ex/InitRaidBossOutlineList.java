@@ -64,10 +64,10 @@ public class InitRaidBossOutlineList extends BaseDispatch {
 
 				Log.d(lcf().LOG_TAG, "define ep auto mentoh! max : " + baseDelay);
 				// 延迟8分钟调度ep消耗方法
-				lcf().sdop.checkCallback(GetForQuestMap.procedure,
+				lcf().sdop.checkCallback(GetQuestData.procedure,
 						baseDelay >> 1, null);
 				// 延迟16分钟调度ep消耗方法
-				lcf().sdop.checkCallback(GetForQuestMap.procedure, baseDelay,
+				lcf().sdop.checkCallback(GetQuestData.procedure, baseDelay,
 						null);
 			}
 		}

@@ -7,9 +7,9 @@ import android.util.Log;
 
 import cn.lucifer.sdop.dispatch.BaseDispatch;
 
-public class GetForQuestMap extends BaseDispatch {
+public class GetQuestData extends BaseDispatch {
 
-	public static final String procedure = "GetForQuestMap";
+	public static final String procedure = "getQuestData";
 
 	@Override
 	public void process(byte[] response, String callback) throws JSONException {
@@ -27,7 +27,7 @@ public class GetForQuestMap extends BaseDispatch {
 	 */
 	@Override
 	public void callback(Object[] args) {
-		Log.d(lcf().LOG_TAG, "call GetForQuestMap#callback !");
+		Log.d(lcf().LOG_TAG, "call GetQuestData#callback !");
 		lcf().sdop.map.getQuestData();
 	}
 

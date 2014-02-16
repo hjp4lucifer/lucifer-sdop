@@ -18,7 +18,7 @@ import cn.lucifer.sdop.dispatch.ex.ExecuteQuest;
 import cn.lucifer.sdop.dispatch.ex.GetBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetDuelData;
 import cn.lucifer.sdop.dispatch.ex.GetEntryData;
-import cn.lucifer.sdop.dispatch.ex.GetForQuestMap;
+import cn.lucifer.sdop.dispatch.ex.GetQuestData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.GetResultData;
@@ -68,7 +68,7 @@ public final class DF {
 		put(GetResultData.procedure, new GetResultData());
 		put(SortieTroops.procedure, new SortieTroops());
 
-		put(GetForQuestMap.procedure, new GetForQuestMap());
+		put(GetQuestData.procedure, new GetQuestData());
 		put(ExecuteQuest.procedure, new ExecuteQuest());
 
 		put(EncountRaidBoss.procedure, new EncountRaidBoss());

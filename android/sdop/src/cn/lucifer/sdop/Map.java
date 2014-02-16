@@ -8,7 +8,7 @@ import android.util.Log;
 
 import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.ExecuteQuest;
-import cn.lucifer.sdop.dispatch.ex.GetForQuestMap;
+import cn.lucifer.sdop.dispatch.ex.GetQuestData;
 import cn.lucifer.sdop.domain.HeaderDetail;
 import cn.lucifer.sdop.domain.Player;
 
@@ -28,7 +28,7 @@ public class Map extends LcfExtend {
 		}
 		String url = lcf().sdop.httpUrlPrefix + "/GetForQuestMap/getQuestData?"
 				+ lcf().sdop.createGetParams() + "&isEventMap=false&nodeId=0";
-		lcf().sdop.get(url, GetForQuestMap.procedure, null);
+		lcf().sdop.get(url, GetQuestData.procedure, null);
 	}
 
 	public void executeQuest(int nodeId) {
@@ -102,11 +102,11 @@ public class Map extends LcfExtend {
 		lcf().sdop.log("普通探索: " + renderingType + ", 剩余ep: " + lcf().sdop.ep
 				+ ", 剩余bp: " + lcf().sdop.bp);
 		if (lcf().sdop.ep > 7) {
-			lcf().sdop.checkCallback(GetForQuestMap.procedure, 2000, null);
+			lcf().sdop.checkCallback(GetQuestData.procedure, 2000, null);
 			return;
 		}
 		if (lcf().sdop.auto.setting.boss && lcf().sdop.ep > 2) {
-			lcf().sdop.checkCallback(GetForQuestMap.procedure, 2000, null);
+			lcf().sdop.checkCallback(GetQuestData.procedure, 2000, null);
 			return;
 		}
 	}
