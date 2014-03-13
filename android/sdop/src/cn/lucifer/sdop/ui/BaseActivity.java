@@ -20,11 +20,15 @@ public class BaseActivity extends Activity implements IGetLcf {
 		Intent httpService = new Intent(this, HttpService.class);
 		stopService(httpService);
 
+		top2Main();
+
+		android.os.Process.killProcess(android.os.Process.myPid());
+	}
+
+	protected void top2Main() {
 		Intent startMain = new Intent(Intent.ACTION_MAIN);
 		startMain.addCategory(Intent.CATEGORY_HOME);
 		startMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(startMain);
-
-		android.os.Process.killProcess(android.os.Process.myPid());
 	}
 }
