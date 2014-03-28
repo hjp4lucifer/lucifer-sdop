@@ -18,6 +18,7 @@ import cn.lucifer.sdop.dispatch.ex.ExecuteQuest;
 import cn.lucifer.sdop.dispatch.ex.GetBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetDuelData;
 import cn.lucifer.sdop.dispatch.ex.GetEntryData;
+import cn.lucifer.sdop.dispatch.ex.GetMSCardEnhancedSynthesisData;
 import cn.lucifer.sdop.dispatch.ex.GetQuestData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
@@ -49,7 +50,7 @@ public final class DF {
 
 		put(BoughtItem4Sp.procedure, new BoughtItem4Sp());
 		put(EquipItem4Sp.procedure, new EquipItem4Sp());
-		
+
 		put(StartAutoSuperRaidBoss.procedure, new StartAutoSuperRaidBoss());
 		put(AutoBattle.procedure, new AutoBattle());
 		put(AutoSuperRaidBoss.procedure, new AutoSuperRaidBoss());
@@ -72,6 +73,9 @@ public final class DF {
 		put(ExecuteQuest.procedure, new ExecuteQuest());
 
 		put(EncountRaidBoss.procedure, new EncountRaidBoss());
+
+		put(GetMSCardEnhancedSynthesisData.procedure,
+				new GetMSCardEnhancedSynthesisData());
 	}
 
 	private static void put(String procedure, BaseDispatch impl) {

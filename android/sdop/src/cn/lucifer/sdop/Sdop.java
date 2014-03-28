@@ -67,6 +67,7 @@ public class Sdop extends LcfExtend {
 	public Boss boss;
 	public Sneaking sneaking;
 	public Map map;
+	public Synthesis synthesis;
 
 	public void initAfterContext() {
 		if (auto == null) {
@@ -92,6 +93,9 @@ public class Sdop extends LcfExtend {
 		}
 		if (map == null) {
 			map = new Map();
+		}
+		if (synthesis == null) {
+			synthesis = new Synthesis();
 		}
 	}
 

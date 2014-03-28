@@ -40,6 +40,10 @@
             android:name="cn.lucifer.sdop.ui.SneakingActivity"
             android:label="@string/action_sneaking" >
         </activity>
+        <activity
+            android:name="cn.lucifer.sdop.ui.MSSynthesisActivity"
+            android:label="@string/action_ms_synthesis" >
+        </activity>
         <service android:name="cn.lucifer.sdop.service.HttpService"></service>
     </application>
 

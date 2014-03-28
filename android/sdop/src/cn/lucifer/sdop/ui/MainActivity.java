@@ -64,6 +64,7 @@ public class MainActivity extends BaseActivity {
 			menu.findItem(R.id.action_auto_GB).setEnabled(true);
 			menu.findItem(R.id.action_auto_boss).setEnabled(true);
 			menu.findItem(R.id.action_sneaking).setEnabled(true);
+			menu.findItem(R.id.action_ms_synthesis).setEnabled(true);
 			menu.findItem(R.id.action_test).setEnabled(true);
 			isDisabledLoginMenu = false;
 		}
@@ -129,10 +130,16 @@ public class MainActivity extends BaseActivity {
 		case R.id.action_auto_boss_off:
 			lcf().sdop.boss.AI.cancelAutoSuperRaidBoss();
 			break;
-		case R.id.action_sneaking:
+		case R.id.action_sneaking: {
 			Intent intent = new Intent(this, SneakingActivity.class);
 			startActivity(intent);
 			break;
+		}
+		case R.id.action_ms_synthesis: {
+			Intent intent = new Intent(this, MSSynthesisActivity.class);
+			startActivity(intent);
+			break;
+		}
 		case R.id.action_exit:
 			exit();
 			break;
@@ -199,6 +206,10 @@ public class MainActivity extends BaseActivity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			Toast.makeText(
+					getApplication(),
+					getResources().getString(R.string.action_auto_login)
+							+ "进行中...", Toast.LENGTH_SHORT).show();
 			autoLogin();
 		}
 

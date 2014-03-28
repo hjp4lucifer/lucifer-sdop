@@ -1,18 +1,17 @@
 package cn.lucifer.sdop.ui;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
 import cn.lucifer.sdop.R;
 import cn.lucifer.sdop.adt.SneakingAdapter;
 import cn.lucifer.sdop.domain.SneakingPlatoon;
+import cn.lucifer.sdop.ui.extend.OnRefreshListenerTemplate;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -82,18 +81,10 @@ public class SneakingActivity extends BaseActivity {
 		}
 	};
 
-	private OnRefreshListener<ListView> onRefreshListener = new OnRefreshListener<ListView>() {
+	private OnRefreshListener<ListView> onRefreshListener = new OnRefreshListenerTemplate<ListView>() {
+
 		@Override
-		public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-			String label = DateUtils.formatDateTime(getApplicationContext(),
-					System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
-							| DateUtils.FORMAT_SHOW_DATE
-							| DateUtils.FORMAT_ABBREV_ALL);
-
-			// Update the LastUpdatedLabel
-			refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-
-			// Do work to refresh the list here.
+		protected void startRefreshWork() {
 			lcf().sdop.sneaking.getSneakingMissionTopData();
 		}
 	};

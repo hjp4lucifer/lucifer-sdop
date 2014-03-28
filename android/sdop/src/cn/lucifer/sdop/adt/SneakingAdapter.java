@@ -6,6 +6,7 @@ import java.util.Arrays;
 import cn.lucifer.sdop.Lcf;
 import cn.lucifer.sdop.R;
 import cn.lucifer.sdop.domain.SneakingPlatoon;
+import cn.lucifer.sdop.domain.Value;
 
 import android.content.Context;
 import android.text.Html;
@@ -25,6 +26,17 @@ public class SneakingAdapter extends BaseAdapter {
 	public SneakingAdapter(Context context) {
 		this.context = context;
 		inflater = LayoutInflater.from(context);
+		addBlank();
+	}
+
+	/**
+	 * 生成一个空的SneakingPlatoon
+	 */
+	protected void addBlank() {
+		SneakingPlatoon platoon = new SneakingPlatoon();
+		platoon.state = new Value();
+		platoon.state.value = "wait loading...";
+		platoons.add(platoon);
 	}
 
 	@Override

@@ -17,9 +17,11 @@
     <string name="action_bought_item_4_sp">智能买SP药</string>
     <string name="action_equip_item_4_sp">装备SP药</string>
     <string name="action_sneaking">潜入任务</string>
+    <string name="action_ms_synthesis">MS合成</string>
     <string name="action_exit">退出</string>
     
     <string name="lable_required_time">剩余时间</string>
     <string name="lable_state">状态</string>
+    <string name="lable_lock">LOCK</string>
 
 </resources>

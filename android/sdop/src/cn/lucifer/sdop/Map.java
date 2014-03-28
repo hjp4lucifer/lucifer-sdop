@@ -40,7 +40,7 @@ public class Map extends LcfExtend {
 					new JSONObject().put("nodeId", nodeId)
 							.put("renderingIdList", new JSONArray())
 							.put("isEventMap", false)
-							.put("isAutoProgress", false));
+							.put("isAutoProgress", true));
 			lcf().sdop.post(url, payload.toString(), ExecuteQuest.procedure,
 					null);
 		} catch (JSONException e) {
@@ -69,7 +69,7 @@ public class Map extends LcfExtend {
 			if (renderingType.indexOf("EFFECT") > -1) {
 				Log.d(lcf().LOG_TAG, args.toString());
 			}
-			Log.i(lcf().LOG_TAG, "renderingType : " + renderingType);
+			//Log.i(lcf().LOG_TAG, "renderingType : " + renderingType);
 			if (renderingTypes[0].equals(renderingType)) {// DUEL_EFFECT
 				lcf().sdop.log("GB遭遇战！");
 				JSONObject duelEncountDetail = rendering
