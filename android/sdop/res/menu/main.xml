@@ -1,103 +1,108 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-	<item
-        android:id="@+id/action_test" android:enabled="false"
+
+    <item
+        android:id="@+id/action_test"
+        android:enabled="false"
         android:orderInCategory="80"
         android:showAsAction="never"
-        android:title="@string/action_test"/>
-
+        android:title="@string/action_test"
+        android:visible="false"/>
     <item
         android:id="@+id/action_login"
         android:orderInCategory="50"
         android:showAsAction="never"
         android:title="@string/action_login"/>
-    
     <item
         android:id="@+id/action_auto_login"
         android:orderInCategory="51"
         android:showAsAction="never"
         android:title="@string/action_auto_login"/>
-    
     <item
         android:id="@+id/action_auto_GB"
+        android:enabled="false"
         android:orderInCategory="61"
         android:showAsAction="never"
-        android:title="@string/action_auto_GB" android:enabled="false">
+        android:title="@string/action_auto_GB">
         <menu>
-			<item
-		        android:id="@+id/action_auto_GB_FIGHT"
-		        android:orderInCategory="65"
-		        android:showAsAction="never"
-		        android:title="@string/action_auto_GB_FIGHT"/>
-			<item
-		        android:id="@+id/action_auto_GB_SPECIAL"
-		        android:orderInCategory="66"
-		        android:showAsAction="never"
-		        android:title="@string/action_auto_GB_SPECIAL"/>
-			<item
-		        android:id="@+id/action_auto_GB_SHOOT"
-		        android:orderInCategory="67"
-		        android:showAsAction="never"
-		        android:title="@string/action_auto_GB_SHOOT"/>
-			<item
-		        android:id="@+id/action_auto_GB_record"
-		        android:orderInCategory="67"
-		        android:showAsAction="never"
-		        android:title="@string/action_auto_GB_record"/>
-			<item
-		        android:id="@+id/action_auto_GB_off"
-		        android:orderInCategory="69"
-		        android:showAsAction="never"
-		        android:title="@string/action_auto_off"/>
-		</menu>
+            <item
+                android:id="@+id/action_auto_GB_FIGHT"
+                android:orderInCategory="65"
+                android:showAsAction="never"
+                android:title="@string/action_auto_GB_FIGHT"/>
+            <item
+                android:id="@+id/action_auto_GB_SPECIAL"
+                android:orderInCategory="66"
+                android:showAsAction="never"
+                android:title="@string/action_auto_GB_SPECIAL"/>
+            <item
+                android:id="@+id/action_auto_GB_SHOOT"
+                android:orderInCategory="67"
+                android:showAsAction="never"
+                android:title="@string/action_auto_GB_SHOOT"/>
+            <item
+                android:id="@+id/action_auto_GB_record"
+                android:orderInCategory="67"
+                android:showAsAction="never"
+                android:title="@string/action_auto_GB_record"/>
+            <item
+                android:id="@+id/action_auto_GB_off"
+                android:orderInCategory="69"
+                android:showAsAction="never"
+                android:title="@string/action_auto_off"/>
+        </menu>
     </item>
-    
-    
     <item
         android:id="@+id/action_auto_boss"
+        android:enabled="false"
         android:orderInCategory="71"
         android:showAsAction="never"
-        android:title="@string/action_auto_boss" android:enabled="false">
+        android:title="@string/action_auto_boss">
         <menu>
-			<item
-		        android:id="@+id/action_auto_super_boss_start"
-		        android:orderInCategory="72"
-		        android:showAsAction="never"
-		        android:title="@string/action_auto_super_boss_start"/>
-			<item
-		        android:id="@+id/action_auto_normal_boss_start"
-		        android:orderInCategory="72"
-		        android:showAsAction="never"
-		        android:title="@string/action_auto_normal_boss_start"/>
-			<item
-		        android:id="@+id/action_bought_item_4_sp"
-		        android:orderInCategory="74"
-		        android:showAsAction="never"
-		        android:title="@string/action_bought_item_4_sp"/>
-			<item
-		        android:id="@+id/action_equip_item_4_sp"
-		        android:orderInCategory="75"
-		        android:showAsAction="never"
-		        android:title="@string/action_equip_item_4_sp"/>
-			<item
-		        android:id="@+id/action_auto_boss_off"
-		        android:orderInCategory="79"
-		        android:showAsAction="never"
-		        android:title="@string/action_auto_off"/>
-		</menu>
+            <item
+                android:id="@+id/action_auto_super_boss_start"
+                android:orderInCategory="72"
+                android:showAsAction="never"
+                android:title="@string/action_auto_super_boss_start"/>
+            <item
+                android:id="@+id/action_auto_normal_boss_start"
+                android:orderInCategory="72"
+                android:showAsAction="never"
+                android:title="@string/action_auto_normal_boss_start"/>
+            <item
+                android:id="@+id/action_bought_item_4_sp"
+                android:orderInCategory="74"
+                android:showAsAction="never"
+                android:title="@string/action_bought_item_4_sp"/>
+            <item
+                android:id="@+id/action_equip_item_4_sp"
+                android:orderInCategory="75"
+                android:showAsAction="never"
+                android:title="@string/action_equip_item_4_sp"/>
+            <item
+                android:id="@+id/action_auto_boss_off"
+                android:orderInCategory="79"
+                android:showAsAction="never"
+                android:title="@string/action_auto_off"/>
+        </menu>
     </item>
-    
+    <item
+        android:id="@+id/action_map_quest"
+        android:enabled="false"
+        android:orderInCategory="90"
+        android:showAsAction="never"
+        android:title="@string/action_map_quest"/>
     <item
         android:id="@+id/action_sneaking"
+        android:enabled="false"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_sneaking" android:enabled="false"/>
-    
+        android:title="@string/action_sneaking"/>
     <item
         android:id="@+id/action_ms_synthesis"
+        android:enabled="false"
         android:orderInCategory="110"
         android:showAsAction="never"
-        android:title="@string/action_ms_synthesis" android:enabled="false"/>
-    
+        android:title="@string/action_ms_synthesis"/>
     <item
         android:id="@+id/action_exit"
         android:orderInCategory="200"

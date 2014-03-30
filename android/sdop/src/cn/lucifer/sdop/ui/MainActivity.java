@@ -65,8 +65,9 @@ public class MainActivity extends BaseActivity {
 			menu.findItem(R.id.action_auto_GB).setEnabled(true);
 			menu.findItem(R.id.action_auto_boss).setEnabled(true);
 			menu.findItem(R.id.action_sneaking).setEnabled(true);
-			menu.findItem(R.id.action_ms_synthesis).setEnabled(true);
 			menu.findItem(R.id.action_test).setEnabled(true);
+			menu.findItem(R.id.action_map_quest).setEnabled(true);
+			menu.findItem(R.id.action_ms_synthesis).setEnabled(true);
 			isDisabledLoginMenu = false;
 		}
 		return true;
@@ -104,10 +105,6 @@ public class MainActivity extends BaseActivity {
 		case R.id.action_auto_GB_off:
 			lcf().sdop.duel.cancelAutoDuel();
 			break;
-		case R.id.action_test:
-			lcf().sdop.auto.setting.ep = true;
-			lcf().sdop.map.getQuestData();
-			break;
 		case R.id.action_auto_super_boss_start:
 			lcf().sdop.boss.AI.startAutoSuperRaidBoss();
 			break;
@@ -130,6 +127,14 @@ public class MainActivity extends BaseActivity {
 			break;
 		case R.id.action_auto_boss_off:
 			lcf().sdop.boss.AI.cancelAutoSuperRaidBoss();
+			break;
+		case R.id.action_test:
+			lcf().sdop.auto.setting.ep = true;
+			lcf().sdop.map.getQuestData();
+			break;
+		case R.id.action_map_quest:
+			lcf().sdop.auto.setting.ep = true;
+			lcf().sdop.map.getQuestData();
 			break;
 		case R.id.action_sneaking: {
 			Intent intent = new Intent(this, SneakingActivity.class);
