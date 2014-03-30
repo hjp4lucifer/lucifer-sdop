@@ -9,7 +9,8 @@
         style="@style/ImageCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp" />
+        android:layout_margin="5dp"
+        android:focusable="false" />
 
     <TextView
         android:id="@+id/card_name"
@@ -43,10 +44,10 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignBottom="@id/characteristic1"
-        android:background="#66CCCCCC"
+        android:background="#66DDDDDD"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/lable_lock"
-        android:textColor="#FFFFFFFF"
+        android:textColor="#FF407AE0"
         android:textSize="30sp"
         android:textStyle="bold" />
 

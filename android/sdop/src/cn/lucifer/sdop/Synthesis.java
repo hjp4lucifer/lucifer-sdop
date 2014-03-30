@@ -1,6 +1,13 @@
 package cn.lucifer.sdop;
 
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Intent;
+import cn.lucifer.sdop.dispatch.ex.EnhancedSynthesis;
 import cn.lucifer.sdop.dispatch.ex.GetMSCardEnhancedSynthesisData;
 import cn.lucifer.sdop.domain.CardSynthesis;
 
@@ -19,7 +26,12 @@ public class Synthesis extends LcfExtend {
 		String url = lcf().sdop.httpUrlPrefix
 				+ "/GetForMSCardEnhancedSynthesis/getMSCardEnhancedSynthesisData?"
 				+ lcf().sdop.createGetParams() + "&isRequireTable=true";
-		lcf().sdop.get(url, GetMSCardEnhancedSynthesisData.procedure, null);
+		lcf().sdop.get(url, GetMSCardEnhancedSynthesisData.procedure,
+				GetMSCardEnhancedSynthesisData.procedure);
+	}
+
+	public CardSynthesis[] getMsCardList(String msCardListJsonStr) {
+		return lcf().gson.fromJson(msCardListJsonStr, CardSynthesis[].class);
 	}
 
 	/**
@@ -38,4 +50,22 @@ public class Synthesis extends LcfExtend {
 		lcf().sdop.context.sendBroadcast(intent);
 	}
 
+	public void enhancedSynthesis(int base, List<Integer> materials) {
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForMSCardEnhancedSynthesis/enhancedSynthesis?ssid="
+				+ lcf().sdop.ssid;
+		try {
+			JSONObject payload = lcf().sdop.createBasePayload(
+					"enhancedSynthesis",
+					new JSONObject().put("materials",
+							new JSONArray(lcf().gson.toJson(materials))).put(
+							"base", base));
+			lcf().sdop.post(url, payload.toString(),
+					EnhancedSynthesis.procedure,
+					GetMSCardEnhancedSynthesisData.procedure);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

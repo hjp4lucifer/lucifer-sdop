@@ -61,23 +61,22 @@ public class SneakingActivity extends BaseActivity {
 		@Override
 		public void onItemClick(AdapterView<?> adapterView, View view,
 				int position, long id) {
-			String txt;
 			if (isLockItemClick) {
-				txt = "正在执行任务代理...";
-				Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(getApplicationContext(),
+						getString(R.string.msg_now_proxy_running),
+						Toast.LENGTH_SHORT).show();
 				return;
 			}
 			SneakingPlatoon platoon = sneakingAdapter.getItem(position - 1);
 			if ("RETURN".equals(platoon.state.value)) {
-				txt = "执行返回, 并重新潜入, " + platoon.platoonId;
 				isLockItemClick = true;
 				lcf().sdop.sneaking.proxyGetResultData(platoon);
-			} else {
-				txt = "platoonId : " + platoon.platoonId;
+				Toast.makeText(
+						getApplicationContext(),
+						getString(
+								R.string.msg_ready_sneaking_proxy_running_format,
+								platoon.platoonId), Toast.LENGTH_SHORT).show();
 			}
-			Toast.makeText(getApplicationContext(), txt, Toast.LENGTH_SHORT)
-					.show();
 		}
 	};
 

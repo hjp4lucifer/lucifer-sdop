@@ -9,6 +9,7 @@ import cn.lucifer.sdop.dispatch.ex.AutoBattle;
 import cn.lucifer.sdop.dispatch.ex.AutoSuperRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.BoughtItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
+import cn.lucifer.sdop.dispatch.ex.EnhancedSynthesis;
 import cn.lucifer.sdop.dispatch.ex.Enter;
 import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
@@ -34,6 +35,10 @@ import cn.lucifer.sdop.dispatch.ex.StartAutoSuperRaidBoss;
 public final class DF {
 
 	protected static Map<String, IProcedure> map;
+
+	static {
+		init();
+	}
 
 	public static void init() {
 		if (map != null) {
@@ -76,6 +81,7 @@ public final class DF {
 
 		put(GetMSCardEnhancedSynthesisData.procedure,
 				new GetMSCardEnhancedSynthesisData());
+		put(EnhancedSynthesis.procedure, new EnhancedSynthesis());
 	}
 
 	private static void put(String procedure, BaseDispatch impl) {

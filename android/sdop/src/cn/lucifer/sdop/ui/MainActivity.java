@@ -33,12 +33,13 @@ public class MainActivity extends BaseActivity {
 		lcf().sdop.setContext(getApplicationContext());
 
 		viewInit();
+		autoLogin();
 	}
 
-	ListView listView_log;
-	LogAdapter logAdapter;
+	protected ListView listView_log;
+	protected LogAdapter logAdapter;
 
-	void viewInit() {
+	protected void viewInit() {
 		listView_log = (ListView) findViewById(R.id.listView_log);
 		// logAdapter = new LogAdapter(this,
 		// android.R.layout.simple_list_item_1);
@@ -118,8 +119,8 @@ public class MainActivity extends BaseActivity {
 				Toast.makeText(
 						getApplication(),
 						getResources().getString(
-								R.string.action_bought_item_4_sp)
-								+ "进行中...", Toast.LENGTH_SHORT).show();
+								R.string.msg_bought_item_4_sp_is_running),
+						Toast.LENGTH_SHORT).show();
 			} else {
 				lcf().sdop.item.boughtItem4SpAI();
 			}
@@ -174,9 +175,10 @@ public class MainActivity extends BaseActivity {
 				+ resultCode);
 		if (requestCode == R.id.action_login) {
 			if (resultCode == RESULT_OK) {
-				String ssid = data.getStringExtra("ssid");
-				Toast.makeText(this, "ssid : " + ssid, Toast.LENGTH_SHORT)
-						.show();
+				// String ssid = data.getStringExtra("ssid");
+				Toast.makeText(this,
+						getString(R.string.msg_login_success_and_plase_wait),
+						Toast.LENGTH_SHORT).show();
 
 				lcf().sdop.login();
 				// addLog("获得ssid : " + Lcf.getInstance().getCookie(cookies,
@@ -206,10 +208,9 @@ public class MainActivity extends BaseActivity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Toast.makeText(
-					getApplication(),
-					getResources().getString(R.string.action_auto_login)
-							+ "进行中...", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplication(),
+					getResources().getString(R.string.msg_running_auto_login),
+					Toast.LENGTH_LONG).show();
 			autoLogin();
 		}
 
@@ -228,7 +229,8 @@ public class MainActivity extends BaseActivity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if ((System.currentTimeMillis() - exitTime) > 2000) {
-				Toast.makeText(getApplicationContext(), "再按一次退出sdop！",
+				Toast.makeText(getApplicationContext(),
+						getString(R.string.msg_made_sure_exit),
 						Toast.LENGTH_SHORT).show();
 				exitTime = System.currentTimeMillis();
 			} else {

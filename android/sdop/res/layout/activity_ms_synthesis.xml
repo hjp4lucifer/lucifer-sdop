@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <include layout="@layout/item_ms_synthesis"/>
+    <include
+        android:id="@+id/ms_choose"
+        layout="@layout/item_ms_synthesis" />
+
+    <Button
+        android:id="@+id/btn_ms_merger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/ms_choose"
+        android:background="@drawable/btn_end"
+        android:text="@string/action_ms_synthesis"
+        android:textColor="#FFFFFFFF"
+        android:textStyle="bold" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_below="@id/ms_choose" >
 
         <include layout="@layout/activity_sneaking" />
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

@@ -1,19 +1,20 @@
 package cn.lucifer.sdop.adt;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import cn.lucifer.sdop.R;
 import cn.lucifer.sdop.domain.CardSynthesis;
 import cn.lucifer.sdop.domain.Characteristic;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 public class MSSynthesisAdapter extends BaseAdapter {
 	protected Context context;
@@ -51,6 +52,15 @@ public class MSSynthesisAdapter extends BaseAdapter {
 		return 0;
 	}
 
+	public void setChooseItem(int position) {
+		CardSynthesis card = getItem(position);
+		if (isLock(card)) {
+			return;
+		}
+		card.reverseChoose();
+		notifyDataSetChanged();
+	}
+
 	public void refreshPlatoons(CardSynthesis[] cards) {
 		if (cards == null) {
 			return;
@@ -60,88 +70,190 @@ public class MSSynthesisAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
+	/**
+	 * 主合成机以选择
+	 */
+	private boolean isMainChoose;
+
+	/**
+	 * 设置是否选中需要升级的MS, 并重新排序
+	 * 
+	 * @param position
+	 * @return null表示不能选择的MS
+	 */
+	public CardSynthesis setMainChoose(int position) {
+		clearMainChoose();
+		CardSynthesis card = getItem(position);
+		if (card.isMaxLv()) {
+			return null;
+		}
+		card.isMainChoose = true;
+		isMainChoose = true;
+
+		if (mainChooseComparator == null) {
+			mainChooseComparator = new MainChooseComparator();
+		}
+		mainChooseComparator.setCard(card);
+		Collections.sort(cards, mainChooseComparator);
+
+		notifyDataSetChanged();
+		return card;
+	}
+
+	protected MainChooseComparator mainChooseComparator;
+
+	protected class MainChooseComparator implements Comparator<CardSynthesis> {
+
+		private CardSynthesis card;
+		private int typeId;
+
+		public void setCard(CardSynthesis card) {
+			this.card = card;
+			typeId = 0;
+			if (card.characteristicList != null) {
+				for (Characteristic characteristic : card.characteristicList) {
+					if (characteristic.level < 10) {
+						typeId = characteristic.typeId;
+					}
+				}
+			}
+		}
+
+		@Override
+		public int compare(CardSynthesis lhs, CardSynthesis rhs) {
+			if (card.id == lhs.id) {
+				return -1;
+			}
+			if (card.id == rhs.id) {
+				return 1;
+			}
+			if (sameTypeId(lhs)) {
+				if (sameTypeId(rhs)) {
+					return 0;
+				}
+				return -1;
+			}
+			if (sameTypeId(rhs)) {
+				return 1;
+			}
+			return lhs.level - rhs.level;
+		}
+
+		protected boolean sameTypeId(CardSynthesis card) {
+			return card.characteristicList != null
+					&& card.characteristicList.length == 1
+					&& card.characteristicList[0].typeId == typeId;
+		}
+
+	}
+
+	public void cancelMainChoose() {
+		isMainChoose = false;
+		clearMainChoose();
+		if (cancelChooseComparator == null) {
+			cancelChooseComparator = new CancelChooseComparator();
+		}
+		Collections.sort(cards, cancelChooseComparator);
+		notifyDataSetChanged();
+	}
+
+	protected CancelChooseComparator cancelChooseComparator;
+
+	protected class CancelChooseComparator implements Comparator<CardSynthesis> {
+
+		@Override
+		public int compare(CardSynthesis lhs, CardSynthesis rhs) {
+			if (lhs.isMaxLv()) {
+				if (rhs.isMaxLv()) {
+					return 0;
+				}
+				return 1;
+			}
+			if (rhs.isMaxLv()) {// 两个都是true
+				return -1;
+			}
+
+			return rhs.level - lhs.level;
+		}
+
+	}
+
+	private void clearMainChoose() {
+		for (CardSynthesis card : cards) {
+			card.isMainChoose = card.isChoose = false;
+		}
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder holder;
+		MSSynthesisViewHolder holder;
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.item_ms_synthesis, null);
-			holder = new ViewHolder(convertView);
+			holder = new MSSynthesisViewHolder(convertView);
 			convertView.setTag(holder);
 		} else {
-			holder = (ViewHolder) convertView.getTag();
+			holder = (MSSynthesisViewHolder) convertView.getTag();
 		}
 
 		CardSynthesis card = cards.get(position);
 		if (card != null) {
-			holder.selectStatus.setChecked(card.isSelect);
-			holder.name.setText(card.name);
-			holder.info.setText(String.format("%dc%d, Lv: %d, next exp: %d",
-					card.rarity, card.cost, card.level, card.nextExp));
-
-			if (card.characteristicList != null) {
-				Characteristic characteristic;
-				TextView holderCharacteristic;
-				int index = 0;
-				for (; index < card.characteristicList.length; index++) {
-					characteristic = card.characteristicList[index];
-					holderCharacteristic = holder.characteristicList[index];
-					holderCharacteristic.setText(String.format("☆%d %s %s",
-							characteristic.rank, characteristic.name,
-							characteristic.briefDescription));
-					switch (characteristic.typeId) {
-					case 1:
-						holderCharacteristic.setTextColor(Color.RED);
-						break;
-					case 2:
-						holderCharacteristic.setTextColor(Color.GREEN);
-						break;
-					case 3:
-						holderCharacteristic.setTextColor(0xFF00FFE0);
-						break;
-					case 4:
-						holderCharacteristic.setTextColor(0xFFE000FF);
-						break;
-					case 5:
-						holderCharacteristic.setTextColor(0xFFDADA0A);
-						break;
-					default:
-						holderCharacteristic.setTextColor(Color.BLACK);
-						break;
-					}
-
-				}
-
-				if (card.isMaxLv()) {
-					holder.lock.setVisibility(View.VISIBLE);
-					holder.selectStatus.setEnabled(false);
-				}else {
-					holder.lock.setVisibility(View.INVISIBLE);
-					holder.selectStatus.setEnabled(true);
-				}
+			holder.setBaseShow(card);
+			if (isLock(card)) {
+				holder.lock.setVisibility(View.VISIBLE);
+			} else {
+				holder.lock.setVisibility(View.INVISIBLE);
 			}
 		}
 		return convertView;
 	}
 
-	public class ViewHolder {
-		CheckBox selectStatus;
-		TextView name, info, lock;
-		TextView[] characteristicList;
-
-		public ViewHolder(View convertView) {
-			selectStatus = (CheckBox) convertView
-					.findViewById(R.id.card_select_status);
-			name = (TextView) convertView.findViewById(R.id.card_name);
-			info = (TextView) convertView.findViewById(R.id.card_info);
-
-			characteristicList = new TextView[2];
-			characteristicList[0] = (TextView) convertView
-					.findViewById(R.id.characteristic0);
-			characteristicList[1] = (TextView) convertView
-					.findViewById(R.id.characteristic1);
-			
-			lock =  (TextView) convertView.findViewById(R.id.card_lock);
-		}
+	protected boolean isLock(CardSynthesis card) {
+		return isMainChoose ? card.isProtectLock() : card.isMaxLv();
 	}
 
+	public int getChooseCount() {
+		int count = 0;
+		for (CardSynthesis card : cards) {
+			if (card.isChoose) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * 
+	 * @return key is base, values is materials
+	 */
+	public SimpleEntry<Integer, List<Integer>> getChoose() {
+		if (!isMainChoose) {
+			return null;
+		}
+		Integer base = null;
+		ArrayList<Integer> materials = new ArrayList<Integer>();
+
+		for (CardSynthesis card : cards) {
+			if (card.isMainChoose) {
+				if (card.isMaxLv()) {// 2次检查, 防止某些情况导致选择错误
+					return null;
+				}
+				base = card.id;
+			} else if (card.isChoose) {
+				if (card.isProtectLock()) {
+					return null;
+				}
+				materials.add(card.id);
+			}
+
+		}
+
+		if (base == null) {
+			return null;
+		}
+		if (materials.isEmpty()) {
+			return null;
+		}
+
+		return new SimpleEntry<Integer, List<Integer>>(base, materials);
+	}
 }

@@ -23,5 +23,21 @@
     <string name="lable_required_time">剩余时间</string>
     <string name="lable_state">状态</string>
     <string name="lable_lock">LOCK</string>
+    <string name="lable_click_cancel">点击取消！</string>
+    <string name="lable_plase_set_main_choose">选择需要升级的MS</string>
 
+    <string name="msg_loading">Loading...</string>
+    <string name="msg_please_wait">Please wait...</string>
+    <string name="msg_now_proxy_running">正在执行任务代理...</string>
+    
+    <string name="msg_made_sure_exit">再按一次退出sdop！</string>
+    <string name="msg_running_auto_login">【自动登录】进行中...</string>
+    <string name="msg_login_success_and_plase_wait">web登录成功! 正在获取授权...</string>
+    <string name="msg_bought_item_4_sp_is_running">【智能买SP药】进行中...</string>
+    
+    <string name="msg_ready_sneaking_proxy_running_format">执行返回, 并重新潜入, %d</string>
+    
+    <string name="msg_ms_synthesis_format">合成(%d)</string>
+    <string name="msg_ms_synthesis_no_choose">没有正确选择MS，请重新选择...</string>
+    <string name="msg_ms_synthesis_error">合成出现异常，请刷新后重新选择...</string>
 </resources>
