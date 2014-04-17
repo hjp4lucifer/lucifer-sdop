@@ -58,6 +58,9 @@ public class EncountRaidBoss extends BaseDispatch {
 				lcf().sdop.boss.executeBattleStart(null,
 						battleArgs.getInt("battleId"),
 						battleArgs.getJSONObject("mode"), true, null);
+				if (lcf().sdop.map.isEventMap()) {// 因为是赶路模式, 所以需要重新判断进度
+					lcf().sdop.map.clearNodeId();
+				}
 				return;
 			default:
 				break;

@@ -55,11 +55,13 @@ public class Map extends LcfExtend {
 		lcf().sdop.get(url, GetQuestData.procedure, null);
 	}
 
+	final String[] nodeTypes = { "WARP", "NORMAL" };
+
 	public int processEventQuestData(int playerExist,
 			NodeOutline[] nodeOutlineList) {
 		for (NodeOutline nodeOutline : nodeOutlineList) {
 			if (playerExist == nodeOutline.nodeId) {
-				if ("WARP".equals(nodeOutline.nodeType.value)) {
+				if (nodeTypes[0].equals(nodeOutline.nodeType.value)) {
 					if (playerExist != nodeOutlineList.length - 1) {// 开始or中间
 						playerExist++;
 						continue;
