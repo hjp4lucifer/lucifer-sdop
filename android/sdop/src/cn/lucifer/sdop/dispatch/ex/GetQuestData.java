@@ -18,12 +18,13 @@ public class GetQuestData extends BaseDispatch {
 			return;
 		}
 		int playerExist = args.getInt("playerExist");
+		Log.i(lcf().LOG_TAG, "playerExist : " + playerExist);
 		if (lcf().sdop.map.isEventMap()) {//特殊任务
 			NodeOutline[] nodeOutlineList = lcf().gson.fromJson(
 					args.getString("nodeOutlineList"), NodeOutline[].class);
 			playerExist = lcf().sdop.map.processEventQuestData(playerExist, nodeOutlineList);
+			
 		}
-		Log.i(lcf().LOG_TAG, "playerExist : " + playerExist);
 		lcf().sdop.map.executeQuest(playerExist);
 	}
 

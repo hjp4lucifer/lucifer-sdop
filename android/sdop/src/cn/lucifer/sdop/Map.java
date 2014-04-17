@@ -60,8 +60,8 @@ public class Map extends LcfExtend {
 	public int processEventQuestData(int playerExist,
 			NodeOutline[] nodeOutlineList) {
 		for (NodeOutline nodeOutline : nodeOutlineList) {
-			Log.d(lcf().LOG_TAG, nodeOutline.nodeId + " : "
-					+ nodeOutline.nodeType.value);
+			// Log.d(lcf().LOG_TAG, nodeOutline.nodeId + " : "
+			// + nodeOutline.nodeType.value);
 			if (playerExist == nodeOutline.nodeId) {
 				if (nodeTypes[0].equals(nodeOutline.nodeType.value)) {
 					if (playerExist < nodeOutlineList.length - 1) {// 非最后
