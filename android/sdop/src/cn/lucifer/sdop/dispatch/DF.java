@@ -8,6 +8,7 @@ import org.json.JSONException;
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
 import cn.lucifer.sdop.dispatch.ex.AutoSuperRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.BoughtItem4Sp;
+import cn.lucifer.sdop.dispatch.ex.DrawChancePanel;
 import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.EnhancedSynthesis;
 import cn.lucifer.sdop.dispatch.ex.Enter;
@@ -76,6 +77,7 @@ public final class DF {
 
 		put(GetQuestData.procedure, new GetQuestData());
 		put(ExecuteQuest.procedure, new ExecuteQuest());
+		put(DrawChancePanel.procedure, new DrawChancePanel());
 
 		put(EncountRaidBoss.procedure, new EncountRaidBoss());
 

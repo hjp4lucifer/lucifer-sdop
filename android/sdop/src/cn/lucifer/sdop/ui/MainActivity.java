@@ -130,10 +130,12 @@ public class MainActivity extends BaseActivity {
 			break;
 		case R.id.action_test:
 			lcf().sdop.auto.setting.ep = true;
+			lcf().sdop.map.setEventMap(true);
 			lcf().sdop.map.getQuestData();
 			break;
 		case R.id.action_map_quest:
 			lcf().sdop.auto.setting.ep = true;
+			lcf().sdop.map.setEventMap(false);
 			lcf().sdop.map.getQuestData();
 			break;
 		case R.id.action_sneaking: {

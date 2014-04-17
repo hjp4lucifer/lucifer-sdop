@@ -4,8 +4,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
-
 import cn.lucifer.sdop.dispatch.BaseDispatch;
+import cn.lucifer.sdop.domain.NodeOutline;
 
 public class GetQuestData extends BaseDispatch {
 
@@ -18,6 +18,11 @@ public class GetQuestData extends BaseDispatch {
 			return;
 		}
 		int playerExist = args.getInt("playerExist");
+		if (lcf().sdop.map.isEventMap()) {//特殊任务
+			NodeOutline[] nodeOutlineList = lcf().gson.fromJson(
+					args.getString("nodeOutlineList"), NodeOutline[].class);
+			playerExist = lcf().sdop.map.processEventQuestData(playerExist, nodeOutlineList);
+		}
 		Log.i(lcf().LOG_TAG, "playerExist : " + playerExist);
 		lcf().sdop.map.executeQuest(playerExist);
 	}

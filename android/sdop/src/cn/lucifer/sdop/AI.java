@@ -288,7 +288,7 @@ public class AI extends LcfExtend {
 	 */
 	public CardWithoutWeapon[] setFixMember(JSONObject battleArgs, boolean setAi)
 			throws JSONException {
-		Log.i(lcf().LOG_TAG, "battleArgs : " + battleArgs.toString());
+		// Log.d(lcf().LOG_TAG, "battleArgs : " + battleArgs.toString());
 		lcf().sdop.myUserId = battleArgs.getInt("leaderCardId");
 
 		Ms[] playerMsList = lcf().gson.fromJson(
@@ -455,7 +455,7 @@ public class AI extends LcfExtend {
 				ActionOrder.class);
 		// 仅针对超总的判断, 或者可根据data.resultDate是否为空来判断
 		if (!battleArgs.isNull("resultData")) {
-			Log.i(lcf().LOG_TAG, battleArgs.toString());
+			// Log.d(lcf().LOG_TAG, battleArgs.toString());
 			lcf().sdop.log("Boss战结束！");
 
 			if (lcf().sdop.boss.targetBossId != null

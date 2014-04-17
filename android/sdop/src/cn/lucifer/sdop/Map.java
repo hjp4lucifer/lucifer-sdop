@@ -5,11 +5,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
-
+import cn.lucifer.sdop.dispatch.ex.DrawChancePanel;
 import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.ExecuteQuest;
 import cn.lucifer.sdop.dispatch.ex.GetQuestData;
+import cn.lucifer.sdop.domain.ChancePanelReward;
 import cn.lucifer.sdop.domain.HeaderDetail;
+import cn.lucifer.sdop.domain.NodeOutline;
 import cn.lucifer.sdop.domain.Player;
 
 /**
@@ -20,6 +22,27 @@ import cn.lucifer.sdop.domain.Player;
 public class Map extends LcfExtend {
 
 	private Integer nodeId;
+	private boolean isEventMap;
+
+	public void clearNodeId() {
+		this.nodeId = null;
+	}
+
+	/**
+	 * 设置是否特殊任务, 每次设置, 若不同, 则地图信息会被清空
+	 * 
+	 * @param isEventMap
+	 */
+	public void setEventMap(boolean isEventMap) {
+		if (this.isEventMap != isEventMap) {
+			this.isEventMap = isEventMap;
+			clearNodeId();
+		}
+	}
+
+	public boolean isEventMap() {
+		return isEventMap;
+	}
 
 	public void getQuestData() {
 		if (nodeId != null) {
@@ -27,8 +50,28 @@ public class Map extends LcfExtend {
 			return;
 		}
 		String url = lcf().sdop.httpUrlPrefix + "/GetForQuestMap/getQuestData?"
-				+ lcf().sdop.createGetParams() + "&isEventMap=false&nodeId=0";
+				+ lcf().sdop.createGetParams() + "&isEventMap=" + isEventMap
+				+ "&nodeId=0";
 		lcf().sdop.get(url, GetQuestData.procedure, null);
+	}
+
+	public int processEventQuestData(int playerExist,
+			NodeOutline[] nodeOutlineList) {
+		for (NodeOutline nodeOutline : nodeOutlineList) {
+			if (playerExist == nodeOutline.nodeId) {
+				if ("WARP".equals(nodeOutline.nodeType.value)) {
+					if (playerExist != nodeOutlineList.length - 1) {// 开始or中间
+						playerExist++;
+						continue;
+					}
+					// else 准备去下一个地图
+				} else if (nodeOutline.progress == 100) {
+					playerExist++;
+					continue;
+				}
+			}
+		}
+		return playerExist;
 	}
 
 	public void executeQuest(int nodeId) {
@@ -39,18 +82,18 @@ public class Map extends LcfExtend {
 					ExecuteQuest.procedure,
 					new JSONObject().put("nodeId", nodeId)
 							.put("renderingIdList", new JSONArray())
-							.put("isEventMap", false)
+							.put("isEventMap", isEventMap)
 							.put("isAutoProgress", true));
 			lcf().sdop.post(url, payload.toString(), ExecuteQuest.procedure,
 					null);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	final String[] renderingTypes = { "DUEL_EFFECT", "ENCOUNT_EFFECT",
-			"RAID_BOSS_EFFECT" };
+			"RAID_BOSS_EFFECT", "NODE_COMPLETE", "AREA_CLEAR_EFFECT",
+			"EVENT_MAP_CHANCE_PANEL" };
 
 	/**
 	 * 因任务探索的情况太多, 在此进行处理分支
@@ -61,15 +104,13 @@ public class Map extends LcfExtend {
 	public void executeQuestResultProcess(JSONObject args) throws JSONException {
 		JSONArray renderingList = args.getJSONArray("renderingList");
 		JSONObject rendering;
-		String renderingType = null;
+		String renderingType4Log = null;
+		String renderingType;
 		for (int i = 0, len = renderingList.length(); i < len; i++) {
 			rendering = renderingList.getJSONObject(i);
 			renderingType = rendering.getJSONObject("renderingType").getString(
 					"value");
-			if (renderingType.indexOf("EFFECT") > -1) {
-				Log.d(lcf().LOG_TAG, args.toString());
-			}
-			//Log.i(lcf().LOG_TAG, "renderingType : " + renderingType);
+			// Log.i(lcf().LOG_TAG, "renderingType : " + renderingType);
 			if (renderingTypes[0].equals(renderingType)) {// DUEL_EFFECT
 				lcf().sdop.log("GB遭遇战！");
 				JSONObject duelEncountDetail = rendering
@@ -89,8 +130,29 @@ public class Map extends LcfExtend {
 				lcf().sdop.boss.getRaidBossBattleData(0,
 						EncountRaidBoss.procedure);
 				return;
-			}// 缺超总遭遇
-				// else 忽略
+			} else if (isEventMap && i == 0
+					&& renderingTypes[3].equals(renderingType)) {
+				// 特殊任务 and 小地图完成
+				renderingType4Log = renderingType;
+				// Log.d(lcf().LOG_TAG, args.toString());
+				nodeId++;
+				// 不进行return
+			} else if (renderingTypes[5].equals(renderingType)) {// 理论上event才会触发
+				lcf().sdop.log("特殊任务抽奖！");
+				ChancePanelReward[] chancePanelRewardList = lcf().gson
+						.fromJson(rendering.getString("chancePanelRewardList"),
+								ChancePanelReward[].class);
+				drawChancePanel(chancePanelRewardList, GetQuestData.procedure);
+				return;
+			}
+
+			if (renderingType.indexOf("EFFECT") > -1) {
+				Log.d(lcf().LOG_TAG, args.toString());
+			}
+			// else 忽略
+			if (renderingType4Log == null) {
+				renderingType4Log = renderingType;
+			}
 			if (!rendering.isNull("headerDetail")) {
 				HeaderDetail headerDetail = lcf().gson
 						.fromJson(rendering.getString("headerDetail"),
@@ -99,8 +161,8 @@ public class Map extends LcfExtend {
 				lcf().sdop.ep = headerDetail.energyDetail.energy;
 			}
 		}
-		lcf().sdop.log("普通探索: " + renderingType + ", 剩余ep: " + lcf().sdop.ep
-				+ ", 剩余bp: " + lcf().sdop.bp);
+		lcf().sdop.log((isEventMap ? "特殊任务: " : "普通探索: ") + renderingType4Log
+				+ ", 剩余ep: " + lcf().sdop.ep + ", 剩余bp: " + lcf().sdop.bp);
 		if (lcf().sdop.ep > 7) {
 			lcf().sdop.checkCallback(GetQuestData.procedure, 2000, null);
 			return;
@@ -108,6 +170,39 @@ public class Map extends LcfExtend {
 		if (lcf().sdop.auto.setting.boss && lcf().sdop.ep > 2) {
 			lcf().sdop.checkCallback(GetQuestData.procedure, 2000, null);
 			return;
+		}
+	}
+
+	public void drawChancePanel(ChancePanelReward[] chancePanelRewardList,
+			String callback) {
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForQuestMap/drawChancePanel?ssid=" + lcf().sdop.ssid;
+		int chooseId = 1;
+		int maxPP = 0;
+		for (ChancePanelReward chancePanelReward : chancePanelRewardList) {
+			// Log.d(lcf().LOG_TAG, "id : " + chancePanelReward.id
+			// + " , userName : " + chancePanelReward.userName + " , pp :"
+			// + chancePanelReward.pp);
+			if (chancePanelReward.pp > maxPP) {// 选择最多PP的那一项
+				chooseId = chancePanelReward.id;
+				maxPP = chancePanelReward.pp;
+				continue;
+			}
+			if (maxPP == 0) {
+				if (chancePanelReward.userName == null
+						|| chancePanelReward.userName.length() == 0) {// 选择没有人选择过的一项
+					chooseId = chancePanelReward.id;
+				}
+			}
+		}
+		try {
+			JSONObject payload = lcf().sdop.createBasePayload(
+					DrawChancePanel.procedure,
+					new JSONObject().put("id", chooseId));
+			lcf().sdop.post(url, payload.toString(), DrawChancePanel.procedure,
+					callback);
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 }

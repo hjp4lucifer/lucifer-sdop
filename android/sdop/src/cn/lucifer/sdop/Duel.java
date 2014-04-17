@@ -260,7 +260,7 @@ public class Duel extends LcfExtend {
 		lcf().sdop.startJob(new Runnable() {
 			@Override
 			public void run() {
-				Log.i("Lucifer", "autoDuel ----------");
+				//Log.d("Lucifer", "autoDuel ----------");
 				lcf().sdop.duel.checkAndExecute();
 			}
 		}, 0, 300000);
