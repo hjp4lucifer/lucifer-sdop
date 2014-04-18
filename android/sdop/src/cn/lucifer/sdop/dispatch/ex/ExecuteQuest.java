@@ -13,6 +13,9 @@ public class ExecuteQuest extends BaseDispatch {
 	public void process(byte[] response, String callback) throws JSONException {
 		JSONObject args = getArgs(response);
 		if (lcf().sdop.checkError(args, procedure)) {
+			if (lcf().sdop.map.isEventMap()) {// 非赶路模式无需清除
+				lcf().sdop.map.clearNodeId();
+			}
 			return;
 		}
 		lcf().sdop.map.executeQuestResultProcess(args);
