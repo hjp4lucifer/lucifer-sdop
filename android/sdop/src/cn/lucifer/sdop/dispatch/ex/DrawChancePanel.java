@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 import cn.lucifer.sdop.dispatch.BaseDispatch;
+import cn.lucifer.sdop.domain.ChancePanelReward;
 
 public class DrawChancePanel extends BaseDispatch {
 
@@ -17,7 +18,8 @@ public class DrawChancePanel extends BaseDispatch {
 			return;
 		}
 		// Log.d(lcf().LOG_TAG, args.toString());
-		lcf().sdop.log("抽奖结果: " + args.getString("reward"));
+		ChancePanelReward reward = lcf().gson.fromJson(args.getString("reward"), ChancePanelReward.class);
+		lcf().sdop.log("抽奖结果: " + reward.getInfo());
 		lcf().sdop.map.clearNodeId();
 		lcf().sdop.checkCallback(callback);
 	}

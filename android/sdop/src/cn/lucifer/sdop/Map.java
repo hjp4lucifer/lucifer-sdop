@@ -59,12 +59,14 @@ public class Map extends LcfExtend {
 
 	public int processEventQuestData(int playerExist,
 			NodeOutline[] nodeOutlineList) {
-		for (NodeOutline nodeOutline : nodeOutlineList) {
+		NodeOutline nodeOutline;
+		for (int i = 0, len = nodeOutlineList.length; i < len; i++) {
+			nodeOutline = nodeOutlineList[i];
 			// Log.d(lcf().LOG_TAG, nodeOutline.nodeId + " : "
 			// + nodeOutline.nodeType.value);
 			if (playerExist == nodeOutline.nodeId) {
 				if (nodeTypes[0].equals(nodeOutline.nodeType.value)) {
-					if (playerExist < nodeOutlineList.length - 1) {// 非最后
+					if (i < len - 1) {// 非最后
 						playerExist++;
 						continue;
 					}
@@ -110,6 +112,7 @@ public class Map extends LcfExtend {
 		JSONObject rendering;
 		String renderingType4Log = null;
 		String renderingType;
+		int _oldNodeId = nodeId;
 		for (int i = 0, len = renderingList.length(); i < len; i++) {
 			rendering = renderingList.getJSONObject(i);
 			renderingType = rendering.getJSONObject("renderingType").getString(
@@ -138,11 +141,9 @@ public class Map extends LcfExtend {
 					&& renderingTypes[3].equals(renderingType)) {
 				// 特殊任务 and 小地图完成
 				renderingType4Log = renderingType;
-				// Log.d(lcf().LOG_TAG, args.toString());
 				nodeId++;
 				// 不进行return
 			} else if (renderingTypes[5].equals(renderingType)) {// 理论上event才会触发
-				lcf().sdop.log("特殊任务抽奖！");
 				ChancePanelReward[] chancePanelRewardList = lcf().gson
 						.fromJson(rendering.getString("chancePanelRewardList"),
 								ChancePanelReward[].class);
@@ -165,8 +166,11 @@ public class Map extends LcfExtend {
 				lcf().sdop.ep = headerDetail.energyDetail.energy;
 			}
 		}
-		lcf().sdop.log((isEventMap ? "特殊任务: " : "普通探索: ") + renderingType4Log
-				+ ", 剩余ep: " + lcf().sdop.ep + ", 剩余bp: " + lcf().sdop.bp);
+		StringBuilder log = new StringBuilder(isEventMap ? "特殊任务: " : "普通探索: ");
+		log.append(renderingType4Log).append(", nodeId: ").append(_oldNodeId);
+		log.append(", 剩余ep: ").append(lcf().sdop.ep);
+		log.append(", 剩余bp: ").append(lcf().sdop.bp);
+		lcf().sdop.log(log.toString());
 		if (lcf().sdop.ep > 7) {
 			lcf().sdop.checkCallback(GetQuestData.procedure, 2000, null);
 			return;
@@ -183,10 +187,19 @@ public class Map extends LcfExtend {
 				+ "/PostForQuestMap/drawChancePanel?ssid=" + lcf().sdop.ssid;
 		int chooseId = 1;
 		int maxPP = 0;
+
+		StringBuilder log = new StringBuilder("特殊任务抽奖！\n");
+
+		String chanceInfo;
 		for (ChancePanelReward chancePanelReward : chancePanelRewardList) {
 			// Log.d(lcf().LOG_TAG, "id : " + chancePanelReward.id
 			// + " , userName : " + chancePanelReward.userName + " , pp :"
 			// + chancePanelReward.pp);
+			chanceInfo = chancePanelReward.getInfo();
+			if (chanceInfo != null) {
+				log.append("id: ").append(chancePanelReward.id).append(", ")
+						.append(chanceInfo).append('\n');
+			}
 			if (chancePanelReward.pp > maxPP) {// 选择最多PP的那一项
 				chooseId = chancePanelReward.id;
 				maxPP = chancePanelReward.pp;
@@ -199,6 +212,8 @@ public class Map extends LcfExtend {
 				}
 			}
 		}
+		log.append("AI选择id: ").append(chooseId);
+		lcf().sdop.log(log.toString());
 		try {
 			JSONObject payload = lcf().sdop.createBasePayload(
 					DrawChancePanel.procedure,
