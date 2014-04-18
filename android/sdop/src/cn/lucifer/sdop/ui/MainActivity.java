@@ -41,8 +41,6 @@ public class MainActivity extends BaseActivity {
 
 	protected void viewInit() {
 		listView_log = (ListView) findViewById(R.id.listView_log);
-		// logAdapter = new LogAdapter(this,
-		// android.R.layout.simple_list_item_1);
 		logAdapter = new LogAdapter(this);
 		listView_log.setAdapter(logAdapter);
 	}
@@ -177,19 +175,15 @@ public class MainActivity extends BaseActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// super.onActivityResult(requestCode, resultCode, data);
 		Log.i(lcf().LOG_TAG, requestCode + " : " + R.id.action_login + " : "
 				+ resultCode);
 		if (requestCode == R.id.action_login) {
 			if (resultCode == RESULT_OK) {
-				// String ssid = data.getStringExtra("ssid");
 				Toast.makeText(this,
 						getString(R.string.msg_login_success_and_plase_wait),
 						Toast.LENGTH_SHORT).show();
 
 				lcf().sdop.login();
-				// addLog("获得ssid : " + Lcf.getInstance().getCookie(cookies,
-				// "ssid"));
 			}
 			isLogin = false;
 		}
@@ -204,9 +198,7 @@ public class MainActivity extends BaseActivity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// if (intent.getAction().equals(lcf().sdop.LOG_RECEIVER_ACTION)) {
 			addLog(intent.getExtras().getString(lcf().sdop.EXTRA_LOG_NAME));
-			// }
 		}
 
 	};

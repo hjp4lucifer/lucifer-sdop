@@ -10,6 +10,7 @@ import java.util.List;
 import cn.lucifer.sdop.R;
 import cn.lucifer.sdop.domain.CardSynthesis;
 import cn.lucifer.sdop.domain.Characteristic;
+import cn.lucifer.sdop.domain.Value;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ public class MSSynthesisAdapter extends BaseAdapter {
 	protected void addBlank() {
 		CardSynthesis card = new CardSynthesis();
 		card.name = "wait loading...";
+		card.attribute = new Value("");
 		cards.add(card);
 	}
 

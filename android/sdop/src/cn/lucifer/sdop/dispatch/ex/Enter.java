@@ -30,18 +30,17 @@ public class Enter extends BaseDispatch {
 			}
 			return;
 		}
-		Log.i(lcf().LOG_TAG, "no auto boss");
+		Log.d(lcf().LOG_TAG, "no auto boss");
 		if (lcf().sdop.auto.setting.duel) {
-			Log.i(lcf().LOG_TAG, "auto duel");
+			Log.d(lcf().LOG_TAG, "auto duel");
 			lcf().sdop.duel.startAutoDuel();
 			return;
 		}
-		Log.i(lcf().LOG_TAG, "no auto duel");
+		Log.d(lcf().LOG_TAG, "no auto duel");
 	}
 
 	@Override
 	public void callback(Object[] args) {
-		// TODO Auto-generated method stub
 		
 	}
 

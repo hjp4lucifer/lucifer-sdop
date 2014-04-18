@@ -32,8 +32,9 @@ public class MSSynthesisViewHolder {
 	public void setBaseShow(CardSynthesis card) {
 		selectStatus.setChecked(card.isChoose);
 		name.setText(card.name);
-		info.setText(String.format("%dc%d, Lv: %d, next exp: %d", card.rarity,
-				card.cost, card.level, card.nextExp));
+		info.setText(String.format("%dc%d %s, Lv: %d, next exp: %d",
+				card.rarity, card.cost, card.attribute.value, card.level,
+				card.nextExp));
 
 		clearCharacteristicList();
 

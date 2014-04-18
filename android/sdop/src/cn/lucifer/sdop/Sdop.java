@@ -236,7 +236,6 @@ public class Sdop extends LcfExtend {
 			String payload = loadJson("login.json");
 			post(url, payload, Enter.procedure, null);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

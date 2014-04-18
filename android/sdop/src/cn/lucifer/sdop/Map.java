@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
 import cn.lucifer.sdop.dispatch.ex.DrawChancePanel;
 import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.ExecuteQuest;
@@ -151,9 +150,9 @@ public class Map extends LcfExtend {
 				return;
 			}
 
-			if (renderingType.indexOf("EFFECT") > -1) {
-				Log.d(lcf().LOG_TAG, args.toString());
-			}
+			// if (renderingType.indexOf("EFFECT") > -1) {
+			// Log.d(lcf().LOG_TAG, args.toString());
+			// }
 			// else 忽略
 			if (renderingType4Log == null) {
 				renderingType4Log = renderingType;
