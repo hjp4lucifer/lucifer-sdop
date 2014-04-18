@@ -187,7 +187,7 @@ public class Map extends LcfExtend {
 		int chooseId = 1;
 		int maxPP = 0;
 
-		StringBuilder log = new StringBuilder("特殊任务抽奖！\n");
+		StringBuilder log = new StringBuilder("特殊任务抽奖！");
 
 		String chanceInfo;
 		for (ChancePanelReward chancePanelReward : chancePanelRewardList) {
@@ -196,8 +196,8 @@ public class Map extends LcfExtend {
 			// + chancePanelReward.pp);
 			chanceInfo = chancePanelReward.getInfo();
 			if (chanceInfo != null) {
-				log.append("id: ").append(chancePanelReward.id).append(", ")
-						.append(chanceInfo).append('\n');
+				log.append("<br>　　id: ").append(chancePanelReward.id).append(", ")
+						.append(chanceInfo);
 			}
 			if (chancePanelReward.pp > maxPP) {// 选择最多PP的那一项
 				chooseId = chancePanelReward.id;
@@ -211,7 +211,7 @@ public class Map extends LcfExtend {
 				}
 			}
 		}
-		log.append("AI选择id: ").append(chooseId);
+		log.append("　　AI选择id: ").append(chooseId);
 		lcf().sdop.log(log.toString());
 		try {
 			JSONObject payload = lcf().sdop.createBasePayload(
