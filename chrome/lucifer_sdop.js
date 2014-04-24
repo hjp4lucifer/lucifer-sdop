@@ -734,8 +734,8 @@ lcf.sdop.boss = {
 	kind: ["NORMAL", "SUPER"],
 	currentMode: 'RAID_BOSS',
 	currentKind: 'SUPER',
-	x3: 250057,
-	x6: 250058,
+	x3: 250059,
+	x6: 250060,
 	getTopLevel: function(list){
 		var target, _currentBoss;
 		var Least_Hp = 5000000;
@@ -842,7 +842,7 @@ lcf.sdop.boss.getRaidBossOutlineList4Finish = function(callback){
 			return;
 		}
 		var finish = data.args.listNum.finish;
-		_sdop.log("总力战剩余<b class='c_red'>" + finish + "</b>个结果待处理！");
+		_sdop.log("总力战剩余<b class='c_blue'>" + finish + "</b>个结果待处理！");
 		if (callback) {
 			setTimeout(callback, 100, data.args.list);
 		}
