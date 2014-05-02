@@ -143,6 +143,24 @@ public class AI extends LcfExtend {
 	}
 
 	/**
+	 * 查找自己的信息
+	 * 
+	 * @param members
+	 * @return
+	 */
+	public CardWithoutWeapon getMyInfo(CardWithoutWeapon[] members) {
+		for (CardWithoutWeapon m : members) {
+			if (m.id == lcf().sdop.myUserId) {// 是自己
+				if (lcf().sdop.boss.checkX6(m)) {
+					m.lcf_attack = 6;
+				}
+				return m;
+			}
+		}
+		return null;// 理论上不存在该情况
+	}
+
+	/**
 	 * 选择合适的倍机
 	 * 
 	 * @param members
@@ -211,6 +229,20 @@ public class AI extends LcfExtend {
 	 */
 	public CardWithoutWeapon getFixHelpMember(CardWithoutWeapon[] members,
 			CardWithoutWeapon attackMember) {
+		return getFixHelpMember(members, attackMember, null);
+	}
+
+	/**
+	 * 必须在调用完{@link #getFixAttackMember(Card[])}后才能调用
+	 * 
+	 * @param members
+	 * @param attackMember
+	 * @param noChooseId
+	 *            不选择的MS的id
+	 * @return
+	 */
+	public CardWithoutWeapon getFixHelpMember(CardWithoutWeapon[] members,
+			CardWithoutWeapon attackMember, Integer noChooseId) {
 		if (attackMember == null) {
 			Log.e(lcf().LOG_TAG, "attackMember is null !");
 			printStackTrace();
@@ -226,6 +258,9 @@ public class AI extends LcfExtend {
 		ActiveSkill skill;
 		for (CardWithoutWeapon m : members) {
 			if (m.id == lcf().sdop.myUserId) {// 不能是自己
+				continue;
+			}
+			if (noChooseId != null && noChooseId == m.id) {// 不选择该MS
 				continue;
 			}
 			if (m.id == attackMember.id || m.lcf_attack > 1) {// 不能是倍机
@@ -317,11 +352,30 @@ public class AI extends LcfExtend {
 			helpMember = getNotAttackMember(members, attackMember);
 			break;
 
-		default:
+		default: {
 			lcf().sdop.boss.isAutoBattle = false;
-			attackMember = getFixAttackMember(members);
-			helpMember = getFixHelpMember(members, attackMember);
+			CardWithoutWeapon myInfo = getMyInfo(members);
+			switch (myInfo.lcf_attack) {
+			case 6: {
+				int level = battleArgs.getJSONObject("raidBossData").getInt(
+						"level");
+				if (level == 5) {// lv5则出双倍机
+					attackMember = getFixAttackMember(members);
+					helpMember = getFixHelpMember(members, attackMember);
+				} else {
+					helpMember = getFixHelpMember(members, myInfo);
+					attackMember = getFixHelpMember(members, myInfo,
+							helpMember.id);
+				}
+				break;
+			}
+			default:
+				attackMember = getFixAttackMember(members);
+				helpMember = getFixHelpMember(members, attackMember);
+				break;
+			}
 			break;
+		}
 		}
 
 		if (setAi) {
@@ -390,6 +444,7 @@ public class AI extends LcfExtend {
 	private final int[] me = { 1, 2, 2, 0, 0, 0 };
 	private final int[] help = { 1, 0, 0, 0, 0, 0 };
 	private final int[] attack = { 3, 3, 3, 3, 3, 3 };
+	private final int[] all_attack_help = { 1, 1, 1, 1, 0, 0, 0 };
 	private List<Ms> attackPlayers;
 
 	/**
@@ -402,34 +457,59 @@ public class AI extends LcfExtend {
 		playerMsList = lcf().gson.fromJson(
 				battleArgs.getString("playerMsList"), Ms[].class);
 
-		boolean hasAttack = false;
 		attackPlayers = new ArrayList<Ms>();
 
+		Ms helpMember = null;
+		boolean myIsAttack = false;
 		for (Ms player : playerMsList) {
 			player.AIType = simple;
 			player.AITurn = 0;
-			if (player.card.id == lcf().sdop.myUserId) {
-				if (checkMySkill(player)) {
-					player.AIType = me;
-				}
-				continue;
-			}
 			if (lcf().sdop.boss.checkX6(player.card)
 					|| lcf().sdop.boss.checkX3(player.card)) {
 				if (checkAttackSkill(player)) {
 					player.AIType = attack;
 					player.lcf_attack = player.card.lcf_attack;// 设置倍数信息
 					attackPlayers.add(player);
-					hasAttack = true;
+					if (player.card.id == lcf().sdop.myUserId) {// 判断自己是否倍机
+						myIsAttack = true;
+					}
 				}
 				continue;
 			}
-			if (checkHelpSkill(player)) {
-				player.AIType = help;
+		}
+
+		if (myIsAttack) {
+			boolean noDoubleHelp = true;
+			for (Ms player : playerMsList) {
+				if (checkHelpSkill(player)) {
+					if (noDoubleHelp && checkMySkill(player)) {// 当前无双辅助机
+						player.AIType = me;
+						noDoubleHelp = false;
+						continue;
+					}
+					player.AIType = help;
+				}
+			}
+		} else {
+			for (Ms player : playerMsList) {
+				if (player.card.id == lcf().sdop.myUserId) {
+					if (checkMySkill(player)) {
+						player.AIType = me;
+					}
+					continue;
+				}
+				if (checkHelpSkill(player)) {
+					helpMember = player;
+					player.AIType = help;
+				}
 			}
 		}
 
-		if (!hasAttack) {
+		if (attackPlayers.size() > 1 && helpMember != null) {// 2部倍机, 改变辅助机功能
+			helpMember.AIType = all_attack_help;
+		}
+
+		if (attackPlayers.isEmpty()) {
 			for (Ms player : playerMsList) {
 				player.AIType = simple;
 			}
@@ -578,6 +658,9 @@ public class AI extends LcfExtend {
 				_fixPlayer = _player;
 				continue;
 			}
+		}
+		if (_fixPlayer != null) {
+			_fixPlayer.lcf_attack_buff++;
 		}
 		return _fixPlayer;
 	}
