@@ -487,6 +487,7 @@ public class AI extends LcfExtend {
 						noDoubleHelp = false;
 						continue;
 					}
+					helpMember = player;
 					player.AIType = help;
 				}
 			}
