@@ -10,6 +10,7 @@ import cn.lucifer.sdop.R;
 import cn.lucifer.sdop.adt.MSSynthesisAdapter;
 import cn.lucifer.sdop.adt.MSSynthesisViewHolder;
 import cn.lucifer.sdop.domain.CardSynthesis;
+import cn.lucifer.sdop.domain.SimplePair;
 import cn.lucifer.sdop.ui.extend.OnRefreshListenerTemplate;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -95,7 +96,7 @@ public class MSSynthesisActivity extends BaseActivity {
 		@Override
 		public void onClick(View v) {
 			if (isMsChoose) {
-				SimpleEntry<Integer, List<Integer>> choose = synthesisAdapter
+				SimplePair<Integer, List<Integer>> choose = synthesisAdapter
 						.getChoose();
 				if (choose == null) {
 					Toast.makeText(getApplicationContext(),

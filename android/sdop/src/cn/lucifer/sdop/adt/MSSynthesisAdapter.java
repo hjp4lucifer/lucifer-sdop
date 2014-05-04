@@ -1,6 +1,5 @@
 package cn.lucifer.sdop.adt;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,6 +9,7 @@ import java.util.List;
 import cn.lucifer.sdop.R;
 import cn.lucifer.sdop.domain.CardSynthesis;
 import cn.lucifer.sdop.domain.Characteristic;
+import cn.lucifer.sdop.domain.SimplePair;
 import cn.lucifer.sdop.domain.Value;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -227,7 +227,7 @@ public class MSSynthesisAdapter extends BaseAdapter {
 	 * 
 	 * @return key is base, values is materials
 	 */
-	public SimpleEntry<Integer, List<Integer>> getChoose() {
+	public SimplePair<Integer, List<Integer>> getChoose() {
 		if (!isMainChoose) {
 			return null;
 		}
@@ -256,6 +256,6 @@ public class MSSynthesisAdapter extends BaseAdapter {
 			return null;
 		}
 
-		return new SimpleEntry<Integer, List<Integer>>(base, materials);
+		return new SimplePair<Integer, List<Integer>>(base, materials);
 	}
 }
