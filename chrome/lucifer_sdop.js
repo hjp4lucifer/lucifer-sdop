@@ -377,6 +377,42 @@ lcf.sdop.card = {
 	count: 0
 };
 
+/**
+ * 自动抽ms, 并卖出
+ * @param {int} sellCardId 需要卖出的ms, not null
+ * @param {int} count 剩余的次数
+ */
+lcf.sdop.card.msCardSellAndPlayGachaResult = function(sellCardId, count) {
+	var _sdop = lcf.sdop;
+	var url = _sdop.httpUrlPrefix + "/PostForCardGacha/msCardSellAndPlayGachaResult";
+	var logMsg;
+	if(null == sellCardId){
+		logMsg = "无sellCardId";
+		_sdop.log(logMsg);
+		console.error(logMsg);
+		return;
+	}
+	if(count <= 0){
+		logMsg = "自动卖机已完成！";
+		_sdop.log(logMsg);
+		console.info(logMsg);
+		return;
+	}
+	var payload = _sdop.createBasePayload("msCardSellAndPlayGachaResult", {
+		"cardType":{"value":"MS_CARD"},"gachaType":{"value":"NORMAL"},"msCardId":sellCardId
+	});
+	_sdop.post(url, payload, function(data){
+		if (_sdop.checkError(data, "msCardSellAndPlayGachaResult")) {
+			return;
+		}
+		var cardId = data.args.playGachaResultDetail.msCard.id;
+		logMsg = count + " get card id : " + cardId;
+		_sdop.log(logMsg);
+		console.info(logMsg);
+		setTimeout(lcf.sdop.card.msCardSellAndPlayGachaResult, 200, cardId, --count);
+	});
+}
+
 lcf.sdop.card.playGachaResult = function(callback){
 	var _sdop = lcf.sdop;
 	var url = _sdop.httpUrlPrefix + "/PostForCardGacha/playGachaResult";
