@@ -482,12 +482,12 @@ public class AI extends LcfExtend {
 			boolean noDoubleHelp = true;
 			for (Ms player : playerMsList) {
 				if (checkHelpSkill(player)) {
+					helpMember = player;
 					if (noDoubleHelp && checkMySkill(player)) {// 当前无双辅助机
 						player.AIType = me;
 						noDoubleHelp = false;
 						continue;
 					}
-					helpMember = player;
 					player.AIType = help;
 				}
 			}
