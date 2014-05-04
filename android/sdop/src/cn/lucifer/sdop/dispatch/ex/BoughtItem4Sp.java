@@ -46,7 +46,7 @@ public class BoughtItem4Sp extends BaseDispatch {
 
 	private final int item_60_sp_id = 20013;
 	private final int item_60_sp_cost = 600;
-	private final int item_60_sp_min_count = 20;
+	private final int item_60_sp_min_count = 28;
 
 	/**
 	 * <ol>
