@@ -499,6 +499,9 @@ public class AI extends LcfExtend {
 					}
 					continue;
 				}
+				if (player.lcf_attack > 0) {// 倍机, 无需变更AI
+					continue;
+				}
 				if (checkHelpSkill(player)) {
 					helpMember = player;
 					player.AIType = help;
