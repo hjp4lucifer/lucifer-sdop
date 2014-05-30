@@ -138,13 +138,28 @@ public class MSSynthesisAdapter extends BaseAdapter {
 			if (sameTypeId(rhs)) {
 				return 1;
 			}
-			return lhs.level - rhs.level;
+			return compareTypeId(lhs, rhs);
+
 		}
 
 		protected boolean sameTypeId(CardSynthesis card) {
 			return card.characteristicList != null
 					&& card.characteristicList.length == 1
 					&& card.characteristicList[0].typeId == typeId;
+		}
+
+
+		protected int compareTypeId(CardSynthesis lhs, CardSynthesis rhs) {
+			if (lhs.characteristicList == null
+					&& rhs.characteristicList == null) {
+				return 0;
+			}
+			if (lhs.characteristicList.length == 1
+					&& rhs.characteristicList.length == 1) {
+				return lhs.characteristicList[0].typeId
+						- rhs.characteristicList[0].typeId;
+			}
+			return lhs.level - rhs.level;
 		}
 
 	}
