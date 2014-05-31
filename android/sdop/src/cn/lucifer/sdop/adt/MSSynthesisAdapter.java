@@ -138,7 +138,7 @@ public class MSSynthesisAdapter extends BaseAdapter {
 			if (sameTypeId(rhs)) {
 				return 1;
 			}
-			return compareTypeId(lhs, rhs);
+			return compareWithoutChooseCard(lhs, rhs);
 
 		}
 
@@ -148,16 +148,19 @@ public class MSSynthesisAdapter extends BaseAdapter {
 					&& card.characteristicList[0].typeId == typeId;
 		}
 
-
-		protected int compareTypeId(CardSynthesis lhs, CardSynthesis rhs) {
+		protected int compareWithoutChooseCard(CardSynthesis lhs,
+				CardSynthesis rhs) {
 			if (lhs.characteristicList == null
 					&& rhs.characteristicList == null) {
 				return 0;
 			}
 			if (lhs.characteristicList.length == 1
 					&& rhs.characteristicList.length == 1) {
-				return lhs.characteristicList[0].typeId
+				int subTypeId = lhs.characteristicList[0].typeId
 						- rhs.characteristicList[0].typeId;
+				if (subTypeId != 0) {
+					return subTypeId;
+				}
 			}
 			return lhs.level - rhs.level;
 		}

@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.IOUtils;
@@ -32,6 +33,8 @@ public class HttpService extends Service implements IGetLcf {
 		return null;
 	}
 
+	private static ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(3);
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -39,6 +42,19 @@ public class HttpService extends Service implements IGetLcf {
 		DF.init();
 
 		acquireWakeLock();
+		clearAllJob();
+	}
+
+	protected void clearAllJob() {
+		releaseThreadPool();
+		executor = new ScheduledThreadPoolExecutor(3);
+	}
+
+	protected void releaseThreadPool() {
+		if (executor != null) {
+			executor.shutdownNow();
+			executor.getQueue().clear();
+		}
 	}
 
 	@Override
@@ -55,11 +71,14 @@ public class HttpService extends Service implements IGetLcf {
 		if (url == null) {
 			return super.onStartCommand(intent, flags, startId);
 		}
-		
+
 		String payload = bundle.getString("payload");
 		String procedure = bundle.getString("procedure");
 		String callback = bundle.getString("callback");
-		new HttpThread(method, url, payload, procedure, callback).start();
+
+		executor.execute(new HttpThread(method, url, payload, procedure,
+				callback));
+
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -234,5 +253,6 @@ public class HttpService extends Service implements IGetLcf {
 	@Override
 	public void onDestroy() {
 		releaseWakeLock();
+		releaseThreadPool();
 	}
 }
