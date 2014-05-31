@@ -9,13 +9,17 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+import cn.lucifer.sdop.dispatch.ex.DeleteRaidBossList;
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.ExecuteBattleStart;
 import cn.lucifer.sdop.dispatch.ex.GetBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList4Finish;
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossResultData;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
+import cn.lucifer.sdop.dispatch.ex.RaidBossGacha;
 import cn.lucifer.sdop.dispatch.ex.SendRescueSignal;
 import cn.lucifer.sdop.domain.CardWithoutWeapon;
 import cn.lucifer.sdop.domain.Unit;
@@ -157,6 +161,85 @@ public class Boss extends LcfExtend {
 	}
 
 	/**
+	 * 自动处理总力战结果
+	 */
+	public void autoRaidBossResult() {
+		try {
+			JSONObject args = lcf().sdop.loadJsonObject("boss_outline.json");
+			getRaidBossOutlineList(args,
+					GetRaidBossOutlineList4Finish.procedure,
+					GetRaidBossOutlineList4Finish.procedure);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public int currentGachaRaidBossId;
+
+	/**
+	 * 获取单个boss的结果
+	 * 
+	 * @param bossId
+	 * @param callback
+	 */
+	public void getRaidBossResultData(int bossId, String callback) {
+		String url = new StringBuilder(lcf().sdop.httpUrlPrefix)
+				.append("/GetForRaidBossResult/getRaidBossResultData?")
+				.append(lcf().sdop.createGetParams()).append("&raidBossId=")
+				.append(bossId).toString();
+		currentGachaRaidBossId = bossId;
+		lcf().sdop.get(url, GetRaidBossResultData.procedure, callback);
+	}
+
+	/**
+	 * boss抽奖
+	 * 
+	 * @param raidBossId
+	 * @param callback
+	 */
+	public void raidBossGacha(int raidBossId, String callback) {
+		if (lcf().sdop.ms.current >= lcf().sdop.ms.max) {
+			lcf().sdop.log("MS数量已满，停止自动！");
+			return;
+		}
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForRaidBossResult/raidBossGacha";
+		currentGachaRaidBossId = raidBossId;
+		try {
+			JSONObject payload = lcf().sdop.createBasePayload("raidBossGacha",
+					new JSONObject().put("raidBossId", raidBossId));
+			lcf().sdop.post(url, payload.toString(), RaidBossGacha.procedure,
+					callback);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 删除boss结果
+	 * 
+	 * @param raidBossId
+	 * @param callback
+	 */
+	public void deleteRaidBossList(int raidBossId, String callback) {
+		String url = lcf().sdop.httpUrlPrefix
+				+ "/PostForRaidBossList/deleteRaidBossList";
+		try {
+			JSONObject payload = lcf().sdop.createBasePayload(
+					"deleteRaidBossList",
+					new JSONObject().put("id", raidBossId));
+			lcf().sdop.post(url, payload.toString(),
+					DeleteRaidBossList.procedure, callback);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * true战斗自动, 不进行AI判定
 	 */
 	public boolean isAutoBattle = false;
@@ -238,9 +321,11 @@ public class Boss extends LcfExtend {
 				+ "/PostForRaidBossList/postRaidBossBattleEntry";
 		targetBossId = bossId;
 		try {
-			JSONObject payload = lcf().sdop.createBasePayload(
-					"getRaidBossOutlineList", new JSONObject()
-							.put("id", bossId).put("isChargeBp", false));
+			JSONObject payload = lcf().sdop
+					.createBasePayload(
+							"postRaidBossBattleEntry",
+							new JSONObject().put("id", bossId).put(
+									"isChargeBp", false));
 			lcf().sdop.post(url, payload.toString(),
 					PostRaidBossBattleEntry.procedure, callback);
 
@@ -249,14 +334,14 @@ public class Boss extends LcfExtend {
 		}
 	}
 
-	public void getRaidBossOutlineList(String callback) {
+	public void getRaidBossOutlineList(JSONObject args, String procedure,
+			String callback) {
 		String url = lcf().sdop.httpUrlPrefix
 				+ "/PostForRaidBossList/getRaidBossOutlineList";
 		try {
 			JSONObject payload = lcf().sdop.createBasePayload(
-					"getRaidBossOutlineList", lcf().sdop.boss.getCurrentType());
-			lcf().sdop.post(url, payload.toString(),
-					GetRaidBossOutlineList.procedure, callback);
+					"getRaidBossOutlineList", args);
+			lcf().sdop.post(url, payload.toString(), procedure, callback);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -275,7 +360,9 @@ public class Boss extends LcfExtend {
 		// 注意, 这里开始后, 因为要连续各种不同的参数, 所以代码中存在线性安全问题, 但同样的, 理论上这是对一个帐号的处理,
 		// 不应该会同时触发相同的事件, 所以线性安全性实际上不存在
 		// targetBossId = null;
-		getRaidBossOutlineList(GetRaidBossOutlineList.procedure);
+		getRaidBossOutlineList(getCurrentType(),
+				GetRaidBossOutlineList.procedure,
+				GetRaidBossOutlineList.procedure);
 	}
 
 	public final String[] actionType = { "ITEM", "SKILL", "ATTACK" };

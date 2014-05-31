@@ -6,8 +6,10 @@ import java.util.Map;
 import org.json.JSONException;
 
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
+import cn.lucifer.sdop.dispatch.ex.AutoRaidBossResult;
 import cn.lucifer.sdop.dispatch.ex.AutoSuperRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.BoughtItem4Sp;
+import cn.lucifer.sdop.dispatch.ex.DeleteRaidBossList;
 import cn.lucifer.sdop.dispatch.ex.DrawChancePanel;
 import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.EnhancedSynthesis;
@@ -24,11 +26,14 @@ import cn.lucifer.sdop.dispatch.ex.GetMSCardEnhancedSynthesisData;
 import cn.lucifer.sdop.dispatch.ex.GetQuestData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList4Finish;
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossResultData;
 import cn.lucifer.sdop.dispatch.ex.GetResultData;
 import cn.lucifer.sdop.dispatch.ex.GetSneakingMissionTopData;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
+import cn.lucifer.sdop.dispatch.ex.RaidBossGacha;
 import cn.lucifer.sdop.dispatch.ex.SendRescueSignal;
 import cn.lucifer.sdop.dispatch.ex.SortieTroops;
 import cn.lucifer.sdop.dispatch.ex.StartAutoSuperRaidBoss;
@@ -66,6 +71,13 @@ public final class DF {
 		put(GetRaidBossOutlineList.procedure, new GetRaidBossOutlineList());
 		put(InitRaidBossOutlineList.procedure, new InitRaidBossOutlineList());
 		put(PostRaidBossBattleEntry.procedure, new PostRaidBossBattleEntry());
+
+		put(AutoRaidBossResult.procedure, new AutoRaidBossResult());
+		put(GetRaidBossOutlineList4Finish.procedure,
+				new GetRaidBossOutlineList4Finish());
+		put(GetRaidBossResultData.procedure, new GetRaidBossResultData());
+		put(RaidBossGacha.procedure, new RaidBossGacha());
+		put(DeleteRaidBossList.procedure, new DeleteRaidBossList());
 
 		put(SendRescueSignal.procedure, new SendRescueSignal());
 		put(GetBattleData.procedure, new GetBattleData());

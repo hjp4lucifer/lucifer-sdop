@@ -14,5 +14,7 @@ public class Boss {
 	public int requireScore;
 	public Value state;
 	public int teamId;
+	
+	public int restGacha;
 
 }
