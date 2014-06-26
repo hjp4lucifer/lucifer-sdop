@@ -1142,7 +1142,7 @@ lcf.sdop.boss.checkX6 = function(m){
  */
 lcf.sdop.boss.checkX3 = function(m){
 	for (var j in m.characteristicList) {
-		for(var i in x3){
+		for(var i in lcf.sdop.boss.x3){
 			if (m.characteristicList[j].id == lcf.sdop.boss.x3[i]) {
 				m.lcf_attack = 3;
 				return true;
