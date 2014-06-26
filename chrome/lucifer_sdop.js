@@ -770,8 +770,8 @@ lcf.sdop.boss = {
 	kind: ["NORMAL", "SUPER"],
 	currentMode: 'RAID_BOSS',
 	currentKind: 'SUPER',
-	x3: 250067,
-	x6: 250068,
+	x3: [250067, 250068],
+	x6: 250069,
 	getTopLevel: function(list){
 		var target, _currentBoss;
 		var Least_Hp = 5000000;
@@ -1142,9 +1142,11 @@ lcf.sdop.boss.checkX6 = function(m){
  */
 lcf.sdop.boss.checkX3 = function(m){
 	for (var j in m.characteristicList) {
-		if (m.characteristicList[j].id == lcf.sdop.boss.x3) {
-			m.lcf_attack = 3;
-			return true;
+		for(var i in x3){
+			if (m.characteristicList[j].id == lcf.sdop.boss.x3[i]) {
+				m.lcf_attack = 3;
+				return true;
+			}
 		}
 	}
 	return false;
