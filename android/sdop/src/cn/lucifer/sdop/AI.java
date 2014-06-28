@@ -67,6 +67,9 @@ public class AI extends LcfExtend {
 				// } else {//不推荐
 				// continue;
 				// }
+				if ("JOIN".equalsIgnoreCase(_currentBoss.state.value)) {// 已参战
+					continue;
+				}
 				if (_currentBoss.currentHp < Least_Hp) {// 判断血量
 					continue;
 				}
