@@ -786,6 +786,9 @@ lcf.sdop.boss = {
 				//} else {//不推荐
 				//continue;
 				//}
+				if(_currentBoss.state.value == "JOIN"){//已参战
+					continue;
+				}
 				if (_currentBoss.currentHp < Least_Hp) {//判断血量
 					continue;
 				}
