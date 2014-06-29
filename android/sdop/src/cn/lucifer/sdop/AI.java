@@ -84,7 +84,7 @@ public class AI extends LcfExtend {
 					target = _currentBoss;
 				}
 			} else {
-				// if (_currentBoss.level == 1) {
+				// if (_currentBoss.level < 3) {
 				// continue;
 				// }
 				if (_currentBoss.currentHp < Least_Hp) {
