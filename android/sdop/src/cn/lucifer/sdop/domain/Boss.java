@@ -4,6 +4,10 @@ public class Boss {
 	public int bp;
 	public String comment;
 	public int currentHp;
+	/**
+	 * value为SPACE表示宇宙战
+	 */
+	public Value field;
 	public int id;
 	public boolean isBattleEntry;
 	public boolean isEncounter;
@@ -14,7 +18,7 @@ public class Boss {
 	public int requireScore;
 	public Value state;
 	public int teamId;
-	
+
 	public int restGacha;
 
 }

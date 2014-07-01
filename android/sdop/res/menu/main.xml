@@ -64,6 +64,11 @@
                 android:showAsAction="never"
                 android:title="@string/action_auto_super_boss_start"/>
             <item
+                android:id="@+id/action_auto_super_boss_least_lv_3_start"
+                android:orderInCategory="72"
+                android:showAsAction="never"
+                android:title="@string/action_auto_super_boss_least_lv_3_start"/>
+            <item
                 android:id="@+id/action_auto_normal_boss_start"
                 android:orderInCategory="72"
                 android:showAsAction="never"

@@ -47,7 +47,12 @@ public class AI extends LcfExtend {
 	/**
 	 * 最少血量
 	 */
-	protected final int Least_Hp = 5000000;
+	protected final int Least_Hp = 8000000;
+
+	/**
+	 * 最少等级
+	 */
+	public int Least_Lv = 3;
 
 	/**
 	 * 
@@ -84,9 +89,9 @@ public class AI extends LcfExtend {
 					target = _currentBoss;
 				}
 			} else {
-				// if (_currentBoss.level < 3) {
-				// continue;
-				// }
+				if (_currentBoss.level < Least_Lv) {
+					continue;
+				}
 				if (_currentBoss.currentHp < Least_Hp) {
 					continue;
 				}

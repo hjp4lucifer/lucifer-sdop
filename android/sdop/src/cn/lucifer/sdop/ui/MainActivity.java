@@ -104,6 +104,11 @@ public class MainActivity extends BaseActivity {
 			lcf().sdop.duel.cancelAutoDuel();
 			break;
 		case R.id.action_auto_super_boss_start:
+			lcf().sdop.boss.AI.Least_Lv = 0;
+			lcf().sdop.boss.AI.startAutoSuperRaidBoss();
+			break;
+		case R.id.action_auto_super_boss_least_lv_3_start:
+			lcf().sdop.boss.AI.Least_Lv = 3;
 			lcf().sdop.boss.AI.startAutoSuperRaidBoss();
 			break;
 		case R.id.action_auto_normal_boss_start:
