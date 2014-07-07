@@ -6,11 +6,18 @@ import org.json.JSONObject;
 
 import cn.lucifer.sdop.dispatch.ex.BoughtItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
+import cn.lucifer.sdop.dispatch.ex.GetShopItemList;
 
 public class Item extends LcfExtend {
 
 	// private final int[] itemIdList = new int[] { 20006, 20011, 20013 };
 	private final String itemIdList_json = "[ 20006, 20011, 20013 ]";
+
+	public void getShopItemList(String callback) {
+		String url = lcf().sdop.httpUrlPrefix + "/GetForShop/getShopItemList?"
+				+ lcf().sdop.createGetParams();
+		lcf().sdop.get(url, GetShopItemList.procedure, callback);
+	}
 
 	public void equipItem4Sp(String callback) {
 		String url = lcf().sdop.httpUrlPrefix

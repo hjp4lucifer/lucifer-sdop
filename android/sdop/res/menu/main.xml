@@ -65,22 +65,27 @@
                 android:title="@string/action_auto_super_boss_start"/>
             <item
                 android:id="@+id/action_auto_super_boss_least_lv_3_start"
-                android:orderInCategory="72"
+                android:orderInCategory="73"
                 android:showAsAction="never"
                 android:title="@string/action_auto_super_boss_least_lv_3_start"/>
             <item
                 android:id="@+id/action_auto_normal_boss_start"
-                android:orderInCategory="72"
+                android:orderInCategory="74"
                 android:showAsAction="never"
                 android:title="@string/action_auto_normal_boss_start"/>
             <item
+                android:id="@+id/action_auto_choose_leader_card"
+                android:orderInCategory="76"
+                android:showAsAction="never"
+                android:title="@string/action_auto_choose_leader_card"/>
+            <item
                 android:id="@+id/action_bought_item_4_sp"
-                android:orderInCategory="74"
+                android:orderInCategory="77"
                 android:showAsAction="never"
                 android:title="@string/action_bought_item_4_sp"/>
             <item
                 android:id="@+id/action_equip_item_4_sp"
-                android:orderInCategory="75"
+                android:orderInCategory="78"
                 android:showAsAction="never"
                 android:title="@string/action_equip_item_4_sp"/>
             <item

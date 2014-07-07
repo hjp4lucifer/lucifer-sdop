@@ -16,6 +16,7 @@
     <string name="action_auto_super_boss_start">自动超总</string>
     <string name="action_auto_super_boss_least_lv_3_start">自动超总(Lv3+)</string>
     <string name="action_auto_normal_boss_start">自动总力Lv30</string>
+    <string name="action_auto_choose_leader_card">智能甲板leader</string>
     <string name="action_bought_item_4_sp">智能买SP药</string>
     <string name="action_equip_item_4_sp">装备SP药</string>
     <string name="action_map_quest">地图探索</string>
@@ -36,6 +37,7 @@
     <string name="msg_made_sure_exit">再按一次退出sdop！</string>
     <string name="msg_running_auto_login">【自动登录】进行中...</string>
     <string name="msg_login_success_and_plase_wait">web登录成功! 正在获取授权...</string>
+    <string name="msg_auto_choose_leader_card_is_locked">【智能换MS和Pilot】被锁, 请耐心等待战斗结束！</string>
     <string name="msg_bought_item_4_sp_is_running">【智能买SP药】进行中...</string>
     <!-- sneaking -->
     <string name="msg_ready_sneaking_proxy_running_format">执行返回, 并重新潜入, %d</string>

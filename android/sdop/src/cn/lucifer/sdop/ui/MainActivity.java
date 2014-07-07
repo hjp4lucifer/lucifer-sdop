@@ -114,13 +114,19 @@ public class MainActivity extends BaseActivity {
 		case R.id.action_auto_normal_boss_start:
 			lcf().sdop.boss.AI.startAutoNormalRaidBoss();
 			break;
+		case R.id.action_auto_choose_leader_card:
+			if (lcf().sdop.cardPlatoon.lockCardPlatoon) {
+				lcf().sdop.log(getResources().getString(
+						R.string.msg_auto_choose_leader_card_is_locked));
+			} else {
+				lcf().sdop.cardPlatoon.initChooseCardData();
+				// item.setEnabled(false);// 不支持关闭
+			}
+			break;
 		case R.id.action_bought_item_4_sp:
 			if (lcf().sdop.item.onBoughtItem4Sp) {
-				Toast.makeText(
-						getApplication(),
-						getResources().getString(
-								R.string.msg_bought_item_4_sp_is_running),
-						Toast.LENGTH_SHORT).show();
+				lcf().sdop.log(getResources().getString(
+						R.string.msg_bought_item_4_sp_is_running));
 			} else {
 				lcf().sdop.item.boughtItem4SpAI();
 			}

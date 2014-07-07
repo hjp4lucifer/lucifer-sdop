@@ -20,6 +20,7 @@ import cn.lucifer.sdop.dispatch.ex.ExecuteBattleStart;
 import cn.lucifer.sdop.dispatch.ex.ExecuteDuelBattle;
 import cn.lucifer.sdop.dispatch.ex.ExecuteQuest;
 import cn.lucifer.sdop.dispatch.ex.GetBattleData;
+import cn.lucifer.sdop.dispatch.ex.GetCardPlatoonData;
 import cn.lucifer.sdop.dispatch.ex.GetDuelData;
 import cn.lucifer.sdop.dispatch.ex.GetEntryData;
 import cn.lucifer.sdop.dispatch.ex.GetMSCardEnhancedSynthesisData;
@@ -28,7 +29,9 @@ import cn.lucifer.sdop.dispatch.ex.GetRaidBossBattleData;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossOutlineList4Finish;
 import cn.lucifer.sdop.dispatch.ex.GetRaidBossResultData;
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossField;
 import cn.lucifer.sdop.dispatch.ex.GetResultData;
+import cn.lucifer.sdop.dispatch.ex.GetShopItemList;
 import cn.lucifer.sdop.dispatch.ex.GetSneakingMissionTopData;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
@@ -40,13 +43,17 @@ import cn.lucifer.sdop.dispatch.ex.StartAutoSuperRaidBoss;
 
 public final class DF {
 
+	private DF() {
+
+	}
+
 	protected static Map<String, IProcedure> map;
 
 	static {
 		init();
 	}
 
-	public static void init() {
+	public synchronized static void init() {
 		if (map != null) {
 			return;
 		}
@@ -59,6 +66,7 @@ public final class DF {
 		put(GetDuelData.procedure, new GetDuelData());
 		put(ExecuteDuelBattle.procedure, new ExecuteDuelBattle());
 
+		put(GetShopItemList.procedure, new GetShopItemList());
 		put(BoughtItem4Sp.procedure, new BoughtItem4Sp());
 		put(EquipItem4Sp.procedure, new EquipItem4Sp());
 
@@ -96,6 +104,10 @@ public final class DF {
 		put(GetMSCardEnhancedSynthesisData.procedure,
 				new GetMSCardEnhancedSynthesisData());
 		put(EnhancedSynthesis.procedure, new EnhancedSynthesis());
+
+		put(GetRaidBossField.procedure, new GetRaidBossField());
+		
+		put(GetCardPlatoonData.procedure, new GetCardPlatoonData());
 	}
 
 	private static void put(String procedure, BaseDispatch impl) {

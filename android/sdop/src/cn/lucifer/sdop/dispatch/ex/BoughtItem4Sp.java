@@ -3,8 +3,6 @@ package cn.lucifer.sdop.dispatch.ex;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 import cn.lucifer.sdop.dispatch.BaseDispatch;
 import cn.lucifer.sdop.domain.HeaderDetail;
 import cn.lucifer.sdop.domain.Item;
@@ -64,16 +62,17 @@ public class BoughtItem4Sp extends BaseDispatch {
 			HeaderDetail headerDetail = (HeaderDetail) obj;
 			this.gold = headerDetail.gold;
 			lcf().sdop.log("当前gold : " + gold);
-			
+
 			if (gold > 200) {// 最低购买需求
-				lcf().sdop.item.equipItem4Sp(procedure);
+				// lcf().sdop.item.equipItem4Sp(procedure);
+				lcf().sdop.cardPlatoon.getCardPlatoonData(procedure);
 			} else {
-				lcf().sdop.log("GP不足, 停止执行【购买sp药】!");
+				exitAutoBought("GP不足, 停止执行【购买sp药】!");
 			}
 			return;
 		}
 
-		// from EquipItem4Sp
+		// from GetCardPlatoonData or EquipItem4Sp
 		if (obj instanceof Item[]) {// 获取当前sp的数量
 			Item[] items = (Item[]) obj;
 			int item30Count = 0, item60Count = 0;
@@ -136,21 +135,29 @@ public class BoughtItem4Sp extends BaseDispatch {
 				}
 			}
 		}
-
-		lcf().sdop.item.onBoughtItem4Sp = false;
-		lcf().sdop.log("SP药购买完毕！");
+		exitAutoBought("SP药购买完毕！");
 	}
 
 	private void bought(Item item, int itemId, int cost, int minCount) {
 		int num = minCount - item.currentStock;
 		int costGold = num * cost;
+		lcf().sdop.log(String.format("准备购买%s: %d", item.name, num));
 		if (costGold < gold) {// 够GP
 			lcf().sdop.item.boughtItem4Sp(itemId, num, procedure);
 		} else {// 不够GP
 			num = gold / cost;
+			if (num <= 0) {
+				exitAutoBought("GP不足, 停止执行【购买sp药】!");
+				return;
+			}
 			lcf().sdop.item.boughtItem4Sp(itemId, num, null);
 		}
 		gold = null;
+	}
+
+	private void exitAutoBought(String msg) {
+		lcf().sdop.item.onBoughtItem4Sp = false;
+		lcf().sdop.log(msg);
 	}
 
 }

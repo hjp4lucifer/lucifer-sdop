@@ -1,14 +1,67 @@
 package cn.lucifer.sdop;
 
+import java.io.IOException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.lucifer.sdop.dispatch.ex.EquipPilot;
 import cn.lucifer.sdop.dispatch.ex.GetCardPlatoonData;
+import cn.lucifer.sdop.dispatch.ex.GetRaidBossField;
 import cn.lucifer.sdop.dispatch.ex.SelectLeader;
 import cn.lucifer.sdop.dispatch.ex.SetUseOptionalDeckList;
+import cn.lucifer.sdop.domain.BaseCard;
+import cn.lucifer.sdop.domain.CardWithoutWeapon;
+import cn.lucifer.sdop.domain.Pilot;
 
 public class CardPlatoon extends LcfExtend {
+
+	/**
+	 * Example: in battle, the status need lock.
+	 */
+	public boolean lockCardPlatoon;
+
+	/**
+	 * @return true is initialize card data success
+	 */
+	public void initChooseCardData() {
+		try {
+			lcf().sdop.boss.getRaidBossOutlineList(
+					lcf().sdop.boss.getSuperType(), GetRaidBossField.procedure,
+					GetRaidBossField.procedure);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void initChooseCardDataFinished() {
+		lcf().sdop.auto.setting.cardPlatoon = true;
+	}
+
+	CardWithoutWeapon msLeaderCard;
+
+	public void chooseCards(int raidUnitLeaderId, int raidPilotLeaderId,
+			CardWithoutWeapon[] msCardList, Pilot[] pilotCardList) {
+		msLeaderCard = (CardWithoutWeapon) getLeaderCard(raidUnitLeaderId,
+				msCardList);
+		if (lcf().sdop.boss.checkX6(msLeaderCard)) {
+			msLeaderCard = null;
+			return;
+		}
+	}
+
+	protected BaseCard getLeaderCard(int leaderId, BaseCard[] cardList) {
+		for (BaseCard card : cardList) {
+			if (leaderId == card.id) {
+				return card;
+			}
+		}
+		return null;
+	}
 
 	public void getCardPlatoonData(String callback) {
 		String url = lcf().sdop.httpUrlPrefix

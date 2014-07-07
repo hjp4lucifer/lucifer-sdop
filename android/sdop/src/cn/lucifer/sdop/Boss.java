@@ -34,6 +34,29 @@ public class Boss extends LcfExtend {
 	 * 0表示总力, 1表示超总
 	 */
 	public int currentType = 1;
+
+	/**
+	 * raid boss in field, 0 is SPACE, 1 is LAND
+	 */
+	public int raidBossFieldType;
+
+	/**
+	 * set the {@link #raidBossFieldType} value
+	 * 
+	 * @param raidBossField
+	 */
+	public void setRaidBossField(String raidBossField) {
+		lcf().sdop.log("raid boss field is " + raidBossField);
+		if ("SPACE".equalsIgnoreCase(raidBossField)) {
+			raidBossFieldType = 0;
+			return;
+		}
+		if ("LAND".equalsIgnoreCase(raidBossField)) {
+			raidBossFieldType = 1;
+			return;
+		}
+	}
+
 	/**
 	 * 0表示总力, 1表示超总, 2表示普通遭遇战
 	 */
@@ -63,15 +86,9 @@ public class Boss extends LcfExtend {
 		try {
 			switch (currentType) {
 			case 0:
-				if (_normal == null) {
-					_normal = lcf().sdop.loadJsonObject("boss_normal.json");
-				}
-				return _normal;
+				return getNormalType();
 			default:
-				if (_super == null) {
-					_super = lcf().sdop.loadJsonObject("boss_super.json");
-				}
-				return _super;
+				return getSuperType();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -79,6 +96,20 @@ public class Boss extends LcfExtend {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public JSONObject getNormalType() throws IOException, JSONException {
+		if (_normal == null) {
+			_normal = lcf().sdop.loadJsonObject("boss_normal.json");
+		}
+		return _normal;
+	}
+
+	public JSONObject getSuperType() throws IOException, JSONException {
+		if (_super == null) {
+			_super = lcf().sdop.loadJsonObject("boss_super.json");
+		}
+		return _super;
 	}
 
 	public JSONObject getCurrentMode() {
