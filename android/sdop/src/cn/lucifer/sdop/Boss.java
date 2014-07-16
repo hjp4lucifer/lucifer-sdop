@@ -160,6 +160,18 @@ public class Boss extends LcfExtend {
 		}
 		return false;
 	}
+	
+	public boolean checkX2(CardWithoutWeapon m) {
+		for (int j = 0; j < m.characteristicList.length; j++) {
+			for (int x : x2) {
+				if (m.characteristicList[j].id == x) {
+					m.lcf_attack = 2;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	private JSONObject initRaidBossOutlineList_args;
 

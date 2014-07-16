@@ -1,6 +1,5 @@
 package cn.lucifer.sdop.ui;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;

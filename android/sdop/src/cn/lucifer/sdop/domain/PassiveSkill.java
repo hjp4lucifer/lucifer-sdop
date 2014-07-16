@@ -1,12 +1,8 @@
 package cn.lucifer.sdop.domain;
 
-public class PassiveSkill {
+public class PassiveSkill extends BaseSkill{
 
 	public String code;
-	
-	public String description;
-	
-	public int id;
 	
 	public boolean isUsable;
 	

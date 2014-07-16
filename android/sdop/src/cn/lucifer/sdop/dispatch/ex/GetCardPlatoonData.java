@@ -4,9 +4,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.lucifer.sdop.dispatch.BaseDispatch;
-import cn.lucifer.sdop.domain.CardWithoutWeapon;
+import cn.lucifer.sdop.domain.CardSynthesis;
 import cn.lucifer.sdop.domain.Item;
-import cn.lucifer.sdop.domain.Pilot;
+import cn.lucifer.sdop.domain.PlatoonPilot;
 
 public class GetCardPlatoonData extends BaseDispatch {
 	public static final String procedure = "getCardPlatoonData";
@@ -29,11 +29,11 @@ public class GetCardPlatoonData extends BaseDispatch {
 				.getInt(lcf().sdop.boss.raidBossFieldType == 0 ? "raidSpaceDeckLeaderId"
 						: "raidGroundDeckLeaderId");
 
-		CardWithoutWeapon[] msCardList = lcf().gson.fromJson(
-				args.getString("msCardList"), CardWithoutWeapon[].class);
+		CardSynthesis[] msCardList = lcf().gson.fromJson(
+				args.getString("msCardList"), CardSynthesis[].class);
 
-		Pilot[] pilotCardList = lcf().gson.fromJson(
-				args.getString("pilotCardList"), Pilot[].class);
+		PlatoonPilot[] pilotCardList = lcf().gson.fromJson(
+				args.getString("pilotCardList"), PlatoonPilot[].class);
 		lcf().sdop.checkCallback(callback,
 				new Object[] { itemList, raidUnitLeaderId, raidPilotLeaderId,
 						msCardList, pilotCardList });
@@ -46,10 +46,11 @@ public class GetCardPlatoonData extends BaseDispatch {
 		}
 		int raidUnitLeaderId = (Integer) args[1];
 		int raidPilotLeaderId = (Integer) args[2];
-		CardWithoutWeapon[] msCardList = (CardWithoutWeapon[]) args[3];
-		Pilot[] pilotCardList = (Pilot[]) args[4];
+		CardSynthesis[] msCardList = (CardSynthesis[]) args[3];
+		PlatoonPilot[] pilotCardList = (PlatoonPilot[]) args[4];
 		lcf().sdop.cardPlatoon.chooseCards(raidUnitLeaderId, raidPilotLeaderId,
 				msCardList, pilotCardList);
+		lcf().sdop.cardPlatoon.logChooseCards();
 	}
 
 }

@@ -21,6 +21,8 @@ public class CardWithoutWeapon extends BaseCard {
 	public int currentHp;
 
 	public int currentSp;
+	
+	public int currentSubSp;
 
 	public int defense;
 
