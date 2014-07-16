@@ -4,9 +4,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
-
 import cn.lucifer.sdop.dispatch.BaseDispatch;
 import cn.lucifer.sdop.domain.CardWithoutWeapon;
+import cn.lucifer.sdop.e.NewRequestException;
 
 public class EncountRaidBoss extends BaseDispatch {
 	public static final String procedure = "cn.lucifer.EncountRaidBoss";
@@ -69,6 +69,8 @@ public class EncountRaidBoss extends BaseDispatch {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (NewRequestException e) {
+			Log.d(lcf().LOG_TAG, "Auto Card Platoon By NewRequestException !!!");
 		}
 	}
 

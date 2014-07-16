@@ -14,14 +14,13 @@ public class SetUseOptionalDeckList extends BaseDispatch {
 		if (lcf().sdop.checkError(args, procedure)) {
 			return;
 		}
-
+		
 		lcf().sdop.checkCallback(callback);
 	}
 
 	@Override
 	public void callback(Object[] args) {
-		// TODO Auto-generated method stub
-
+		lcf().sdop.cardPlatoon.initChooseCardData();
 	}
 
 }

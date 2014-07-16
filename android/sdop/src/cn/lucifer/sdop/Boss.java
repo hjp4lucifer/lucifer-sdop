@@ -58,6 +58,20 @@ public class Boss extends LcfExtend {
 	}
 
 	/**
+	 * @see #raidBossFieldType
+	 * @return
+	 */
+	public String getRaidBossFieldTypeString() {
+		switch (raidBossFieldType) {
+		case 0:
+			return "SPACE";
+
+		default:
+			return "LAND";
+		}
+	}
+
+	/**
 	 * 0表示总力, 1表示超总, 2表示普通遭遇战
 	 */
 	public Integer encountType;
@@ -160,7 +174,7 @@ public class Boss extends LcfExtend {
 		}
 		return false;
 	}
-	
+
 	public boolean checkX2(CardWithoutWeapon m) {
 		for (int j = 0; j < m.characteristicList.length; j++) {
 			for (int x : x2) {

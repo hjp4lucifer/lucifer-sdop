@@ -119,8 +119,8 @@ public class MainActivity extends BaseActivity {
 				lcf().sdop.log(getResources().getString(
 						R.string.msg_auto_choose_leader_card_is_locked));
 			} else {
-				lcf().sdop.cardPlatoon.initChooseCardData();
-				// item.setEnabled(false);// 不支持关闭
+				lcf().sdop.cardPlatoon.autoCardPlatoon();
+				item.setEnabled(false);// 不支持关闭
 			}
 			break;
 		case R.id.action_bought_item_4_sp:

@@ -8,10 +8,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
-
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
+import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
+import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
 import cn.lucifer.sdop.dispatch.ex.SendRescueSignal;
 import cn.lucifer.sdop.domain.ActionOrder;
 import cn.lucifer.sdop.domain.ActiveSkill;
@@ -20,6 +21,7 @@ import cn.lucifer.sdop.domain.CardWithoutWeapon;
 import cn.lucifer.sdop.domain.Item;
 import cn.lucifer.sdop.domain.Ms;
 import cn.lucifer.sdop.domain.PassiveSkill;
+import cn.lucifer.sdop.e.NewRequestException;
 
 public class AI extends LcfExtend {
 	public CardWithoutWeapon attackMember, helpMember;
@@ -195,6 +197,9 @@ public class AI extends LcfExtend {
 				attackMember = m;
 				continue;
 			}
+			if (!checkAttackSkill4Card(m)) {
+				continue;// 不选择没攻击技能的倍机
+			}
 			if (attackMember.lcf_attack > m.lcf_attack) {// 倍数级别高
 				continue;
 			} else if (attackMember.lcf_attack < m.lcf_attack) {
@@ -259,7 +264,6 @@ public class AI extends LcfExtend {
 		try {
 			attackMember.lcf_speed = getTrueSpeed(attackMember);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		CardWithoutWeapon helpMember = null;
@@ -328,9 +332,10 @@ public class AI extends LcfExtend {
 	 *            true表示设置进AI里, 作为AI自动打参数
 	 * @return array index 0表示attackMember, 1表示helpMember
 	 * @throws JSONException
+	 * @throws NewRequestException
 	 */
 	public CardWithoutWeapon[] setFixMember(JSONObject battleArgs, boolean setAi)
-			throws JSONException {
+			throws JSONException, NewRequestException {
 		// Log.d(lcf().LOG_TAG, "battleArgs : " + battleArgs.toString());
 		lcf().sdop.myUserId = battleArgs.getInt("leaderCardId");
 
@@ -386,11 +391,57 @@ public class AI extends LcfExtend {
 		}
 		}
 
-		if (setAi) {
+		if (setAi) {// 不设置Ai一般表示总力, 无需查看智能甲板
 			this.attackMember = attackMember;
+			processByAutoCardPlatoon(myCard, attackMember);
 			this.helpMember = helpMember;
 		}
 		return new CardWithoutWeapon[] { attackMember, helpMember };
+	}
+
+	/**
+	 * 处理智能甲板问题
+	 * 
+	 * @param attackMember
+	 * @throws NewRequestException
+	 *             有新的请求发出, 需终止当前逻辑
+	 */
+	public void processByAutoCardPlatoon(Card myCard,
+			CardWithoutWeapon attackMember) throws NewRequestException {
+		if (!lcf().sdop.auto.setting.cardPlatoon) {
+			lcf().sdop.item.equipItem4Sp(EquipItem4Sp.procedure);
+			return;
+		}
+		if (null == attackMember) {
+			return;
+		}
+		int id;
+		if (attackMember.lcf_attack >= 3) {
+			// 理论上, 自己x6时不会进入该逻辑
+			id = lcf().sdop.cardPlatoon.helpPilot.id;
+			if (myCard.pilot.id != id) {
+				lcf().sdop.cardPlatoon.equipPilotByRaid(id,
+						PostRaidBossBattleEntry.procedure);
+				throw new NewRequestException();
+			}
+			return;
+		}
+		// 无倍机
+		id = lcf().sdop.cardPlatoon.attackPilot.id;
+		if (myCard.pilot.id != id) {// 自己更换成攻击向pilot
+			lcf().sdop.cardPlatoon.equipPilotByRaid(id,
+					PostRaidBossBattleEntry.procedure);
+			throw new NewRequestException();
+		}
+		if (null == lcf().sdop.cardPlatoon.xTimesDamageMS) {
+			return;
+		}
+		id = lcf().sdop.cardPlatoon.xTimesDamageMS.id;
+		if (myCard.id != id) {
+			lcf().sdop.cardPlatoon.selectLeaderByRaid(id,
+					PostRaidBossBattleEntry.procedure);
+			throw new NewRequestException();
+		}
 	}
 
 	/**
@@ -400,7 +451,17 @@ public class AI extends LcfExtend {
 	 * @return
 	 */
 	public boolean checkMySkill(Ms player) {
-		ActiveSkill[] activeSkillList = player.card.pilot.activeSkillList;
+		return checkMySkill4Card(player.card);
+	}
+
+	/**
+	 * 检查自己的技能, 查看是否是符合条件的辅助技能
+	 * 
+	 * @param player
+	 * @return true符合
+	 */
+	public boolean checkMySkill4Card(CardWithoutWeapon card) {
+		ActiveSkill[] activeSkillList = card.pilot.activeSkillList;
 		for (ActiveSkill activeSkill : activeSkillList) {
 			if (activeSkill.id == 21001) {
 				continue;
@@ -428,7 +489,7 @@ public class AI extends LcfExtend {
 	 * @param card
 	 * @return
 	 */
-	public boolean checkAttackSkill4Card(Card card) {
+	public boolean checkAttackSkill4Card(CardWithoutWeapon card) {
 		ActiveSkill[] activeSkillList = card.pilot.activeSkillList;
 		for (ActiveSkill activeSkill : activeSkillList) {
 			if (activeSkill.description.startsWith(actionCode[3].prefix)) {

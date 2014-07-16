@@ -23,8 +23,12 @@ public class CardPlatoon extends LcfExtend {
 	public boolean lockCardPlatoon;
 
 	/**
-	 * @return true is initialize card data success
+	 * 智能甲板
 	 */
+	public void autoCardPlatoon() {
+		openAllOptionalDeck(SetUseOptionalDeckList.procedure);
+	}
+
 	public void initChooseCardData() {
 		lcf().sdop.auto.setting.cardPlatoon = true;
 		try {
@@ -40,7 +44,7 @@ public class CardPlatoon extends LcfExtend {
 		}
 	}
 
-	CardSynthesis msLeaderCard;
+	CardSynthesis markMS, xTimesDamageMS;
 	PlatoonPilot attackPilot, helpPilot;
 
 	public void logChooseCards() {
@@ -48,15 +52,16 @@ public class CardPlatoon extends LcfExtend {
 			lcf().sdop.log("无需启用智能甲板!");
 			return;
 		}
-		StringBuilder log = new StringBuilder("初始化智能甲板成功! <br>　");
-		if (null == msLeaderCard) {
-			log.append("no mark ms !");
+		StringBuilder log = new StringBuilder("初始化智能甲板成功! <br>★ ");
+		if (null == markMS) {
+			log.append("no mark MS !");
 		} else {
-			log.append(String.format(
-					"mark ms : %dc%d 【%s】 %s, Lv: %d, next exp: %d",
-					msLeaderCard.rarity, msLeaderCard.cost, msLeaderCard.name,
-					msLeaderCard.attribute.value, msLeaderCard.level,
-					msLeaderCard.nextExp));
+			log.append("mark MS: ");
+			logMS(log, markMS);
+		}
+		if (null != xTimesDamageMS) {
+			log.append("<br>★ x times damage MS: ");
+			logMS(log, xTimesDamageMS);
 		}
 		if (null != attackPilot) {
 			logPilot(log, attackPilot, "attack");
@@ -67,8 +72,14 @@ public class CardPlatoon extends LcfExtend {
 		lcf().sdop.log(log.toString());
 	}
 
+	protected void logMS(StringBuilder log, CardSynthesis ms) {
+		log.append(String.format("%dc%d 【%s】 %s, Lv: %d, next exp: %d",
+				ms.rarity, ms.cost, ms.name, ms.attribute.value, ms.level,
+				ms.nextExp));
+	}
+
 	protected void logPilot(StringBuilder log, PlatoonPilot pilot, String prefix) {
-		log.append("<br>　").append(prefix).append(" pilot: ")
+		log.append("<br>☆").append(prefix).append(" pilot: ")
 				.append(pilot.rarity).append('c').append(pilot.cost)
 				.append('【').append(pilot.name).append("】, level：")
 				.append(pilot.level).append(", attack point: ")
@@ -84,31 +95,31 @@ public class CardPlatoon extends LcfExtend {
 
 	public void chooseCards(int raidUnitLeaderId, int raidPilotLeaderId,
 			CardSynthesis[] msCardList, PlatoonPilot[] pilotCardList) {
-		msLeaderCard = (CardSynthesis) getLeaderCard(raidUnitLeaderId,
-				msCardList);
-		if (lcf().sdop.boss.checkX6(msLeaderCard)) {
+		markMS = (CardSynthesis) getLeaderCard(raidUnitLeaderId, msCardList);
+		if (lcf().sdop.boss.checkX6(markMS)) {
 			lcf().sdop.auto.setting.cardPlatoon = false;
-			msLeaderCard = null;
+			markMS = null;
 			return;
 		}
 		choosePilot(pilotCardList);
-		if (lcf().sdop.boss.checkX3(msLeaderCard)) {
-			msLeaderCard = null;
+		if (lcf().sdop.boss.checkX3(markMS)) {
+			markMS = null;
 			return;
 		}
-		if (lcf().sdop.boss.checkX2(msLeaderCard)) {
-			msLeaderCard = null;
+		if (lcf().sdop.boss.checkX2(markMS)) {
+			markMS = null;
 			return;
 		}
-		boolean has2Times = false;
 		for (CardSynthesis ms : msCardList) {
 			if (lcf().sdop.boss.checkX2(ms)) {
-				has2Times = true;
-				break;
+				if (null == xTimesDamageMS
+						|| xTimesDamageMS.totalExp < ms.totalExp) {
+					xTimesDamageMS = ms;
+				}
 			}
 		}
-		if (!has2Times) {
-			msLeaderCard = null;
+		if (null == xTimesDamageMS) {
+			markMS = null;
 			lcf().sdop.auto.setting.cardPlatoon = false;
 		}
 	}
@@ -198,6 +209,7 @@ public class CardPlatoon extends LcfExtend {
 	 * @param callback
 	 */
 	public void openAllOptionalDeck(String callback) {
+		lcf().sdop.log("准备全开甲板Optional!");
 		setUseOptionalDeckList(true, true, true, true, callback);
 	}
 
@@ -226,6 +238,11 @@ public class CardPlatoon extends LcfExtend {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void selectLeaderByRaid(int msCardId, String callback) {
+		selectLeader(msCardId, "RAID",
+				lcf().sdop.boss.getRaidBossFieldTypeString(), callback);
 	}
 
 	/**
@@ -263,6 +280,11 @@ public class CardPlatoon extends LcfExtend {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void equipPilotByRaid(int pilotId, String callback) {
+		equipPilot(pilotId, "RAID",
+				lcf().sdop.boss.getRaidBossFieldTypeString(), callback);
 	}
 
 	/**

@@ -15,6 +15,7 @@ import cn.lucifer.sdop.dispatch.ex.EncountRaidBoss;
 import cn.lucifer.sdop.dispatch.ex.EnhancedSynthesis;
 import cn.lucifer.sdop.dispatch.ex.Enter;
 import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
+import cn.lucifer.sdop.dispatch.ex.EquipPilot;
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.ExecuteBattleStart;
 import cn.lucifer.sdop.dispatch.ex.ExecuteDuelBattle;
@@ -37,7 +38,9 @@ import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostGreeting;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
 import cn.lucifer.sdop.dispatch.ex.RaidBossGacha;
+import cn.lucifer.sdop.dispatch.ex.SelectLeader;
 import cn.lucifer.sdop.dispatch.ex.SendRescueSignal;
+import cn.lucifer.sdop.dispatch.ex.SetUseOptionalDeckList;
 import cn.lucifer.sdop.dispatch.ex.SortieTroops;
 import cn.lucifer.sdop.dispatch.ex.StartAutoSuperRaidBoss;
 
@@ -106,8 +109,11 @@ public final class DF {
 		put(EnhancedSynthesis.procedure, new EnhancedSynthesis());
 
 		put(GetRaidBossField.procedure, new GetRaidBossField());
-		
+
 		put(GetCardPlatoonData.procedure, new GetCardPlatoonData());
+		put(SetUseOptionalDeckList.procedure, new SetUseOptionalDeckList());
+		put(SelectLeader.procedure, new SelectLeader());
+		put(EquipPilot.procedure, new EquipPilot());
 	}
 
 	private static void put(String procedure, BaseDispatch impl) {
