@@ -229,6 +229,13 @@ public class Duel extends LcfExtend {
 	public void executeDuelBattle(Player enemy, boolean isEncount) {
 		lcf().sdop.log(String.format("准备对【%s】 发起挑战, 对方属性是【%s】 %s!",
 				enemy.playerName, enemy.unitAttribute.value, enemy.unitName));
+		if (9005 != enemy.id && recordMode) {
+			try {
+				checkEnemy(enemy);
+			} catch (CannotOpenDBException e) {
+				e.printStackTrace();
+			}
+		}
 
 		String url = lcf().sdop.httpUrlPrefix
 				+ "/PostForQuestBattle/executeDuelBattle?ssid="
@@ -260,7 +267,7 @@ public class Duel extends LcfExtend {
 		lcf().sdop.startJob(new Runnable() {
 			@Override
 			public void run() {
-				//Log.d("Lucifer", "autoDuel ----------");
+				// Log.d("Lucifer", "autoDuel ----------");
 				lcf().sdop.duel.checkAndExecute();
 			}
 		}, 0, 300000);
