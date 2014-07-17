@@ -529,53 +529,10 @@ public class AI extends LcfExtend {
 		attackPlayers = new ArrayList<Ms>();
 
 		Ms helpMember = null;
-		boolean myIsAttack = false;
-		for (Ms player : playerMsList) {
-			player.AIType = simple;
-			player.AITurn = 0;
-			if (lcf().sdop.boss.checkX6(player.card)
-					|| lcf().sdop.boss.checkX3(player.card)) {
-				if (checkAttackSkill(player)) {
-					player.AIType = attack;
-					player.lcf_attack = player.card.lcf_attack;// 设置倍数信息
-					attackPlayers.add(player);
-					if (player.card.id == lcf().sdop.myUserId) {// 判断自己是否倍机
-						myIsAttack = true;
-					}
-				}
-				continue;
-			}
-		}
-
-		if (myIsAttack) {
-			boolean noDoubleHelp = true;
-			for (Ms player : playerMsList) {
-				if (checkHelpSkill(player)) {
-					helpMember = player;
-					if (noDoubleHelp && checkMySkill(player)) {// 当前无双辅助机
-						player.AIType = me;
-						noDoubleHelp = false;
-						continue;
-					}
-					player.AIType = help;
-				}
-			}
+		if (setAttackAI() || setSecondAttackAIForAutoCardPlatoon()) {
+			helpMember = whenMyIsAttack();
 		} else {
-			for (Ms player : playerMsList) {
-				if (player.card.id == lcf().sdop.myUserId) {
-					if (checkMySkill(player)) {
-						player.AIType = me;
-					}
-					continue;
-				}
-				if (player.lcf_attack > 0) {// 倍机, 无需变更AI
-					continue;
-				}
-				if (checkHelpSkill(player)) {
-					helpMember = player;
-					player.AIType = help;
-				}
-			}
+			helpMember = setHelpAI();
 		}
 
 		if (attackPlayers.size() > 1 && helpMember != null) {// 2部倍机, 改变辅助机功能
@@ -587,6 +544,113 @@ public class AI extends LcfExtend {
 				player.AIType = simple;
 			}
 		}
+	}
+
+	/**
+	 * 有倍机, 但自己不是倍机时, 设置辅助机的AI
+	 * 
+	 * @return null没有辅助(不算自己)
+	 */
+	protected Ms setHelpAI() {
+		Ms helpMember = null;
+		for (Ms player : playerMsList) {
+			if (player.card.id == lcf().sdop.myUserId) {
+				if (checkMySkill(player)) {
+					player.AIType = me;
+				}
+				continue;
+			}
+			if (player.lcf_attack > 0) {// 倍机, 无需变更AI
+				continue;
+			}
+			if (checkHelpSkill(player)) {
+				helpMember = player;
+				player.AIType = help;
+			}
+		}
+		return helpMember;
+	}
+
+	/**
+	 * 这里模拟用户角度, 先看看出场者的倍机情况
+	 * 
+	 * @return true自己也是倍机
+	 */
+	protected boolean setAttackAI() {
+		boolean myIsAttack = false;
+		for (Ms player : playerMsList) {
+			player.AIType = simple;
+			player.AITurn = 0;
+			if (lcf().sdop.boss.checkX6(player.card)
+					|| lcf().sdop.boss.checkX3(player.card)) {
+				if (checkRealAttack(player)) {
+					if (player.card.id == lcf().sdop.myUserId) {// 判断自己是否倍机
+						myIsAttack = true;
+					}
+				}
+				continue;
+			}
+		}
+		return myIsAttack;
+	}
+
+	/**
+	 * 第二次查看并设置攻击向AI, 当启用了智能甲板后
+	 * 
+	 * @return true自己也是倍机
+	 */
+	protected boolean setSecondAttackAIForAutoCardPlatoon() {
+		boolean myIsAttack = false;
+		if (lcf().sdop.auto.setting.cardPlatoon && attackPlayers.isEmpty()) {
+			// 查看是否有攻击向x2
+			for (Ms player : playerMsList) {
+				if (lcf().sdop.boss.checkX2(player.card)
+						&& checkRealAttack(player)) {
+					if (player.card.id == lcf().sdop.myUserId) {// 判断自己是否倍机
+						myIsAttack = true;
+					}
+				}
+			}
+		}
+		return myIsAttack;
+	}
+
+	/**
+	 * 检查是否带攻击技能的倍机(真正的倍机), 假若有, 设置AI, 并加入倍机List
+	 * 
+	 * @param player
+	 * @return true有
+	 */
+	protected boolean checkRealAttack(Ms player) {
+		if (checkAttackSkill(player)) {
+			player.AIType = attack;
+			player.lcf_attack = player.card.lcf_attack;// 设置倍数信息
+			attackPlayers.add(player);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 当自己的是倍机时, 设置辅助机的AI
+	 * 
+	 * @return null表示没有辅助机
+	 */
+	protected Ms whenMyIsAttack() {
+		Ms helpMember = null;
+		boolean noDoubleHelp = true;
+		for (Ms player : playerMsList) {
+			if (checkHelpSkill(player)) {
+				helpMember = player;
+				if (noDoubleHelp && checkMySkill(player)) {// 当前无双辅助机
+					player.AIType = me;
+					noDoubleHelp = false;
+					continue;
+				}
+				player.AIType = help;
+			}
+		}
+		return helpMember;
 	}
 
 	public Ms getPlayerByOwnerId(int ownerId) {
