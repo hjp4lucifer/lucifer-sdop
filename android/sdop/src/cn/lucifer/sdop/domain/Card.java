@@ -4,4 +4,6 @@ public class Card extends CardWithoutWeapon {
 
 	public Weapon[] weaponList;
 	
+	public CustomizeInfo customizeInfo;
+	
 }

@@ -18,7 +18,7 @@ public class LogAdapter extends BaseAdapter {
 
 	public LogAdapter(Context context) {
 		this.context = context;
-		msgs.add("一切从【菜单】键开始 in sdop —— 沧之云！ License : GPL v2.");
+		msgs.add("一切从【菜单】键开始 in sdop —— 沧之云！ License: GPL v2.");
 	}
 
 	protected Spanned getText(String text) {

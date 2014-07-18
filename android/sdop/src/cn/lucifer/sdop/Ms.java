@@ -1,6 +1,7 @@
 package cn.lucifer.sdop;
 
 import cn.lucifer.sdop.domain.Card;
+import cn.lucifer.sdop.domain.CustomizeInfo;
 import cn.lucifer.sdop.domain.Pilot;
 
 public class Ms extends LcfExtend {
@@ -56,6 +57,33 @@ public class Ms extends LcfExtend {
 			for (int j = 0; j < card.characteristicList.length; j++) {
 				logMsg.append("<br>　　插件").append(j).append("：")
 						.append(card.characteristicList[j].briefDescription);
+			}
+			if (null != card.customizeInfo) {
+				CustomizeInfo customizeInfo = card.customizeInfo;
+				logMsg.append("<br>　　custom信息").append("：")
+						.append(customizeInfo.customizeCount).append('/')
+						.append(customizeInfo.maxCustomizeCount)
+						.append(", allocationPoint：")
+						.append(customizeInfo.currentAllocationPoint)
+						.append('/').append(customizeInfo.maxAllocationPoint);
+				if (customizeInfo.customizeAttack > 0) {
+					logMsg.append("<br>　　　customizeAttack:").append(
+							customizeInfo.customizeAttack);
+				}
+				if (customizeInfo.customizeHP > 0) {
+					logMsg.append("<br>　　　customizeHP:").append(
+							customizeInfo.customizeHP);
+				}
+				if (customizeInfo.customizeSpeed > 0) {
+					logMsg.append("<br>　　　customizeSpeed:").append(
+							customizeInfo.customizeSpeed);
+				}
+				if (null != customizeInfo.specialEffectList) {
+					for (int j = 0, len = customizeInfo.specialEffectList.length; j < len; j++) {
+						logMsg.append("<br>　　　specialEffect:").append(
+								customizeInfo.specialEffectList[j]);
+					}
+				}
 			}
 
 			pilot = card.pilot;

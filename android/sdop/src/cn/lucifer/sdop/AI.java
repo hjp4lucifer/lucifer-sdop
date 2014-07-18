@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import android.util.Log;
 import cn.lucifer.sdop.dispatch.ex.AutoBattle;
-import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.ExecuteActionCommand;
 import cn.lucifer.sdop.dispatch.ex.InitRaidBossOutlineList;
 import cn.lucifer.sdop.dispatch.ex.PostRaidBossBattleEntry;
@@ -347,11 +346,6 @@ public class AI extends LcfExtend {
 		lcf().sdop.maxSp = myCard.maxSp;
 
 		lcf().sdop.boss.battleId = battleArgs.getInt("battleId");
-		// String SDPATH = Environment.getExternalStorageDirectory().getPath();
-		// Writer output = new FileWriter(SDPATH + "/tmp/" +
-		// System.currentTimeMillis() + ".txt");
-		// IOUtils.write(memberCardList, output );
-		// IOUtils.closeQuietly(output);
 
 		CardWithoutWeapon[] members = lcf().gson.fromJson(
 				battleArgs.getString("memberCardList"),
@@ -409,7 +403,6 @@ public class AI extends LcfExtend {
 	public void processByAutoCardPlatoon(Card myCard,
 			CardWithoutWeapon attackMember) throws NewRequestException {
 		if (!lcf().sdop.auto.setting.cardPlatoon) {
-			lcf().sdop.item.equipItem4Sp(EquipItem4Sp.procedure);
 			return;
 		}
 		if (null == attackMember) {
