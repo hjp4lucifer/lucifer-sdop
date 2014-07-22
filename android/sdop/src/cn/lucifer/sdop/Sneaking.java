@@ -62,7 +62,7 @@ public class Sneaking extends LcfExtend {
 	 * 取消自动超总, UI调用
 	 */
 	public void cancelAutoSneaking() {
-		if (null != autoRunnable && !lcf().sdop.removeJob(autoRunnable)) {
+		if (!lcf().sdop.removeJob(autoRunnable)) {
 			lcf().sdop.log("自动潜入停止失败！");
 			return;
 		}
