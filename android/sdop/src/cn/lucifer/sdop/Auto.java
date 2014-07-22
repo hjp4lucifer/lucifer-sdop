@@ -1,6 +1,44 @@
 package cn.lucifer.sdop;
 
-public class Auto {
+import android.util.Log;
+
+public class Auto extends LcfExtend {
+
+	/**
+	 * 针对{@link Sdop#clearAllJob()}后, 对自动项的恢复
+	 */
+	public void resume() {
+		if (lcf().sdop.auto.setting.sneaking) {
+			lcf().sdop.sneaking.resumeAutoSneaking();
+		}
+	}
+
+	/**
+	 * 针对重新登录后全部自动项的重新加载
+	 */
+	public void resumeAll() {
+		resume();
+		if (lcf().sdop.auto.setting.boss) {
+			Log.i(lcf().LOG_TAG, "auto boss");
+			switch (lcf().sdop.boss.currentType) {
+			case 0:
+				lcf().sdop.boss.AI.startAutoNormalRaidBoss();
+				break;
+			default:
+				lcf().sdop.boss.AI.startAutoSuperRaidBoss();
+				break;
+			}
+			return;
+		}
+		Log.d(lcf().LOG_TAG, "no auto boss");
+
+		if (lcf().sdop.auto.setting.duel) {
+			Log.d(lcf().LOG_TAG, "auto duel");
+			lcf().sdop.duel.startAutoDuel();
+			return;
+		}
+		Log.d(lcf().LOG_TAG, "no auto duel");
+	}
 
 	public Setting setting = new Setting();
 
@@ -41,6 +79,8 @@ public class Auto {
 		 * </ol>
 		 */
 		public boolean cardPlatoon;
+
+		public boolean sneaking;
 	}
 
 }

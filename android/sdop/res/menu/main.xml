@@ -43,8 +43,7 @@
                 android:id="@+id/action_auto_GB_record"
                 android:orderInCategory="67"
                 android:showAsAction="never"
-                android:title="@string/action_auto_GB_record"
-                android:visible="false"/>
+                android:title="@string/action_auto_GB_record"/>
             <item
                 android:id="@+id/action_auto_GB_off"
                 android:orderInCategory="69"
@@ -107,7 +106,25 @@
         android:enabled="false"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_sneaking"/>
+        android:title="@string/action_sneaking">
+        <menu>
+            <item
+                android:id="@+id/action_view_sneaking"
+                android:orderInCategory="72"
+                android:showAsAction="never"
+                android:title="@string/action_view_sneaking"/>
+            <item
+                android:id="@+id/action_auto_sneaking"
+                android:orderInCategory="73"
+                android:showAsAction="never"
+                android:title="@string/action_auto_sneaking"/>
+            <item
+                android:id="@+id/action_auto_sneaking_off"
+                android:orderInCategory="74"
+                android:showAsAction="never"
+                android:title="@string/action_auto_off"/>
+        </menu>
+    </item>
     <item
         android:id="@+id/action_ms_synthesis"
         android:enabled="false"

@@ -23,6 +23,10 @@ public class SneakingMapDestination {
 	 * 完成度, 100表示100%
 	 */
 	public int progress;
+	/**
+	 * 需要时间, 单位: 秒
+	 */
+	public int requiredTime;
 	public String report;
 	/**
 	 * 对应的探索小队id, null表明无队伍

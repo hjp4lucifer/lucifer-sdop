@@ -20,6 +20,14 @@ public class GetResultData extends BaseDispatch {
 		if (lcf().sdop.checkError(args, procedure)) {
 			return;
 		}
+		JSONObject resultData = args.getJSONObject("resultData");
+		StringBuilder logMsg = new StringBuilder("潜入【");
+		logMsg.append(resultData.getString("destinationName"))
+				.append("】")
+				.append(resultData.getJSONObject("resultType").getString(
+						"value")).append("<br>");
+		logMsg.append(resultData.getString("report"));
+		lcf().sdop.log(logMsg.toString());
 
 		lcf().sdop.checkCallback(callback);
 	}

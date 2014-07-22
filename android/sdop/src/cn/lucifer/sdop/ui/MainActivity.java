@@ -147,9 +147,17 @@ public class MainActivity extends BaseActivity {
 			lcf().sdop.map.setEventMap(false);
 			lcf().sdop.map.getQuestData();
 			break;
-		case R.id.action_sneaking: {
+		case R.id.action_view_sneaking: {
 			Intent intent = new Intent(this, SneakingActivity.class);
 			startActivity(intent);
+			break;
+		}
+		case R.id.action_auto_sneaking: {
+			lcf().sdop.sneaking.startAutoSneaking();
+			break;
+		}
+		case R.id.action_auto_sneaking_off: {
+			lcf().sdop.sneaking.cancelAutoSneaking();
 			break;
 		}
 		case R.id.action_ms_synthesis: {

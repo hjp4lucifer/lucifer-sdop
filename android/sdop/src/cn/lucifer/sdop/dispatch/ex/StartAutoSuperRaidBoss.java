@@ -16,7 +16,7 @@ public class StartAutoSuperRaidBoss extends BaseDispatch {
 
 	@Override
 	public void callback(Object[] args) {
-		lcf().sdop.clearAllJob();
+		lcf().sdop.clearAllJobWithResume();
 		lcf().sdop.boss
 				.initRaidBossOutlineList(InitRaidBossOutlineList.procedure);
 	}

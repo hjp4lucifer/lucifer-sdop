@@ -25,7 +25,7 @@ public class SortieTroops extends BaseDispatch {
 
 	@Override
 	public void callback(Object[] args) {
-		lcf().sdop.sneaking.getSneakingMissionTopData();
+		lcf().sdop.sneaking.getSneakingMissionTopData(GetSneakingMissionTopData.procedure);
 	}
 
 }

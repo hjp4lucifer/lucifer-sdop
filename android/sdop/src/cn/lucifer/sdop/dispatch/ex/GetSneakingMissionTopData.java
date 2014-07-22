@@ -17,15 +17,13 @@ public class GetSneakingMissionTopData extends BaseDispatch {
 		}
 		GetSneakingMissionTopDataArgs dataArgs = lcf().gson.fromJson(
 				args.toString(), GetSneakingMissionTopDataArgs.class);
-		if (null == callback) {//UI直接调用, 非AI
-			lcf().sdop.sneaking.refreshMissonAndBroadcast(dataArgs);
-		}
+		lcf().sdop.sneaking.refreshMissonAndBroadcast(dataArgs);
+		lcf().sdop.checkCallback(callback);
 	}
 
 	@Override
 	public void callback(Object[] args) {
-		// TODO Auto-generated method stub
-
+		lcf().sdop.sneaking.resetAuto();
 	}
 
 }

@@ -261,7 +261,7 @@ public class Duel extends LcfExtend {
 	}
 
 	public void startAutoDuel() {
-		lcf().sdop.clearAllJob();
+		lcf().sdop.clearAllJobWithResume();
 		lcf().sdop.auto.setting.duel = true;
 		lcf().sdop.log("针对【" + targetUnitAttribute + "】的自动GB开始！");
 		lcf().sdop.startJob(new Runnable() {
@@ -275,7 +275,7 @@ public class Duel extends LcfExtend {
 
 	public void cancelAutoDuel() {
 		lcf().sdop.auto.setting.duel = false;
-		lcf().sdop.clearAllJob();
+		lcf().sdop.clearAllJobWithResume();
 		lcf().sdop.log("自动GB停止成功！");
 	}
 

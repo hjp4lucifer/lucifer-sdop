@@ -21,6 +21,8 @@
     <string name="action_equip_item_4_sp">装备SP药</string>
     <string name="action_map_quest">地图探索</string>
     <string name="action_sneaking">潜入任务</string>
+    <string name="action_view_sneaking">查看潜入任务</string>
+    <string name="action_auto_sneaking">自动潜入</string>
     <string name="action_ms_synthesis">MS合成</string>
     <string name="action_exit">退出</string>
     <!-- lable -->
@@ -40,7 +42,6 @@
     <string name="msg_auto_choose_leader_card_is_locked">【智能换MS和Pilot】被锁, 请耐心等待战斗结束！</string>
     <string name="msg_bought_item_4_sp_is_running">【智能买SP药】进行中...</string>
     <!-- sneaking -->
-    <string name="msg_ready_sneaking_proxy_running_format">执行返回, 并重新潜入, %d</string>
     <!-- ms synthesis -->
     <string name="msg_ms_synthesis_format">合成(%d)</string>
     <string name="msg_ms_synthesis_no_choose">没有正确选择MS，请重新选择...</string>

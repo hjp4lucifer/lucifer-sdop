@@ -872,7 +872,7 @@ public class AI extends LcfExtend {
 	 * 开始自动超总, UI调用
 	 */
 	public void startAutoSuperRaidBoss() {
-		lcf().sdop.clearAllJob();
+		lcf().sdop.clearAllJobWithResume();
 		lcf().sdop.auto.setting.boss = true;
 		lcf().sdop.boss.currentType = 1;
 		lcf().sdop.boss
@@ -883,7 +883,7 @@ public class AI extends LcfExtend {
 	 * 开始自动总力, UI调用
 	 */
 	public void startAutoNormalRaidBoss() {
-		lcf().sdop.clearAllJob();
+		lcf().sdop.clearAllJobWithResume();
 		lcf().sdop.auto.setting.boss = true;
 		lcf().sdop.boss.currentType = 0;
 		lcf().sdop.boss
@@ -894,7 +894,7 @@ public class AI extends LcfExtend {
 	 * 取消自动超总, UI调用
 	 */
 	public void cancelAutoSuperRaidBoss() {
-		lcf().sdop.clearAllJob();
+		lcf().sdop.clearAllJobWithResume();
 		lcf().sdop.log("自动超总停止成功！");
 	}
 }

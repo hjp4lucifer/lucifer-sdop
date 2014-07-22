@@ -212,11 +212,32 @@ public class Sdop extends LcfExtend {
 		}
 		executor = new ScheduledThreadPoolExecutor(10);
 	}
+	
+	public void clearAllJobWithResume(){
+		clearAllJob();
+		lcf().sdop.auto.resume();
+	}
 
 	public void startJob(Runnable command, long initialDelayMillis,
 			long periodMillis) {
 		executor.scheduleAtFixedRate(command, initialDelayMillis, periodMillis,
 				TimeUnit.MILLISECONDS);
+	}
+
+	public void delayJob(Runnable command, long delayMillis) {
+		executor.schedule(command, delayMillis, TimeUnit.MILLISECONDS);
+	}
+
+	/**
+	 * 
+	 * @param command
+	 * @return see {@link ScheduledThreadPoolExecutor#remove(Runnable)}
+	 */
+	public boolean removeJob(Runnable command) {
+		if (null != executor) {
+			return executor.remove(command);
+		}
+		return false;
 	}
 
 	public String loadJson(String assetsFileName) throws IOException {
