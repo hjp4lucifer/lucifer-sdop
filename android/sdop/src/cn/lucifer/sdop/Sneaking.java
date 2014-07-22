@@ -1,5 +1,7 @@
 package cn.lucifer.sdop;
 
+import java.util.concurrent.ScheduledFuture;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +37,8 @@ public class Sneaking extends LcfExtend {
 
 	protected Long nextCheckSneakingTime;
 
+	protected ScheduledFuture<?> scheduledFuture;
+
 	/**
 	 * 恢复定时任务
 	 */
@@ -45,7 +49,7 @@ public class Sneaking extends LcfExtend {
 		}
 		long delayMillis = nextCheckSneakingTime - System.currentTimeMillis();
 		Log.d(lcf().LOG_TAG, "resumeAutoSneaking, next time : " + delayMillis);
-		lcf().sdop.delayJob(autoRunnable, delayMillis);
+		scheduledFuture = lcf().sdop.delayJob(autoRunnable, delayMillis);
 	}
 
 	/**
@@ -53,18 +57,25 @@ public class Sneaking extends LcfExtend {
 	 */
 	public void startAutoSneaking() {
 		lcf().sdop.auto.setting.sneaking = true;
-		lcf().sdop.removeJob(autoRunnable);
+		stopJob();
 		lcf().sdop.log("自动潜入开始！");
 		getSneakingMissionTopData(GetSneakingMissionTopData.procedure);
+	}
+
+	protected void stopJob() {
+		if (null != scheduledFuture) {
+			scheduledFuture.cancel(true);
+			scheduledFuture = null;
+		}
 	}
 
 	/**
 	 * 取消自动超总, UI调用
 	 */
 	public void cancelAutoSneaking() {
-		if (!lcf().sdop.removeJob(autoRunnable)) {
-			lcf().sdop.log("自动潜入停止失败！");
-			return;
+		if (null != scheduledFuture) {
+			scheduledFuture.cancel(true);
+			scheduledFuture = null;
 		}
 		lcf().sdop.auto.setting.sneaking = false;
 		lcf().sdop.log("自动潜入停止成功！");
@@ -91,7 +102,8 @@ public class Sneaking extends LcfExtend {
 			}
 			long delayMillis = delaySecond * 1000;
 			nextCheckSneakingTime = System.currentTimeMillis() + delayMillis;
-			lcf().sdop.delayJob(autoRunnable, delaySecond * delayMillis);
+			scheduledFuture = lcf().sdop.delayJob(autoRunnable, delaySecond
+					* delayMillis);
 			lcf().sdop.log(String.format("无可执行的自动潜入! %d秒后再查看!", delaySecond));
 			return;
 		}
