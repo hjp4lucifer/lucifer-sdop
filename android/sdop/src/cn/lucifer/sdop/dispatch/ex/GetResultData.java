@@ -26,7 +26,7 @@ public class GetResultData extends BaseDispatch {
 		JSONObject resultData = args.getJSONObject("resultData");
 		StringBuilder logMsg = new StringBuilder("潜入【");
 		logMsg.append(resultData.getString("destinationName"))
-				.append("】")
+				.append("】: ")
 				.append(resultData.getJSONObject("resultType").getString(
 						"value"));
 		List<String> report = lcf().getMatchChildren(
