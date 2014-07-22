@@ -1,5 +1,8 @@
 package cn.lucifer.sdop.dispatch.ex;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,8 +28,17 @@ public class GetResultData extends BaseDispatch {
 		logMsg.append(resultData.getString("destinationName"))
 				.append("】")
 				.append(resultData.getJSONObject("resultType").getString(
-						"value")).append("<br>");
-		logMsg.append(resultData.getString("report"));
+						"value"));
+		List<String> report = lcf().getMatchChildren(
+				resultData.getString("report"), "<font .*?>(.*?)</font>");
+		for (String str : report) {
+			if (str.indexOf('-') == StringUtils.INDEX_NOT_FOUND) {
+				logMsg.append(str);
+				continue;
+			}
+			str = StringUtils.remove(str, '-');
+			logMsg.append("<br>").append(str).append('：');
+		}
 		lcf().sdop.log(logMsg.toString());
 
 		lcf().sdop.checkCallback(callback);

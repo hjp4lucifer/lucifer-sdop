@@ -1,6 +1,8 @@
 package cn.lucifer.sdop;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +12,7 @@ import com.google.gson.Gson;
 
 public final class Lcf {
 	public final String LOG_TAG = "Lucifer";
-	
+
 	private static Lcf _instance;
 
 	public Sdop sdop = new Sdop();
@@ -56,5 +58,19 @@ public final class Lcf {
 			return sdDir;
 		}
 		return null;
+	}
+
+	public List<String> getMatchChildren(String source, String regex) {
+		Pattern expression = Pattern.compile(regex);
+		Matcher matcher = expression.matcher(source);
+		int groupCount;
+		List<String> children = new ArrayList<String>();
+		while (matcher.find()) {
+			groupCount = matcher.groupCount();
+			for (int i = 1; i <= groupCount; i++) {
+				children.add(matcher.group(i));
+			}
+		}
+		return children;
 	}
 }
