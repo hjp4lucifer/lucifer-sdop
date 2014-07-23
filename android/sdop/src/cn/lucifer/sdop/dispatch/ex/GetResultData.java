@@ -24,7 +24,7 @@ public class GetResultData extends BaseDispatch {
 			return;
 		}
 		JSONObject resultData = args.getJSONObject("resultData");
-		StringBuilder logMsg = new StringBuilder("潜入【");
+		StringBuilder logMsg = new StringBuilder("【");
 		logMsg.append(resultData.getString("destinationName"))
 				.append("】: ")
 				.append(resultData.getJSONObject("resultType").getString(
