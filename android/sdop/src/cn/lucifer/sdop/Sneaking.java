@@ -102,8 +102,7 @@ public class Sneaking extends LcfExtend {
 			}
 			long delayMillis = delaySecond * 1000;
 			nextCheckSneakingTime = System.currentTimeMillis() + delayMillis;
-			scheduledFuture = lcf().sdop.delayJob(autoRunnable, delaySecond
-					* delayMillis);
+			scheduledFuture = lcf().sdop.delayJob(autoRunnable, delayMillis);
 			lcf().sdop.log(String.format("无可执行的自动潜入! %d秒后再查看!", delaySecond));
 			return;
 		}
