@@ -196,7 +196,9 @@ public class AI extends LcfExtend {
 				attackMember = m;
 				continue;
 			}
-			if (!checkAttackSkill4Card(m)) {
+			if (m.lcf_attack > 1 && !checkAttackSkill4Card(m)) {
+				// Log.d(lcf().LOG_TAG, "no attack skill, name : " + m.userName
+				// + "\n" + lcf().gson.toJson(m));
 				continue;// 不选择没攻击技能的倍机
 			}
 			if (attackMember.lcf_attack > m.lcf_attack) {// 倍数级别高
