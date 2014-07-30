@@ -90,11 +90,13 @@ public class AI extends LcfExtend {
 					target = _currentBoss;
 				}
 			} else {
-				if (_currentBoss.level < Least_Lv) {
-					continue;
-				}
-				if (_currentBoss.currentHp < Least_Hp) {
-					continue;
+				if (lcf().sdop.boss.currentType != 0) {
+					if (_currentBoss.level < Least_Lv) {
+						continue;
+					}
+					if (_currentBoss.currentHp < Least_Hp) {
+						continue;
+					}
 				}
 				target = _currentBoss;
 			}
