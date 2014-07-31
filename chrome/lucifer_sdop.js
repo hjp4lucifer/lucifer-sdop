@@ -422,7 +422,8 @@ lcf.sdop.card.playGachaResult = function(callback){
 		},
 		gachaType: {
 			"value": _sdop.card.currentGachaType
-		}
+		},
+		"gachaID": 0
 	});
 	
 	_sdop.post(url, payload, function(data){
