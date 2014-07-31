@@ -170,7 +170,7 @@ public class Map extends LcfExtend {
 		log.append(", 剩余ep: ").append(lcf().sdop.ep);
 		log.append(", 剩余bp: ").append(lcf().sdop.bp);
 		lcf().sdop.log(log.toString());
-		if (lcf().sdop.ep > 7) {
+		if (lcf().sdop.ep > 6) {
 			lcf().sdop.checkCallback(GetQuestData.procedure, 2000, null);
 			return;
 		}
