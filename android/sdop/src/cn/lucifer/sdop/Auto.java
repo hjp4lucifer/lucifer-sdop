@@ -17,7 +17,6 @@ public class Auto extends LcfExtend {
 	 * 针对重新登录后全部自动项的重新加载
 	 */
 	public void resumeAll() {
-		resume();
 		if (lcf().sdop.auto.setting.boss) {
 			Log.i(lcf().LOG_TAG, "auto boss");
 			switch (lcf().sdop.boss.currentType) {
@@ -37,6 +36,7 @@ public class Auto extends LcfExtend {
 			lcf().sdop.duel.startAutoDuel();
 			return;
 		}
+		resume();// 因为AutoRaidBoss和AutoDuel都有调用resume()
 		Log.d(lcf().LOG_TAG, "no auto duel");
 	}
 
