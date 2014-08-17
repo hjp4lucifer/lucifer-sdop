@@ -8,6 +8,19 @@ import cn.lucifer.sdop.dispatch.ex.BoughtItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.EquipItem4Sp;
 import cn.lucifer.sdop.dispatch.ex.GetShopItemList;
 
+/**
+ * <ul>
+ * <li>20006: 30sp</li>
+ * <li>20011: 4000HP</li>
+ * <li>20012: 6000HP</li>
+ * <li>20013: 60sp</li>
+ * <li>20016: mult 4000HP</li>
+ * <li>20017: mult 6000HP</li>
+ * </ul>
+ * 
+ * @author Lucifer
+ *
+ */
 public class Item extends LcfExtend {
 
 	// private final int[] itemIdList = new int[] { 20006, 20011, 20013 };
