@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import cn.lucifer.sdop.dispatch.BaseDispatch;
 import cn.lucifer.sdop.domain.Item;
+import cn.lucifer.sdop.domain.Ms;
 
 public class ExecuteBattleStart extends BaseDispatch {
 	public static final String procedure = "executeBattleStart";
@@ -28,6 +29,10 @@ public class ExecuteBattleStart extends BaseDispatch {
 					+ lcf().sdop.ms.logMsList(lcf().sdop.boss.AI.playerMsList));
 			lcf().sdop.boss.AI.itemList = lcf().gson.fromJson(
 					battleArgs.getString("itemList"), Item[].class);
+			
+			Ms[] playerMsList = lcf().sdop.boss.AI.playerMsList;
+			lcf().sdop.currentSp = playerMsList[0].card.currentSp + playerMsList[0].card.currentSubSp;
+			playerMsList = null;
 			
 			lcf().sdop.boss.AI.autoBattle(battleArgs);
 		} catch (JSONException e) {
