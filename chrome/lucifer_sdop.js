@@ -1792,7 +1792,7 @@ lcf.sdop.boss.autoNormalRaidBoss = function(){
 				lcf.sdop.myUserId = battleData.leaderCardId;
 				var my = battleData.playerMsList[0];
 				
-				lcf.sdop.currentSp = my.card.currentSp;
+				lcf.sdop.currentSp = my.card.currentSp + my.card.currentSubSp;
 				lcf.sdop.maxSp = my.card.maxSp;
 				
 				lcf.sdop.boss.battleId = battleData.battleId;
@@ -1826,7 +1826,8 @@ lcf.sdop.boss.autoSuperRaidBoss = function(){
 				lcf.sdop.boss.AI.attackPlayers = [];
 				
 				var my = battleData.playerMsList[0];
-				lcf.sdop.currentSp = my.card.currentSp;
+				//console.info(my);
+				lcf.sdop.currentSp = my.card.currentSp + my.card.currentSubSp;
 				lcf.sdop.maxSp = my.card.maxSp;
 				
 				lcf.sdop.boss.battleId = battleData.battleId;
@@ -1842,6 +1843,8 @@ lcf.sdop.boss.autoSuperRaidBoss = function(){
 						lcf.sdop.boss.playerMsList = dataArgs.playerMsList;
 						lcf.sdop.boss.AI.fixPlayerMsListAI();
 						lcf.sdop.log("对Boss选择阵容：" + lcf.sdop.ms.logMsList(lcf.sdop.boss.playerMsList));
+						
+						lcf.sdop.currentSp = lcf.sdop.boss.playerMsList[0].card.currentSp + lcf.sdop.boss.playerMsList[0].card.currentSubSp;
 						
 						lcf.sdop.boss.itemList = dataArgs.itemList;
 						
