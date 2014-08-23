@@ -346,7 +346,7 @@ public class AI extends LcfExtend {
 				battleArgs.getString("playerMsList"), Ms[].class);
 
 		Card myCard = playerMsList[0].card;
-		lcf().sdop.currentSp = myCard.currentSp + myCard.currentSubSp;
+		lcf().sdop.currentSp = myCard.currentSp;
 		lcf().sdop.maxSp = myCard.maxSp;
 
 		lcf().sdop.boss.battleId = battleArgs.getInt("battleId");
