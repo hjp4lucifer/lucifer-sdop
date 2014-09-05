@@ -1827,7 +1827,10 @@ lcf.sdop.boss.autoSuperRaidBoss = function(){
 				
 				var my = battleData.playerMsList[0];
 				//console.info(my);
-				lcf.sdop.currentSp = my.card.currentSp + my.card.currentSubSp;
+				lcf.sdop.currentSp = my.card.currentSp;
+				if(my.card.currentSubSp){
+					lcf.sdop.currentSp += my.card.currentSubSp;
+				}
 				lcf.sdop.maxSp = my.card.maxSp;
 				
 				lcf.sdop.boss.battleId = battleData.battleId;
