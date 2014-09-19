@@ -441,7 +441,15 @@ lcf.sdop.card.playGachaResult = function(callback){
 		
 		var playGachaResultDetail = data.args.playGachaResultDetail;
 		var headerBriefDetail = playGachaResultDetail.headerBriefDetail;
-		var logMsg = "抽取" + playGachaResultDetail.cardType.value + "：" + card.rarity + "c" + card.cost + "【" + card.name + "】，";
+		var logMsg = "抽取" + playGachaResultDetail.cardType.value + "：";
+		if(card.rarity > 2 || card.cost > 9){
+			logMsg += "<b class='c_red'>";
+			logMsg += card.rarity + "c" + card.cost;
+			logMsg += "</b>";
+		} else {
+			logMsg += card.rarity + "c" + card.cost;
+		}
+		logMsg += "【" + card.name + "】，";
 		
 		var enough = true;
 		if (pilot) {
