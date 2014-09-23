@@ -483,8 +483,10 @@ public class Boss extends LcfExtend {
 		try {
 			JSONObject payload = lcf().sdop.createBasePayload(
 					"sendRescueSignal",
-					new JSONObject().put("isForAllPlayer", true)
-							.put("comment", "help~~~!!!")
+					new JSONObject()
+							.put("isForAllPlayer", true)
+							.put("comment",
+									lcf().sdop.myUserName + " help~~~!!!")
 							.put("raidBossId", raidBossId));
 			lcf().sdop.post(url, payload.toString(),
 					SendRescueSignal.procedure, callback);

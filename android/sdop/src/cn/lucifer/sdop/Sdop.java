@@ -35,6 +35,7 @@ public class Sdop extends LcfExtend {
 
 	private String tokenId;
 	public int myUserId;
+	public String myUserName;
 	public int bp;
 	public int ep;
 	public int maxSp;

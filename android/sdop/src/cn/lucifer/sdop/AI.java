@@ -76,6 +76,10 @@ public class AI extends LcfExtend {
 				if ("JOIN".equalsIgnoreCase(_currentBoss.state.value)) {// 已参战
 					continue;
 				}
+				if (_currentBoss.comment != null
+						&& _currentBoss.comment.startsWith("ads")) {// skip ads help
+					continue;
+				}
 				if (_currentBoss.currentHp < Least_Hp) {// 判断血量
 					continue;
 				}
@@ -348,6 +352,7 @@ public class AI extends LcfExtend {
 		Card myCard = playerMsList[0].card;
 		lcf().sdop.currentSp = myCard.currentSp;
 		lcf().sdop.maxSp = myCard.maxSp;
+		lcf().sdop.myUserName = myCard.userName;
 
 		lcf().sdop.boss.battleId = battleArgs.getInt("battleId");
 
