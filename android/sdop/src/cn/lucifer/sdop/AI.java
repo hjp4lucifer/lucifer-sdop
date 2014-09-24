@@ -77,7 +77,7 @@ public class AI extends LcfExtend {
 					continue;
 				}
 				if (_currentBoss.comment != null
-						&& _currentBoss.comment.startsWith("ads")) {// skip ads help
+						&& _currentBoss.comment.startsWith("\u0061\u0064\u0073")) {// skip the help
 					continue;
 				}
 				if (_currentBoss.currentHp < Least_Hp) {// 判断血量
