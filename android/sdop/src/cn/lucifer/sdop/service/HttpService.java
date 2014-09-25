@@ -155,9 +155,8 @@ public class HttpService extends Service implements IGetLcf {
 		conn(conn);
 
 		OutputStream os = conn.getOutputStream();
-		PrintWriter pw = new PrintWriter(new OutputStreamWriter(os));
-		pw.write(payload);
-		pw.close();
+		IOUtils.write(payload, os);
+		os.close();
 
 		getResponse(conn, procedure, callback);
 	}
