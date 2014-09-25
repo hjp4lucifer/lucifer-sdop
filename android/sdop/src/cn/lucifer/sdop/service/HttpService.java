@@ -148,14 +148,17 @@ public class HttpService extends Service implements IGetLcf {
 		}
 		Log.i(lcf().LOG_TAG, "payload : " + payload);
 
+		byte[] data = payload.getBytes("utf-8");
+		payload = null;
+		
 		conn.setRequestMethod(POST);
 		conn.setRequestProperty("Content-Length",
-				String.valueOf(payload.length()));
+				String.valueOf(data.length));
 
 		conn(conn);
 
 		OutputStream os = conn.getOutputStream();
-		IOUtils.write(payload, os);
+		IOUtils.write(data, os);
 		os.close();
 
 		getResponse(conn, procedure, callback);
