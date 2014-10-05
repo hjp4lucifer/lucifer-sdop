@@ -56,6 +56,9 @@ public class GetRaidBossOutlineList extends BaseDispatch {
 			return;
 		}
 		long delayMillis = 1000;
+		if (tryCount > 50) {
+			tryCount = 0;
+		}
 		if (tryCount > 30) {
 			delayMillis *= tryCount;
 		}
