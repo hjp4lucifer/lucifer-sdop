@@ -191,7 +191,7 @@ public class Sneaking extends LcfExtend {
 			itemIdList = new int[] { 20006, 20013, 20012 };
 		} else {
 			//itemIdList = new int[] { 20006, 20013 };
-			itemIdList = new int[] { 20016 };
+			itemIdList = new int[] { 20006 };
 		}
 		int[] msCardIdList = proxyPlatoon.msCardIdList;
 		sortieTroops(proxyPlatoon.platoonId, destination.destinationId,
