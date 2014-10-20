@@ -4,7 +4,7 @@ chrome.webRequest.onCompleted.addListener(function(info){
 	if (arr = info.url.match(reg)) {
 		tokenId = arr[2];
 	}
-	//console.info(info.url);
+	//console.info(info);
 	//console.info(chrome.runtime.id);
 	
 	chrome.tabs.query({
@@ -23,6 +23,6 @@ chrome.webRequest.onCompleted.addListener(function(info){
 }, // filters
 {
 	urls: ["http://sdop-g.bandainamco-ol.jp/GetForProfile/getOwnProfileDetail*"],
-	types: ["object"]
+	types: ["object", "other"]
 });
 
