@@ -77,9 +77,9 @@ public class Boss extends LcfExtend {
 	public Integer encountType;
 	private final String currentModeValue = "RAID_BOSS";
 	private JSONObject currentMode;
-	public final int[] x2 = { 250084, 250085 };
-	public final int[] x3 = { 250086 };
-	public final int x6 = 250087;
+	public final int[] x2 = { 250088, 250089 };
+	public final int[] x3 = { 250090 };
+	public final int x6 = 250091;
 
 	public final AI AI = new AI();
 

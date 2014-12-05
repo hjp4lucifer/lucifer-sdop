@@ -18,13 +18,18 @@ public class ExecuteQuest extends BaseDispatch {
 			}
 			return;
 		}
-		lcf().sdop.map.executeQuestResultProcess(args);
+		lcf().sdop.checkCallback(procedure, 500, new Object[] { args });
 	}
 
 	@Override
 	public void callback(Object[] args) {
-		// TODO Auto-generated method stub
-
+		JSONObject json = (JSONObject) args[0];
+		try {
+			lcf().sdop.map.executeQuestResultProcess(json);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
