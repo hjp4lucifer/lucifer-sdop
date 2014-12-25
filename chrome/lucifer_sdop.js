@@ -779,8 +779,8 @@ lcf.sdop.boss = {
 	kind: ["NORMAL", "SUPER"],
 	currentMode: 'RAID_BOSS',
 	currentKind: 'SUPER',
-	x3: [250092],
-	x6: 250093,
+	x3: [250094],
+	x6: 250095,
 	getTopLevel: function(list){
 		var target, _currentBoss;
 		var Least_Hp = 5000000;
