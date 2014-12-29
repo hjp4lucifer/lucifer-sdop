@@ -493,6 +493,9 @@ public class AI extends LcfExtend {
 	 */
 	public boolean checkAttackSkill4Card(CardWithoutWeapon card) {
 		ActiveSkill[] activeSkillList = card.pilot.activeSkillList;
+		if (null == activeSkillList) {
+			return false;
+		}
 		for (ActiveSkill activeSkill : activeSkillList) {
 			if (activeSkill.description.startsWith(actionCode[3].prefix)) {
 				return true;
@@ -503,6 +506,9 @@ public class AI extends LcfExtend {
 
 	public boolean checkHelpSkill(Ms player) {
 		ActiveSkill[] activeSkillList = player.card.pilot.activeSkillList;
+		if (null == activeSkillList) {
+			return false;
+		}
 		for (ActiveSkill activeSkill : activeSkillList) {
 			if (activeSkill.id == 21001) {
 				return true;

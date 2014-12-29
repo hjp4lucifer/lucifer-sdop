@@ -77,9 +77,9 @@ public class Boss extends LcfExtend {
 	public Integer encountType;
 	private final String currentModeValue = "RAID_BOSS";
 	private JSONObject currentMode;
-	public final int[] x2 = { 250090, 250091 };
-	public final int[] x3 = { 250092 };
-	public final int x6 = 250093;
+	public final int[] x2 = { 250092, 250093 };
+	public final int[] x3 = { 250094 };
+	public final int x6 = 250095;
 
 	public final AI AI = new AI();
 
@@ -147,6 +147,10 @@ public class Boss extends LcfExtend {
 	 * @return
 	 */
 	public boolean checkX6(CardWithoutWeapon m) {
+		if (null != m.pilot
+				&& (m.pilot.activeSkillList == null && m.pilot.activeSkillList.length == 0)) {
+			return false;
+		}
 		for (int j = 0; j < m.characteristicList.length; j++) {
 			if (m.characteristicList[j].id == x6) {
 				m.lcf_attack = 6;
@@ -164,6 +168,10 @@ public class Boss extends LcfExtend {
 	 * @return
 	 */
 	public boolean checkX3(CardWithoutWeapon m) {
+		if (null != m.pilot
+				&& (m.pilot.activeSkillList == null && m.pilot.activeSkillList.length == 0)) {
+			return false;
+		}
 		for (int j = 0; j < m.characteristicList.length; j++) {
 			for (int x : x3) {
 				if (m.characteristicList[j].id == x) {
